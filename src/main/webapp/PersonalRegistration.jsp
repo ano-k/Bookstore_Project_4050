@@ -8,11 +8,37 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheet.css">
-    <title>Registration</title>
+    <title>Personal Registration</title>
 
 </head>
 <body>
-<h1>Registration </h1>
+<div class="top">
+    <h1>Online Bookstore</h1>
+    <br/>
+    <h2>Sign Up For An Account!</h2>
+    <br>
+    <form>
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" name="firstname"/>
+        <br/>
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname"/>
+        <br/>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email"/>
+        <br/>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"/>
+        <br/>
+        <label for="confirmpassword">Confirm Password</label>
+        <input type="password" id="confirmpassword" name="confirmpassword"/>
+        <br/>
+        <input type="submit" value="Submit" onclick="location.href='PaymentRegistration.jsp';"/>
+    </form>
+</div>
+
+
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

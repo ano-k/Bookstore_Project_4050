@@ -17,8 +17,9 @@
     <nav class="buttons">
         <button><a href="Profile.jsp">Profile</a></button>
         <button><a href="Login.jsp">Login</a></button>
-        <button><a href="Signup.jsp">Signup</a></button>
+        <button><a href="PersonalRegistration.jsp">Signup</a></button>
         <button><a href="ViewCart.jsp">Cart</a></button>
+        <button><a>Sign Out</a></button>
     </nav>
 </div>
 

@@ -12,7 +12,41 @@
 
 </head>
 <body>
-<h1>Checkout</h1>
+
+<div class="top">
+    <h1>Online Bookstore</h1>
+</div>
+
+<h3>Checkout</h3>
+<br>
+<ul style="list-style-type:none;">
+    <li>
+        <label>Name</label>
+        <p></p>
+    </li>
+    <li>
+        <label>Payment Info</label>
+        <p></p>
+    </li>
+    <li>
+        <label>Address</label>
+        <p></p>
+    </li>
+    <li>
+        <label>Order Summary</label>
+        <p></p>
+    </li>
+    <li>
+        <label>Total</label>
+        <p></p>
+    </li>
+</ul>
+
+<nav>
+    <button><a href="Homepage.jsp">Return to Store</a></button>
+    <button><a>Edit Profile</a></button>
+    <button><a>Confirm Order</a></button>
+</nav>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

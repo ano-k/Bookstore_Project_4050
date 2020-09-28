@@ -12,7 +12,38 @@
 
 </head>
 <body>
-<h1>Profile</h1>
+<div class="top">
+    <h1>Online Bookstore</h1>
+</div>
+
+<div>
+    <h3>Profile Information</h3>
+    <br>
+    <ul style="list-style-type:none;">
+        <li>
+            <label>First Name</label>
+            <p></p>
+        </li>
+        <li>
+            <label>Last Name</label>
+            <p></p>
+        </li>
+        <li>
+            <label>Email</label>
+            <p></p>
+        </li>
+        <li>
+            <label>Address</label>
+            <p></p>
+        </li>
+    </ul>
+
+    <nav>
+        <button><a>Edit Profile</a></button>
+        <button><a>Order History</a></button>
+        <button><a>Sign Out</a></button>
+    </nav>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

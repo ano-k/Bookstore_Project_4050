@@ -12,7 +12,19 @@
 
 </head>
 <body>
-<h1>Registration Confirmation</h1>
+<div class="top">
+    <h1>Online Bookstore</h1>
+</div>
+<br>
+<h2>Registration Confirmation</h2>
+<br/>
+<h5>Confirmation Email has been sent the email you provided</h5>
+<br>
+<nav class="buttons">
+    <button><a href="PersonalRegistration.jsp">Change Email</a></button>
+    <button><a href="">Resend Code</a></button>
+</nav>
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

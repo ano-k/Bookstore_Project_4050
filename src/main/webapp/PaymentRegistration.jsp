@@ -8,23 +8,26 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheet.css">
-    <title>Login</title>
+    <title>Payment Registration</title>
 
 </head>
 <body>
 <div class="top">
     <h1>Online Bookstore</h1>
     <br/>
-    <h2>Welcome Back!</h2>
+    <h2>Enter your payment information:</h2>
     <br>
     <form>
-        <label for="useremail">Email</label>
-        <input type="text" id="useremail" name="useremail"/>
+        <label for="creditnum">Credit Card Number</label>
+        <input type="text" id="creditnum" name="creditnum"/>
         <br/>
-        <label for="userpassword">Password</label>
-        <input type="text" id="userpassword" name="userpassword"/>
+        <label for="expdate">Expiration</label>
+        <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10"/>
         <br/>
-        <input type="submit" value="Submit" onclick="location.href='Homepage.jsp';"/>
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" name="cvv"/>
+        <br/>
+        <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
     </form>
 </div>
 
