@@ -13,20 +13,23 @@
 </head>
 <body>
 <div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <h2>Enter your payment information:</h2>
+    <h2 id="cc-header">Enter your payment information:</h2>
     <br>
-    <form>
-        <label for="creditnum">Credit Card Number</label>
-        <input type="text" id="creditnum" name="creditnum"/>
-        <br/>
-        <label for="expdate">Expiration</label>
-        <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10"/>
-        <br/>
-        <label for="cvv">CVV</label>
-        <input type="text" id="cvv" name="cvv"/>
-        <br/>
+    <form class="credit-card-form">
+        <div class="cc-info-wrap">
+            <label class="cc-label" for="creditnum">CC Number</label>
+            <input type="text" id="creditnum" name="creditnum"/>
+        </div>
+        <div class="cc-info-wrap">
+            <label class="cc-label" for="expdate">Expiration</label>
+            <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10"/>
+        </div>
+        <div class="cc-info-wrap">
+            <label class="cc-label" for="cvv">CVV</label>
+            <input type="text" id="cvv" name="cvv"/>
+        </div>
         <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
     </form>
 </div>

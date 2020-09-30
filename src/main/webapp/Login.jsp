@@ -22,7 +22,7 @@
         <input type="text" id="useremail" name="useremail"/>
         <br/>
         <label for="userpassword">Password</label>
-        <input type="text" id="userpassword" name="userpassword"/>
+        <input type="password" id="userpassword" name="userpassword"/>
         <br/>
         <input type="submit" value="Submit" onclick="location.href='Homepage.jsp';"/>
     </form>

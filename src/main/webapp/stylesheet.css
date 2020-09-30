@@ -1,0 +1,93 @@
+.page-header {
+    text-align: center;
+}
+
+.cart-items {
+    text-align: center;
+}
+
+.item {
+    padding : 10px;
+}
+
+#order-sum {
+    padding-left : 10px;
+}
+
+.cart-information {
+    margin: 20px;
+    padding: 20px;
+    background-color: lightgray;
+}
+.nav-bar {
+    text-align: center;
+    padding: 10px;
+}
+
+#book-details {
+    width : 100%;
+    border-collapse: collapse;
+}
+
+#book-details td, #book-details th {
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-left: 8px;
+    padding-bottom: 8px;
+}
+
+#book-details td, #book-details th {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #ddd;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #ddd;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #ddd;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ddd;
+}
+
+#book-details th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align : center;
+    background-color: lightblue;
+    color: black;
+}
+
+.credit-card-form {
+    display: flex; /* displays children (divs) inline by default thats why you need to change its direction */
+    flex-direction: column; /* stacks children vertically */
+    align-items: center; /* horizontal alignment / centering / affects only input elements since label elements are taken out of the normal document flow */
+    position: relative;
+    margin: 0 auto;
+    margin-top: 44px;}
+
+#cc-header {
+    text-align: center;
+}
+
+.cc-info-wrap {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.cc-label {
+    position: absolute; /* positioned relative to the parent element; taken out of the normal document flow */
+    left: -117px; /* moved left by negative 102px (width) + 15px (margin-right) because the default value is 0 */
+    display: inline-block;
+    width: 102px;
+    text-align: right;
+    font-size: 18px;
+}
+
+.cc-input {
+    width: 172px;
+    height: 30px;
+    font-size: 20px;
+    border: 1px solid black;
+}

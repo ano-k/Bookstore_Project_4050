@@ -22,29 +22,44 @@
 <ul style="list-style-type:none;">
     <li>
         <label>Name</label>
-        <p></p>
+        <p>John Doe</p>
     </li>
     <li>
         <label>Payment Info</label>
-        <p></p>
+        <p>Credit Card Number: ***********4578 [Visa]</p>
+        <button><a href="EditProfile.jsp">Change Credit Card</a></button>
     </li>
     <li>
         <label>Address</label>
-        <p></p>
+        <p>100 Example Street</p>
+        <button><a href="EditProfile.jsp">Change Address</a></button>
     </li>
     <li>
-        <label>Order Summary</label>
-        <p></p>
-    </li>
-    <li>
-        <label>Total</label>
-        <p></p>
+        <h4>Order Summary (List all books being purchased)</h4>
+
+        <ul style="list-style-type:none;">
+            <form>
+                <button>[x]</button>
+                <label>Book 1 $12.25 | Quantity:</label>
+                <input type="number" id="quantity-1" name="quantity-1" min="1" max="100" placeholder="1">
+                <br>
+                <button>[x]</button>
+                <label>Book 2 $1.50 | Quantity:</label>
+                <input type="number" id="quantity-2" name="quantity-2" min="1" max="100" placeholder="1">
+                <br>
+                <button>[x]</button>
+                <label>Book 3 $9.25 | Quantity:</label>
+                <input type="number" id="quantity-3" name="quantity-3" min="1" max="100" placeholder="1">
+            </form>
+        </ul>
+        <h1>Total: $111.00</h1>
+
+        <h4>[x] = remove from cart</h4>
     </li>
 </ul>
 
 <nav>
-    <button><a href="Homepage.jsp">Return to Store</a></button>
-    <button><a>Edit Profile</a></button>
+    <button><a href="Homepage.jsp">Update O</a></button>
     <button><a>Confirm Order</a></button>
 </nav>
 

@@ -51,14 +51,22 @@
         <tr>
             <th>Book Image</th>
             <th>Book Details</th>
+            <th></th>
+            <th></th>
         </tr>
         <tr>
-            <td><img src="harrypotter.jpg"/></td>
+            <td><a href="BookDetails.jsp"><img src="harrypotter.jpg"/></a></td>
             <td>
                 Title: Harry Potter and the Socerer's Stone <br>
                 Author: JK Rowling <br>
                 Rating: 3 <br>
                 Price: $10
+            </td>
+            <td>
+               <button><a href="BookDetails.jsp">Book Page</a></button>
+            </td>
+            <td>
+                <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
         <tr>
@@ -69,6 +77,12 @@
                 Rating: 4<br>
                 Price: $7.50
             </td>
+            <td>
+                <button><a href="BookDetails.jsp">Book Page</a></button>
+            </td>
+            <td>
+                <button><a href="">Add to Cart</a></button>
+            </td>
         </tr>
         <tr>
             <td><img src="theory.jpg"/></td>
@@ -78,6 +92,12 @@
                 Rating: 5<br>
                 Price: $20
             </td>
+            <td>
+                <button><a href="BookDetails.jsp">Book Page</a></button>
+            </td>
+            <td>
+                <button><a href="">Add to Cart</a></button>
+            </td>
         </tr>
         <tr>
             <td><img src="ahsoka.jpg"/></td>
@@ -86,6 +106,12 @@
                 Author: E.K. Johnston<br>
                 Rating: 2<br>
                 Price: $9
+            </td>
+            <td>
+                <button><a href="BookDetails.jsp">Book Page</a></button>
+            </td>
+            <td>
+                <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
     </table>
