@@ -15,6 +15,7 @@
 <div class="top">
     <h1 class="page-header">Online Bookstore</h1>
     <br/>
+    <div class="cart-information"> 
     <h2 id="cc-header">Enter your payment information:</h2>
     <br>
     <form class="credit-card-form">
@@ -32,10 +33,14 @@
         </div>
         <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
     </form>
+    </div>
 </div>
 
-
-
+<nav class="nav-bar">
+    <button><a href="Homepage.jsp">Return to Store</a></button>
+    <button><a>Edit Profile</a></button>
+    <button><a>Confirm Order</a></button>
+</nav>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

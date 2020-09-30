@@ -13,19 +13,25 @@
 </head>
 <body>
 <div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <h2>Welcome Back!</h2>
-    <br>
-    <form>
-        <label for="useremail">Email</label>
-        <input type="text" id="useremail" name="useremail"/>
+    <div class="cart-information"> 
+    <h2 class="page-header">Welcome Back!</h2>
+    <h6 class="page-header">We've missed you! :)</h6>
+    <form class ="credit-card-form"> 
+        <div class="cc-info-wrap"> 
+            <label class="cc-label" for="useremail">Email</label>
+            <input type="text" id="useremail" name="useremail"/>
         <br/>
-        <label for="userpassword">Password</label>
-        <input type="password" id="userpassword" name="userpassword"/>
-        <br/>
+        </div>
+        <div class="cc-info-wrap">
+            <label class="cc-label" for="userpassword">Password</label>
+            <input type="password" id="userpassword" name="userpassword"/>
+            <br/>
+        </div> 
         <input type="submit" value="Submit" onclick="location.href='Homepage.jsp';"/>
     </form>
+    </div>
 </div>
 
 

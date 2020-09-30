@@ -12,49 +12,53 @@
 
 </head>
 <body>
-<div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
+    
+<div class="cart-information">
+<div>
     <nav class="buttons">
         <button><a href="Profile.jsp">Profile</a></button>
         <button><a href="Login.jsp">Login</a></button>
         <button><a href="PersonalRegistration.jsp">Signup</a></button>
         <button><a href="ViewCart.jsp">Cart</a></button>
         <button><a>Sign Out</a></button>
+        <input id="search-bar" type="text" placeholder="Search title, author, ISBN, ..."/>
     </nav>
-</div>
-
-<div class="search">
-    <input type="text" placeholder="Search title, author, ISBN, ..."/>
 </div>
 
 <div class="filters">
     <form>
+        <div class="parent-filter-div">
+        <div class="filter-block"> 
         <h3>Genre</h3>
-        <input type="checkbox" id="genre1" name="genre1" value="scifi">
-        <label for="genre1">Science Fiction</label><br>
-        <input type="checkbox" id="genre2" name="genre2" value="nonfiction">
-        <label for="genre2">Nonfiction</label><br>
-        <input type="checkbox" id="genre3" name="genre3" value="fiction">
-        <label for="genre3">Fiction</label><br>
-        <br/>
+            <input type="checkbox" id="genre1" name="genre1" value="scifi">
+            <label for="genre1">Science Fiction</label><br>
+            <input type="checkbox" id="genre2" name="genre2" value="nonfiction">
+            <label for="genre2">Nonfiction</label><br>
+            <input type="checkbox" id="genre3" name="genre3" value="fiction">
+            <label for="genre3">Fiction</label><br>
+        </div>
+        <div class="filter-block"> 
         <h3>Price</h3>
-        <input type="checkbox" id="price1" name="price1" value="hi2lo">
-        <label for="price1">High to low</label><br>
-        <input type="checkbox" id="price2" name="price2" value="lo2hi">
-        <label for="price2">Low to high</label><br>
-        <input type="submit" value="Submit">
+            <input type="checkbox" id="price1" name="price1" value="hi2lo">
+            <label for="price1">High to low</label><br>
+            <input type="checkbox" id="price2" name="price2" value="lo2hi">
+            <label for="price2">Low to high</label><br>
+            <input type="submit" value="Submit">
+        </div>  
+        </div>
     </form>
 </div>
 
-<div class="books">
-    <table style="width:100%">
+<div class="homepage-table">
+    <table >
         <tr>
             <th>Book Image</th>
             <th>Book Details</th>
-            <th></th>
-            <th></th>
+            <th>Link</th>
+            <th>Add to Cart</th>
         </tr>
-        <tr>
+        <tr class="homepage-book-row">
             <td><a href="BookDetails.jsp"><img src="harrypotter.jpg"/></a></td>
             <td>
                 Title: Harry Potter and the Socerer's Stone <br>
@@ -69,7 +73,7 @@
                 <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
-        <tr>
+        <tr class="homepage-book-row">
             <td><img src="seuss.jpg"/></td>
             <td>
                 Title: The Cat in the Hat<br>
@@ -84,7 +88,7 @@
                 <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
-        <tr>
+        <tr class="homepage-book-row">
             <td><img src="theory.jpg"/></td>
             <td>
                 Title:  Introduction to Theory of Computation<br>
@@ -99,7 +103,7 @@
                 <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
-        <tr>
+        <tr class="homepage-book-row">
             <td><img src="ahsoka.jpg"/></td>
             <td>
                 Title:  Star Wars: Ahsoka<br>
@@ -116,7 +120,7 @@
         </tr>
     </table>
 </div>
-
+</div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

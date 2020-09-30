@@ -17,7 +17,8 @@
 .cart-information {
     margin: 20px;
     padding: 20px;
-    background-color: lightgray;
+    background-color: lightblue;
+    border-radius: 15px;
 }
 .nav-bar {
     text-align: center;
@@ -90,4 +91,56 @@
     height: 30px;
     font-size: 20px;
     border: 1px solid black;
+}
+
+.order-hist-tbl {
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-top: 20px;
+}
+
+.order-hist-tbl, .order-hist-tbl td, .order-hist-tbl th {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+#ord-hist {
+    margin-bottom: 20px;
+}
+
+#search-bar {
+    float: right;
+}
+
+.parent-filter-div {
+    width : 300px;
+    height: 200px;
+    margin-right: 10px;
+    float: left;
+}
+
+.filter-block {
+    float: left;
+    margin-right: 20px;
+    padding-top: 20px;   
+}
+
+.homepage-table table {
+    width : 100%;
+}
+
+.homepage-table table, .homepage-table table tr,
+ .homepage-table table th, .homepage-table table td {
+    border: 1px solid black;
+}
+
+.homepage-table table td {
+    width: 25%;
+}
+
+.homepage-book-row:hover {
+    background-color : lightcoral;
 }
