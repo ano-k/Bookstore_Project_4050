@@ -14,9 +14,12 @@
 </head>
 <body>
   <h1 class="page-header">Admin Homepage</h1>
-
-  <nav>
-
+  <div class="cart-information">
+  <nav class="admin-nav"> 
+    <button><a>Manage Employees</a></button>
+    <button><a>Manage Users</a></button>
+    <button><a>Manage Promotions</a></button>
+    <button><a>Manage Books</a></button>
   </nav>
   <table class="admin-table">
     <tr>
@@ -33,10 +36,22 @@
       <td>Joe</td>
       <td>IDK</td>
     </tr>
-
-
-
+    <tr>
+      <td>12344</td>
+      <td>Book Placer</td>
+      <td>Cercone</td>
+      <td>Michael</td>
+      <td>IDK</td>
+    </tr>
+    <tr>
+      <td>12346</td>
+      <td>Book Reader</td>
+      <td>Desiderio</td>
+      <td>John</td>
+      <td>IDK</td>
+    </tr>
   </table>
+  </div>
 
 </body>
 </html>

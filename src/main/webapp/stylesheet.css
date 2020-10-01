@@ -148,3 +148,37 @@
 .homepage-book-row:hover {
     background-color : lightcoral;
 }
+
+
+.admin-table, .admin-table tr,
+.admin-table th, .admin-table td {
+    border : 1px solid black;
+}
+
+.admin-table {
+    margin-bottom : 50px;
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-top: 20px;
+}
+
+.admin-table th {
+    color : white;
+    background-color: black;
+}
+
+.admin-nav {
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;   
+    margin-bottom: 10px;
+    margin-top: 40px;
+}
+
+.mng-books {
+    margin-left : 10px;
+    margin-top : 10px;
+}

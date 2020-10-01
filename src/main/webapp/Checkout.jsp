@@ -13,12 +13,11 @@
 </head>
 <body>
 
-<div class="top">
+<div class="page-header">
     <h1>Online Bookstore</h1>
 </div>
-
-<h3>Checkout</h3>
-<br>
+<div class="cart-information">
+<h3 class="page-header">Checkout</h3>
 <ul style="list-style-type:none;">
     <li>
         <label>Name</label>
@@ -57,8 +56,8 @@
         <h4>[x] = remove from cart</h4>
     </li>
 </ul>
-
-<nav>
+</div>
+<nav class="nav-bar">
     <button><a href="Homepage.jsp">Update O</a></button>
     <button><a>Confirm Order</a></button>
 </nav>
