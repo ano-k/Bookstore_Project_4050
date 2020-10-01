@@ -13,18 +13,20 @@
 </head>
 <body>
 <div class="top">
-    <h1>Online Bookstore</h1>
-</div>
-<br>
-<h2>Registration Confirmation</h2>
-<br/>
-<h5>Confirmation Email has been sent the email you provided</h5>
-<br>
-<nav class="buttons">
-    <button><a href="PersonalRegistration.jsp">Change Email</a></button>
-    <button><a href="">Resend Code</a></button>
-</nav>
+    <h1 class="page-header">Online Bookstore</h1>
+    <br>
+    <div class="cart-information">
+        <h2 class="page-header">Registration Confirmation</h2>
+        <br/>
+        <h5 class="page-header">Confirmation Email has been sent the email you provided</h5>
+        <br>
+    </div>
 
+    <nav class="buttons">
+        <button><a href="PersonalRegistration.jsp">Change Email</a></button>
+        <button><a href="">Resend Code</a></button>
+    </nav>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -15,32 +15,37 @@
 <div class="top">
     <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <div class="cart-information"> 
-    <h2 id="cc-header">Enter your payment information:</h2>
+    <div class="cart-information">
+    <h2 class="registration-header">Enter your payment information:</h2>
     <br>
-    <form class="credit-card-form">
-        <div class="cc-info-wrap">
-            <label class="cc-label" for="creditnum">CC Number</label>
-            <input type="text" id="creditnum" name="creditnum"/>
+    <form class="input-form">
+        <p class="info-wrap">
+            <label class="form-label" for="creditnum">* Credit Card Number</label>
+            <input type="text" id="creditnum" name="creditnum" class="form-input"/>
+        </p>
+        <br>
+        <p class="info-wrap">
+            <label class="form-label" for="expdate">* Expiration</label>
+            <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10" class="form-input"/>
+        </p>
+        <br>
+        <p class="info-wrap">
+            <label class="form-label" for="cvv">* CVV</label>
+            <input type="text" id="cvv" name="cvv" class="form-input"/>
+        </p>
+        <br>
+        <div class="form-submit">
+            <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
         </div>
-        <div class="cc-info-wrap">
-            <label class="cc-label" for="expdate">Expiration</label>
-            <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10"/>
-        </div>
-        <div class="cc-info-wrap">
-            <label class="cc-label" for="cvv">CVV</label>
-            <input type="text" id="cvv" name="cvv"/>
-        </div>
-        <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
+        <br>
+        <br>
+        <p>
+            * - indicates required field
+        </p>
     </form>
     </div>
 </div>
 
-<nav class="nav-bar">
-    <button><a href="Homepage.jsp">Return to Store</a></button>
-    <button><a>Edit Profile</a></button>
-    <button><a>Confirm Order</a></button>
-</nav>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -15,21 +15,23 @@
 <div class="top">
     <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <div class="cart-information"> 
+    <div class="cart-information">
     <h2 class="page-header">Welcome Back!</h2>
-    <h6 class="page-header">We've missed you! :)</h6>
-    <form class ="credit-card-form"> 
-        <div class="cc-info-wrap"> 
-            <label class="cc-label" for="useremail">Email</label>
-            <input type="text" id="useremail" name="useremail"/>
+    <h6 class="page-header">We've missed you! :)</h6><br>
+    <form class ="input-form">
+        <p class="info-wrap">
+            <label class="form-label" for="useremail">Email</label>
+            <input type="text" id="useremail" name="useremail" class="form-input"/>
+        </p>
         <br/>
+        <p class="info-wrap">
+            <label class="form-label" for="userpassword">Password</label>
+            <input type="password" id="userpassword" name="userpassword" class="form-input"/>
+        </p>
+        <br/>
+        <div class="form-submit">
+            <input type="submit" value="Login" onclick="location.href='Homepage.jsp';"/>
         </div>
-        <div class="cc-info-wrap">
-            <label class="cc-label" for="userpassword">Password</label>
-            <input type="password" id="userpassword" name="userpassword"/>
-            <br/>
-        </div> 
-        <input type="submit" value="Submit" onclick="location.href='Homepage.jsp';"/>
     </form>
     </div>
 </div>

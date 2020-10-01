@@ -13,77 +13,94 @@
 </head>
 <body>
 <div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <h2>Enter your address information:</h2>
-    <br>
-    <form>
-        <label for="streetandnum">Address Line</label>
-        <input type="text" id="streetandnum" name="streetandnum"/>
-        <br/>
-        <label for="city">City</label>
-        <input type="text" id="city" name="city"/>
-        <br/>
-        <label for="state">State</label>
-        <select id="state" name="state">
-            <option value="AL">Alabama</option>
-            <option value="AK">Alaska</option>
-            <option value="AZ">Arizona</option>
-            <option value="AR">Arkansas</option>
-            <option value="CA">California</option>
-            <option value="CO">Colorado</option>
-            <option value="CT">Connecticut</option>
-            <option value="DE">Delaware</option>
-            <option value="DC">District Of Columbia</option>
-            <option value="FL">Florida</option>
-            <option value="GA">Georgia</option>
-            <option value="HI">Hawaii</option>
-            <option value="ID">Idaho</option>
-            <option value="IL">Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="IA">Iowa</option>
-            <option value="KS">Kansas</option>
-            <option value="KY">Kentucky</option>
-            <option value="LA">Louisiana</option>
-            <option value="ME">Maine</option>
-            <option value="MD">Maryland</option>
-            <option value="MA">Massachusetts</option>
-            <option value="MI">Michigan</option>
-            <option value="MN">Minnesota</option>
-            <option value="MS">Mississippi</option>
-            <option value="MO">Missouri</option>
-            <option value="MT">Montana</option>
-            <option value="NE">Nebraska</option>
-            <option value="NV">Nevada</option>
-            <option value="NH">New Hampshire</option>
-            <option value="NJ">New Jersey</option>
-            <option value="NM">New Mexico</option>
-            <option value="NY">New York</option>
-            <option value="NC">North Carolina</option>
-            <option value="ND">North Dakota</option>
-            <option value="OH">Ohio</option>
-            <option value="OK">Oklahoma</option>
-            <option value="OR">Oregon</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="RI">Rhode Island</option>
-            <option value="SC">South Carolina</option>
-            <option value="SD">South Dakota</option>
-            <option value="TN">Tennessee</option>
-            <option value="TX">Texas</option>
-            <option value="UT">Utah</option>
-            <option value="VT">Vermont</option>
-            <option value="VA">Virginia</option>
-            <option value="WA">Washington</option>
-            <option value="WV">West Virginia</option>
-            <option value="WI">Wisconsin</option>
-            <option value="WY">Wyoming</option>
-        </select>
-        <br/>
-        <label for="zip">Zip Code</label>
-        <input type="text" id="zip" name="zip"/>
-        <br/>
-        <input type="submit" value="Submit" onclick="location.href='RegistrationConfirmation.jsp';"/>
-    </form>
+    <div class="cart-information">
+        <h2 class="registration-header">Enter your address information:</h2>
+        <br>
+        <form class="input-form">
+            <p class="info-wrap">
+                <label class="form-label" for="streetandnum">* Address Line</label>
+                <input type="text" id="streetandnum" name="streetandnum" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="city">* City</label>
+                <input type="text" id="city" name="city" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="state">* State</label>
+                <select id="state" name="state" class="form-input">
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="DC">District Of Columbia</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                </select>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="zip">* Zip Code</label>
+                <input type="text" id="zip" name="zip" class="form-input"/>
+            </p>
+            <br/>
+            <div class="form-submit">
+                <input type="submit" value="Submit" onclick="location.href='RegistrationConfirmation.jsp';"/>
+            </div>
+            <br>
+            <br>
+            <p>
+                * - indicates required field
+            </p>
+        </form>
+    </div>
 </div>
 
 

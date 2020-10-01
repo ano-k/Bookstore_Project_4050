@@ -60,37 +60,35 @@
     color: black;
 }
 
-.credit-card-form {
-    display: flex; /* displays children (divs) inline by default thats why you need to change its direction */
-    flex-direction: column; /* stacks children vertically */
-    align-items: center; /* horizontal alignment / centering / affects only input elements since label elements are taken out of the normal document flow */
-    position: relative;
-    margin: 0 auto;
-    margin-top: 44px;}
+.input-form {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-#cc-header {
+.registration-header {
     text-align: center;
 }
 
-.cc-info-wrap {
-    position: relative;
-    margin-bottom: 22px;
+.info-wrap {
+    display: table-row;
 }
 
-.cc-label {
-    position: absolute; /* positioned relative to the parent element; taken out of the normal document flow */
-    left: -117px; /* moved left by negative 102px (width) + 15px (margin-right) because the default value is 0 */
-    display: inline-block;
-    width: 102px;
-    text-align: right;
-    font-size: 18px;
+.form-label {
+    display: table-cell;
+    padding-right: 1em;
 }
 
-.cc-input {
-    width: 172px;
-    height: 30px;
-    font-size: 20px;
-    border: 1px solid black;
+.form-input {
+    display: table-cell;
+}
+
+.form-submit{
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .order-hist-tbl {
@@ -99,6 +97,12 @@
     margin-left: 15%;
     margin-right: 15%;
     padding-top: 20px;
+}
+
+.buttons{
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
 }
 
 .order-hist-tbl, .order-hist-tbl td, .order-hist-tbl th {
@@ -125,7 +129,7 @@
 .filter-block {
     float: left;
     margin-right: 20px;
-    padding-top: 20px;   
+    padding-top: 20px;
 }
 
 .homepage-table table {

@@ -13,28 +13,47 @@
 </head>
 <body>
 <div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
     <br/>
-    <h2>Sign Up For An Account!</h2>
-    <br>
-    <form>
-        <label for="firstname">First Name</label>
-        <input type="text" id="firstname" name="firstname"/>
-        <br/>
-        <label for="lastname">Last Name</label>
-        <input type="text" id="lastname" name="lastname"/>
-        <br/>
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email"/>
-        <br/>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password"/>
-        <br/>
-        <label for="confirmpassword">Confirm Password</label>
-        <input type="password" id="confirmpassword" name="confirmpassword"/>
-        <br/>
-        <input type="submit" value="Submit" onclick="location.href='PaymentRegistration.jsp';"/>
-    </form>
+    <div class="cart-information">
+        <h2 class="registration-header">Enter your personal information:</h2>
+        <br>
+        <form class="input-form">
+            <p class="info-wrap">
+                <label class="form-label" for="firstname"> * First Name</label>
+                <input type="text" id="firstname" name="firstname" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="lastname">* Last Name</label>
+                <input type="text" id="lastname" name="lastname" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="email">* Email</label>
+                <input type="text" id="email" name="email" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="password">* Password</label>
+                <input type="password" id="password" name="password" class="form-input"/>
+            </p>
+            <br/>
+            <p class="info-wrap">
+                <label class="form-label" for="confirmpassword">* Confirm Password</label>
+                <input type="password" id="confirmpassword" name="confirmpassword" class="form-input"/>
+            </p>
+            <br/>
+            <p class="form-submit">
+                <input type="submit" value="Submit" onclick="location.href='PaymentRegistration.jsp';"/>
+            </p>
+            <br>
+            <br>
+            <p>
+                * - indicates required field
+            </p>
+        </form>
+    </div>
 </div>
 
 
