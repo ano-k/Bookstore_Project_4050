@@ -20,19 +20,22 @@
 <h3 class="page-header">Checkout</h3>
 <ul style="list-style-type:none;">
     <li>
-        <label>Name</label>
+        <label><h4>Name</h4></label>
         <p>John Doe</p>
     </li>
+    <br>
     <li>
-        <label>Payment Info</label>
+        <label><h4>Payment Info</h4></label>
         <p>Credit Card Number: ***********4578 [Visa]</p>
         <button><a href="EditProfile.jsp">Change Credit Card</a></button>
     </li>
+    <br>
     <li>
-        <label>Address</label>
+        <label><h4>Address</h4></label>
         <p>100 Example Street</p>
         <button><a href="EditProfile.jsp">Change Address</a></button>
     </li>
+    <br>
     <li>
         <h4>Order Summary (List all books being purchased)</h4>
 
@@ -51,14 +54,14 @@
                 <input type="number" id="quantity-3" name="quantity-3" min="1" max="100" placeholder="1">
             </form>
         </ul>
-        <h1>Total: $111.00</h1>
+        <h3>Total: $111.00</h3>
 
         <h4>[x] = remove from cart</h4>
     </li>
 </ul>
 </div>
 <nav class="nav-bar">
-    <button><a href="Homepage.jsp">Update O</a></button>
+    <button><a href="Homepage.jsp">Update Order</a></button>
     <button><a>Confirm Order</a></button>
 </nav>
 

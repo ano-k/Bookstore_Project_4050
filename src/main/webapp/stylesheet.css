@@ -105,6 +105,10 @@
     text-align: center;
 }
 
+caption {
+    padding-top: 100px;
+}
+
 .order-hist-tbl, .order-hist-tbl td, .order-hist-tbl th {
     border: 1px solid black;
     padding: 5px;
@@ -130,6 +134,7 @@
     float: left;
     margin-right: 20px;
     padding-top: 20px;
+    margin-bottom: 20px;
 }
 
 .homepage-table table {
@@ -173,7 +178,7 @@
     border-collapse: collapse;
     width: 70%;
     margin-left: 15%;
-    margin-right: 15%;   
+    margin-right: 15%;
     margin-bottom: 10px;
     margin-top: 40px;
 }

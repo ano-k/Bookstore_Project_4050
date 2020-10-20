@@ -13,23 +13,22 @@
 </head>
 <body>
     <h1 class="page-header">Online Bookstore</h1>
-    
-<div class="cart-information">
-<div>
     <nav class="buttons">
         <button><a href="Profile.jsp">Profile</a></button>
         <button><a href="Login.jsp">Login</a></button>
         <button><a href="PersonalRegistration.jsp">Signup</a></button>
         <button><a href="ViewCart.jsp">Cart</a></button>
         <button><a>Sign Out</a></button>
-        <input id="search-bar" type="text" placeholder="Search title, author, ISBN, ..."/>
     </nav>
+<div class="cart-information">
+<div>
+    <input id="search-bar" type="text" placeholder="Search title, author, ISBN, ..."/>
 </div>
 
 <div class="filters">
     <form>
         <div class="parent-filter-div">
-        <div class="filter-block"> 
+        <div class="filter-block">
         <h3>Genre</h3>
             <input type="checkbox" id="genre1" name="genre1" value="scifi">
             <label for="genre1">Science Fiction</label><br>
@@ -38,20 +37,21 @@
             <input type="checkbox" id="genre3" name="genre3" value="fiction">
             <label for="genre3">Fiction</label><br>
         </div>
-        <div class="filter-block"> 
+        <div class="filter-block">
         <h3>Price</h3>
             <input type="checkbox" id="price1" name="price1" value="hi2lo">
             <label for="price1">High to low</label><br>
             <input type="checkbox" id="price2" name="price2" value="lo2hi">
             <label for="price2">Low to high</label><br>
             <input type="submit" value="Submit">
-        </div>  
+        </div>
         </div>
     </form>
 </div>
-
+<br>
+    <h4>Featured Books</h4>
 <div class="homepage-table">
-    <table >
+    <table>
         <tr>
             <th>Book Image</th>
             <th>Book Details</th>
@@ -88,6 +88,17 @@
                 <button><a href="">Add to Cart</a></button>
             </td>
         </tr>
+    <table/>
+
+    <br>
+    <h4>Best Sellers</h4>
+    <table>
+       <tr>
+       <th>Book Image</th>
+       <th>Book Details</th>
+       <th>Link</th>
+                <th>Add to Cart</th>
+            </tr>
         <tr class="homepage-book-row">
             <td><img src="theory.jpg"/></td>
             <td>
