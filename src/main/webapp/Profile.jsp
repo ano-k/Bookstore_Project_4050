@@ -12,28 +12,28 @@
 
 </head>
 <body>
-<div class="top">
+<div class="page-header">
     <h1>Online Bookstore</h1>
 </div>
 
-<div>
+<div class="cart-information">
     <h3>Profile Information</h3>
     <br>
     <ul style="list-style-type:none;">
         <li>
-            <label>First Name</label>
+            <label>First Name: John</label>
             <p></p>
         </li>
         <li>
-            <label>Last Name</label>
+            <label>Last Name: Desiderio</label>
             <p></p>
         </li>
         <li>
-            <label>Email</label>
+            <label>Email: johndesiderio@email.com</label>
             <p></p>
         </li>
         <li>
-            <label>Address</label>
+            <label>Address : 123 Easy Street</label>
             <p></p>
         </li>
     </ul>

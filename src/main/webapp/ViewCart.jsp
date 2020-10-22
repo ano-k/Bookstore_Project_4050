@@ -12,7 +12,42 @@
 
 </head>
 <body>
-<h1>View Cart</h1>
+<h1 class="page-header">View Cart</h1>
+<div class="cart-information">
+    <h4 id="order-sum">Order Summary (List all books being purchased)</h4>
+        <ul style="list-style-type:none;">
+            <li class="cart-items">
+                <form>
+                <div class="item">
+                <button>[x]</button>
+                <label>Book 1 $12.25 | Quantity:</label>
+                <input type="number" id="quantity-1" name="quantity-1" min="1" max="100" placeholder="1">
+                <br>
+                </div>
+                <div class="item">
+                <button>[x]</button>
+                <label>Book 2 $1.50 | Quantity:</label>
+                <input type="number" id="quantity-2" name="quantity-2" min="1" max="100" placeholder="1">
+                <br>
+                </div>
+                <div class="item">
+                <button>[x]</button>
+                <label>Book 3 $9.25 | Quantity:</label>
+                <input type="number" id="quantity-3" name="quantity-3" min="1" max="100" placeholder="1">
+                </div>
+                </form>
+            </li>
+        <li>
+            <h1>Total: $111.00</h1>
+            <h4>[x] = remove from cart</h4>
+        </li>
+    </ul>
+</div>
+
+<nav class="nav-bar">
+    <button><a>Update Order</a></button>
+    <button><a>Continue to Checkout</a></button>
+</nav>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

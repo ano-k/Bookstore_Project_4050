@@ -12,23 +12,53 @@
 
 </head>
 <body>
-<div class="top">
-    <h1>Online Bookstore</h1>
-    <br/>
-    <h2>Welcome Back!</h2>
-    <br>
-    <form>
-        <label for="useremail">Email</label>
-        <input type="text" id="useremail" name="useremail"/>
-        <br/>
-        <label for="userpassword">Password</label>
-        <input type="text" id="userpassword" name="userpassword"/>
-        <br/>
-        <input type="submit" value="Submit" onclick="location.href='Homepage.jsp';"/>
-    </form>
+<div class="column left"></div>
+
+<div class="column middle">
+    <header>
+        <h1 class="page-header">Online Bookstore</h1>
+    </header>
+    <main>
+        <nav id ="nav_menu">
+            <a href="Homepage.jsp">Find Books</a>
+            <a href="Login.jsp" class="current">Login/Register</a>
+            <a href="ViewCart.jsp">View Cart</a>
+            <a href="EditProfile.jsp">Edit Profile</a>
+            <a href="OrderHistory.html">Order History</a>
+        </nav>
+
+        <div class="main content">
+            <div class="cart-information">
+                <h2 class="page-header">Welcome Back!</h2>
+                <h6 class="page-header">We've missed you! :)</h6><br>
+                <form class ="input-form">
+                    <p class="info-wrap">
+                        <label class="form-label" for="useremail">Email</label>
+                        <input type="text" id="useremail" name="useremail" class="form-input"/>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <label class="form-label" for="userpassword">Password</label>
+                        <input type="password" id="userpassword" name="userpassword" class="form-input"/>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <input type="checkbox" class="form-input" id="rmbr" name="rmbr" value="RM">
+                        <label for="rmbr" class="form-label"> Remember Me</label>
+                    </p>
+                    <br/>
+                    <input type="submit" class="form-submit" value="Login" onclick="location.href='Homepage.jsp';"/>
+                </form>
+                <br/>
+                <br>
+                <p><a href="ForgotPassword.jsp">Forgot your password?</a></p>
+                <p>Don't have an account yet? <a href="PersonalRegistration.jsp">Register here!</a></p>
+            </div>
+        </div>
+    </main>
 </div>
 
-
+<div class="column right"></div>
 
 
 <!-- Optional JavaScript -->

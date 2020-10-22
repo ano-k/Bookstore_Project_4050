@@ -14,17 +14,18 @@
 <body>
 
 <div class="top">
-    <h1>Online Bookstore</h1>
+    <h1 class="page-header">Online Bookstore</h1>
 </div>
-<h3>Order History</h3>
-
-<table>
+<div class="cart-information">
+<h3 class="page-header" id="ord-hist">Order History</h3>
+<table class="order-hist-tbl">
     <tr>
       <th>Order Number</th>
       <th>Order Date</th>
       <th>Price</th>
       <th>Book Title</th>
       <th>Quantity</th>
+      <th></th>
     </tr>
     <tr>
       <td>1</td>
@@ -32,24 +33,27 @@
       <td>$12.90</td>
       <td>Theory Of Computation</td>
       <td>1</td>
+      <td><button><a>Reorder</a></button></td>
     </tr>
     <tr>
       <td>2</td>
       <td>09/27/2020</td>
       <td>$7.35</td>
-      <td>Harry Potter and the Sorcerer's Stoner</td>
+      <td>Harry Potter and the Sorcerer's Stone</td>
       <td>1</td>
+      <td><button><a>Reorder</a></button></td>
     </tr>
     <tr>
       <td>2</td>
       <td>09/27/2020</td>
       <td>$7.35</td>
-      <td>Harry Potter and the Sorcerer's Stoner</td>
+      <td>Harry Potter and the Sorcerer's Stone</td>
       <td>1</td>
+      <td><button><a>Reorder</a></button></td>
     </tr>
 </table>
-
-<nav>
+</div>
+<nav class="nav-bar">
     <button><a href="Homepage.jsp">Return to Store</a></button>
     <button><a>Edit Profile</a></button>
     <button><a>Confirm Order</a></button>

@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheet.css">
-    <title>Payment Registration</title>
+    <title>Forgot Password</title>
 
 </head>
 <body>
@@ -29,37 +29,25 @@
 
         <div class="main content">
             <div class="cart-information">
-                <h2 class="registration-header">Enter your payment information:</h2>
-                <h5>* - indicates required field</h5>
+                <h2 class="page-header">Enter your email so we can send a link to change your password:</h2>
                 <br>
-                <form class="input-form">
+                <form class ="input-form">
                     <p class="info-wrap">
-                        <label class="form-label" for="creditnum">* Credit Card Number</label>
-                        <input type="text" id="creditnum" name="creditnum" class="form-input"/>
+                        <label class="form-label" for="useremail">Enter your Email</label>
+                        <input type="text" id="useremail" name="useremail" class="form-input"/>
                     </p>
-                    <br>
-                    <p class="info-wrap">
-                        <label class="form-label" for="expdate">* Expiration</label>
-                        <input type="month" id="expdate" name="expdate" min="2020-09" value="2020-10" class="form-input"/>
-                    </p>
-                    <br>
-                    <p class="info-wrap">
-                        <label class="form-label" for="cvv">* CVV</label>
-                        <input type="text" id="cvv" name="cvv" class="form-input"/>
-                    </p>
-                    <br>
-                    <div class="form-submit">
-                        <input type="submit" value="Submit" onclick="location.href='AddressRegistration.jsp';"/>
-                    </div>
-                    <br>
-                    <br>
+                    <br/>
+                    <input type="submit" class="form-submit" value="Submit" onclick="location.href='PasswordEmail.jsp';"/>
                 </form>
+                <br/>
+                <br>
             </div>
         </div>
     </main>
 </div>
 
 <div class="column right"></div>
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

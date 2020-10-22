@@ -8,41 +8,42 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheet.css">
-    <title>Second Checkout</title>
+    <title>Password Email Confirmation</title>
 
 </head>
 <body>
-<!-- I could not install tomcat correctly, once I do I'll rename all my .html files as .jsp -John -->
-<div class="top">
-    <h1>Online Bookstore</h1>
+<div class="column left"></div>
+
+<div class="column middle">
+    <header>
+        <h1 class="page-header">Online Bookstore</h1>
+    </header>
+
+    <main>
+        <nav id ="nav_menu">
+            <a href="Homepage.jsp">Find Books</a>
+            <a href="Login.jsp" class="current">Login/Register</a>
+            <a href="ViewCart.jsp">View Cart</a>
+            <a href="EditProfile.jsp">Edit Profile</a>
+            <a href="OrderHistory.html">Order History</a>
+        </nav>
+
+        <div class="main content">
+            <div class="cart-information">
+                <h2 class="page-header">Password Email Confirmation</h2>
+                <br/>
+                <h5 class="page-header">Change password link has been sent to the email you provided</h5>
+                <br>
+                <nav class="buttons">
+                    <button><a href="EditProfile.jsp">View Profile</a></button>
+                    <button><a href="">Resend Link</a></button>
+                </nav>
+            </div>
+        </div>
+    </main>
 </div>
 
-<h3>Checkout</h3>
-<br>
-<h4>Order Summary (List all books being purchased)</h4>
-
-<ul style="list-style-type:none;">
-<form>
-    <label>[x] Book 1 $12.25 | Quantity:</label>
-    <input type="number" id="quantity-1" name="quantity-1" min="1" max="100">
-    <br>
-    <label>[x] Book 2 $1.50 | Quantity:</label>
-    <input type="number" id="quantity-2" name="quantity-2" min="1" max="100">
-    <br>
-    <label>[x] Book 3 $9.25 | Quantity:</label>
-    <input type="number" id="quantity-3" name="quantity-3" min="1" max="100">
-</form>
-</ul>
-<h1>Total: $111.00</h1>
-
-<h4>[x] = remove from cart</h4>
-
-<nav>
-    <button><a href="Homepage.jsp">Return to Store</a></button>
-    <button><a>Edit Profile</a></button>
-    <button><a>Confirm Order</a></button>
-</nav>
-
+<div class="column right"></div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -50,4 +51,3 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
 </html>
- 

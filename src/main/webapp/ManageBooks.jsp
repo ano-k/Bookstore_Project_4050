@@ -8,22 +8,14 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheet.css">
-    <title>Homepage</title>
+    <title>Admin: Manage Books</title>
 
 </head>
 <body>
-    <h1 class="page-header">Online Bookstore</h1>
-    <nav class="buttons">
-        <button><a href="Profile.jsp">Profile</a></button>
-        <button><a href="Login.jsp">Login</a></button>
-        <button><a href="PersonalRegistration.jsp">Signup</a></button>
-        <button><a href="ViewCart.jsp">Cart</a></button>
-        <button><a>Sign Out</a></button>
-    </nav>
+    <button class="mng-books"><a>Back</a></button>
+    <h1 class="page-header">Admin: Manage Books</h1>
+
 <div class="cart-information">
-<div>
-    <input id="search-bar" type="text" placeholder="Search title, author, ISBN, ..."/>
-</div>
 
 <div class="filters">
     <form>
@@ -48,15 +40,15 @@
         </div>
     </form>
 </div>
-<br>
-    <h4>Featured Books</h4>
+
 <div class="homepage-table">
     <table>
         <tr>
             <th>Book Image</th>
             <th>Book Details</th>
             <th>Link</th>
-            <th>Add to Cart</th>
+            <th>Edit Information</th>
+            <th>Delete</th>
         </tr>
         <tr class="homepage-book-row">
             <td><a href="BookDetails.jsp"><img src="harrypotter.jpg"/></a></td>
@@ -70,8 +62,9 @@
                <button><a href="BookDetails.jsp">Book Page</a></button>
             </td>
             <td>
-                <button><a href="">Add to Cart</a></button>
+                <button><a href="EditBook.jsp">Edit Info</a></button>
             </td>
+            <td><button><a>Delete</a></button></td>
         </tr>
         <tr class="homepage-book-row">
             <td><img src="seuss.jpg"/></td>
@@ -85,20 +78,10 @@
                 <button><a href="BookDetails.jsp">Book Page</a></button>
             </td>
             <td>
-                <button><a href="">Add to Cart</a></button>
+                <button><a href="">Edit Info</a></button>
             </td>
+            <td><button><a>Delete</a></button></td>
         </tr>
-    <table/>
-
-    <br>
-    <h4>Best Sellers</h4>
-    <table>
-       <tr>
-       <th>Book Image</th>
-       <th>Book Details</th>
-       <th>Link</th>
-                <th>Add to Cart</th>
-            </tr>
         <tr class="homepage-book-row">
             <td><img src="theory.jpg"/></td>
             <td>
@@ -111,8 +94,9 @@
                 <button><a href="BookDetails.jsp">Book Page</a></button>
             </td>
             <td>
-                <button><a href="">Add to Cart</a></button>
+                <button><a href="">Edit Info</a></button>
             </td>
+            <td><button><a>Delete</a></button></td>
         </tr>
         <tr class="homepage-book-row">
             <td><img src="ahsoka.jpg"/></td>
@@ -126,8 +110,9 @@
                 <button><a href="BookDetails.jsp">Book Page</a></button>
             </td>
             <td>
-                <button><a href="">Add to Cart</a></button>
+                <button><a href="">Edit Info</a></button>
             </td>
+            <td><button><a>Delete</a></button></td>
         </tr>
     </table>
 </div>

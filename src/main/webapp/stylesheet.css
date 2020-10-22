@@ -1,0 +1,289 @@
+/*general styling*/
+*
+{
+    box-sizing: border-box;
+    font-family: Cambria;
+}
+
+body, html
+{
+    height: 100%;
+}
+
+
+/*background-image styling*/
+
+html, body
+{
+    background: url(background.jpg) no-repeat center fixed;
+    background-size: cover;
+}
+
+/*header styling */
+.middle header
+{
+    background-color: whitesmoke;
+    color: black;
+}
+
+
+/*nav styling*/
+#nav_menu
+{
+    margin: 0px;
+    overflow: hidden;
+    width: 100%;
+    background-color: lightskyblue;
+}
+
+#nav_menu a
+{
+    overflow: hidden;
+    height: 50px;
+    float: left;
+    text-align: center;
+    text-decoration: none;
+    width: 20%;
+    line-height: 50px;
+    padding: 0px 5px;
+    background-color: lightskyblue;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#nav_menu a.current
+{
+    background-color: deepskyblue;
+}
+
+#nav_menu a:hover
+{
+    background-color: deepskyblue;
+}
+
+#nav_menu a:active
+{
+    background-color: deepskyblue;
+}
+
+/*tri-column styling*/
+.column
+{
+    float: left;
+    padding: 1px;
+    height: 100%;
+}
+
+.middle
+{
+    width: 70%;
+    float: left;
+}
+
+.middle main
+{
+    background-color: whitesmoke;
+    height: 100%;
+    text-align: center;
+    color: black;
+}
+
+.left, .right
+{
+    width: 15%;
+}
+
+
+/* original styling */
+.page-header {
+    text-align: center;
+}
+
+.cart-items {
+    text-align: center;
+}
+
+.item {
+    padding : 10px;
+}
+
+#order-sum {
+    padding-left : 10px;
+}
+
+.cart-information {
+    margin: 20px;
+    padding: 20px;
+    background-color: lightblue;
+    border-radius: 15px;
+}
+.nav-bar {
+    text-align: center;
+    padding: 10px;
+}
+
+#book-details {
+    width : 100%;
+    border-collapse: collapse;
+}
+
+#book-details td, #book-details th {
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-left: 8px;
+    padding-bottom: 8px;
+}
+
+#book-details td, #book-details th {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #ddd;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #ddd;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #ddd;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ddd;
+}
+
+#book-details th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align : center;
+    background-color: lightblue;
+    color: black;
+}
+
+.input-form {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.registration-header {
+    text-align: center;
+}
+
+.info-wrap {
+    display: table-row;
+}
+
+.form-label {
+    display: table-cell;
+    padding-right: 1em;
+}
+
+.form-input {
+    display: table-cell;
+}
+
+.form-submit{
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+.order-hist-tbl {
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-top: 20px;
+}
+
+.buttons{
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+
+
+caption {
+    padding-top: 100px;
+}
+
+.order-hist-tbl, .order-hist-tbl td, .order-hist-tbl th {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+#ord-hist {
+    margin-bottom: 20px;
+}
+
+#search-bar {
+    float: right;
+}
+
+.parent-filter-div {
+    width : 300px;
+    height: 200px;
+    margin-right: 10px;
+    float: left;
+}
+
+.filter-block {
+    float: left;
+    margin-right: 20px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.homepage-table table {
+    width : 100%;
+}
+
+.homepage-table table, .homepage-table table tr,
+ .homepage-table table th, .homepage-table table td {
+    border: 1px solid black;
+}
+
+.homepage-table table td {
+    width: 25%;
+}
+
+.homepage-book-row:hover {
+    background-color : lightcoral;
+}
+
+
+.admin-table, .admin-table tr,
+.admin-table th, .admin-table td {
+    border : 1px solid black;
+}
+
+.admin-table {
+    margin-bottom : 50px;
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-top: 20px;
+}
+
+.admin-table th {
+    color : white;
+    background-color: black;
+}
+
+.admin-nav {
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 10px;
+    margin-top: 40px;
+}
+
+.mng-books {
+    margin-left : 10px;
+    margin-top : 10px;
+}

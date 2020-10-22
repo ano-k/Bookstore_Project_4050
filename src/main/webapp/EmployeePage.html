@@ -13,15 +13,16 @@
 </head>
 <body>
 
-<div class="top">
-    <h1>Admin/Employee Page</h1>
-    <ul style="list-style-type: none; margin: 0; padding: 0; overflow:hidden">
-        <li style="float: left; display: block; padding: 8px;">Manage Employees</li>
-        <li style="float: left; display: block; padding: 8px;">Manage Users</li>
-        <li style="float: left; display: block; padding: 8px;">Manage Promotions</li>
-        <li style="float: left; display: block; padding: 8px;">Manage Books</li>
-    </ul>
-    <table>
+    <h1 class="page-header">Admin/Employee Page</h1>
+
+    <div class="cart-information">
+        <nav class="admin-nav"> 
+            <button><a>Manage Employees</a></button>
+            <button><a>Manage Users</a></button>
+            <button><a>Manage Promotions</a></button>
+            <button><a>Manage Books</a></button>
+          </nav>
+    <table class="admin-table">
         <tr>
           <th>Employee Unique ID</th>
           <th>Role/Status</th>
@@ -32,15 +33,15 @@
         <tr>
           <td>#42069</td>
           <td>Admin</td>
-          <td>Ganus</td>
-          <td>Hugh</td>
+          <td>Doe</td>
+          <td>John</td>
           <td>IDK</td>
         </tr>
     </table>
 
 </div>
 
-<nav>
+<nav class="nav-bar">
     <button><a href="Homepage.jsp">Return to Store</a></button>
     <button><a>Edit Profile</a></button>
     <button><a>Confirm Order</a></button>

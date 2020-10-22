@@ -12,20 +12,38 @@
 
 </head>
 <body>
-<div class="top">
-    <h1>Online Bookstore</h1>
+<div class="column left"></div>
+
+<div class="column middle">
+    <header>
+        <h1 class="page-header">Online Bookstore</h1>
+    </header>
+
+    <main>
+        <nav id ="nav_menu">
+            <a href="Homepage.jsp">Find Books</a>
+            <a href="Login.jsp" class="current">Login/Register</a>
+            <a href="ViewCart.jsp">View Cart</a>
+            <a href="EditProfile.jsp">Edit Profile</a>
+            <a href="OrderHistory.html">Order History</a>
+        </nav>
+
+        <div class="main content">
+            <div class="cart-information">
+                <h2 class="page-header">Registration Confirmation</h2>
+                <br/>
+                <h5 class="page-header">Confirmation Email has been sent the email you provided</h5>
+                <br>
+                <nav class="buttons">
+                    <button><a href="EditProfile.jsp">View Profile</a></button>
+                    <button><a href="">Resend Code</a></button>
+                </nav>
+            </div>
+        </div>
+    </main>
 </div>
-<br>
-<h2>Registration Confirmation</h2>
-<br/>
-<h5>Confirmation Email has been sent the email you provided</h5>
-<br>
-<nav class="buttons">
-    <button><a href="PersonalRegistration.jsp">Change Email</a></button>
-    <button><a href="">Resend Code</a></button>
-</nav>
 
-
+<div class="column right"></div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
