@@ -1,3 +1,101 @@
+/*general styling*/
+*
+{
+    box-sizing: border-box;
+    font-family: Cambria;
+}
+
+body, html
+{
+    height: 100%;
+}
+
+
+/*background-image styling*/
+
+html, body
+{
+    background: url(background.jpg) no-repeat center fixed;
+    background-size: cover;
+}
+
+/*header styling */
+.middle header
+{
+    background-color: whitesmoke;
+    color: black;
+}
+
+
+/*nav styling*/
+#nav_menu
+{
+    margin: 0px;
+    overflow: hidden;
+    width: 100%;
+    background-color: lightskyblue;
+}
+
+#nav_menu a
+{
+    overflow: hidden;
+    height: 50px;
+    float: left;
+    text-align: center;
+    text-decoration: none;
+    width: 20%;
+    line-height: 50px;
+    padding: 0px 5px;
+    background-color: lightskyblue;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#nav_menu a.current
+{
+    background-color: deepskyblue;
+}
+
+#nav_menu a:hover
+{
+    background-color: deepskyblue;
+}
+
+#nav_menu a:active
+{
+    background-color: deepskyblue;
+}
+
+/*tri-column styling*/
+.column
+{
+    float: left;
+    padding: 1px;
+    height: 100%;
+}
+
+.middle
+{
+    width: 70%;
+    float: left;
+}
+
+.middle main
+{
+    background-color: whitesmoke;
+    height: 100%;
+    text-align: center;
+    color: black;
+}
+
+.left, .right
+{
+    width: 15%;
+}
+
+
+/* original styling */
 .page-header {
     text-align: center;
 }
@@ -104,6 +202,8 @@
     margin-left: auto;
     text-align: center;
 }
+
+
 
 caption {
     padding-top: 100px;
