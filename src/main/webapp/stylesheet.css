@@ -84,7 +84,7 @@ html, body
 .middle main
 {
     background-color: whitesmoke;
-    height: 100%;
+    min-height: 100%;
     text-align: center;
     color: black;
 }
