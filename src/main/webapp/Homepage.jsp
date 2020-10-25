@@ -63,14 +63,13 @@
                 <div class="parent-filter-div">
                     <div class="temp-block">
                         <h3>Genre</h3>
-                            <input type="checkbox" id="genre1" name="genre1" value="scifi">
-                            <label for="genre1">Science Fiction</label><br>
-                            <input type="checkbox" id="genre2" name="genre2" value="nonfiction">
-                            <label for="genre2">Nonfiction</label><br>
-                            <input type="checkbox" id="genre3" name="genre3" value="fiction">
-                            <label for="genre3">Fiction</label><br>
-                    </div>
-                    <div class="temp-block">
+                        <input type="checkbox" id="genre1" name="genre1" value="scifi">
+                        <label for="genre1">Science Fiction</label><br>
+                        <input type="checkbox" id="genre2" name="genre2" value="nonfiction">
+                        <label for="genre2">Nonfiction</label><br>
+                        <input type="checkbox" id="genre3" name="genre3" value="fiction">
+                        <label for="genre3">Fiction</label><br>
+                
                         <h3>Price</h3>
                         <input type="checkbox" id="price1" name="price1" value="hi2lo">
                         <label for="price1">High to low</label><br>
