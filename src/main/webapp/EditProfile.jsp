@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.sql.*" %>
 <html>
 <head>
     <!-- Required meta tags -->
@@ -87,8 +88,8 @@
                     <br>
                     <p class="info-wrap">
                         <label class="form-label" for="changestreetandnum">Change Address Line</label>
-                        <input type="text" id="changestreetandnum" name="changestreetandnum" class="form-input" value="100 Example Street"/>
-                    </p>
+                        <input type="text" id="changestreetandnum" name="changestreetandnum" class="form-input" value="100 Example Street/>
+                    </p>"
                     <br/>
                     <p class="info-wrap">
                         <label class="form-label" for="changecity">Change City</label>
@@ -161,6 +162,54 @@
                     <div class="form-submit">
                         <input type="submit" value="Submit Changes" onclick="location.href='Homepage.jsp';"/>
                     </div>
+                    <%
+
+                        String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
+                        String username = "root";
+                        String password = "WebProg2020";
+                        //try {
+                            Connection connection = DriverManager.getConnection(dbURL, username, password);
+                            String selectUserQuery = "SELECT firstName, lastName FROM User WHERE userID = ???"; //userID needs to be the userID of the currently logged in user
+                            String selectPaymentQuery = "SELECT cardNumber, cardExpirationDate, cvv FROM PaymentMethod WHERE userID = ???";
+                            String selectAddressQuery = "SELECT streetAddress, city, state, zipCode, country FROM Address WHERE userID = ???";
+                            PreparedStatement pstmt1 = connection.prepareStatement(selectUserQuery);
+                            PreparedStatement pstmt2 = connection.prepareStatement(selectPaymentQuery);
+                            PreparedStatement pstmt3 = connection.prepareStatement(selectAddressQuery);
+                            ResultSet userResults = pstmt1.executeQuery(selectUserQuery);
+                            ResultSet paymentResults = pstmt2.executeQuery(selectPaymentQuery);
+                            ResultSet addressResults = pstmt3.executeQuery(selectAddressQuery);
+
+                            /*
+                            //here, update the html elements here with the values of the database in the textfields
+                            document.getElementById("changefirstname").value = ;
+                            document.getElementById("changelastname").value = ;
+                            document.getElementById("changecreditnum").value = ;
+                            document.getElementById("changeexpdate").value = ;
+                            document.getElementById("changecvv").value = ;
+                            document.getElementById("changestreetandnum").value = ;
+                            document.getElementById("changecity").value = ;
+                            document.getElementById("changestate").value = ;
+
+
+                            //then, when submit button is pressed:
+                            //use several if statements to check if new information has been added:
+
+                            String queryContent = "";
+
+                            if(!firstName.equals(newFirstName)){
+                                queryContent += "firstName = " + newFirstName + ", ";
+                            }
+
+                            String updateQuery = "UPDATE User SET " + queryContent + " Where User = userID";
+                            PreparedStatement pstmt4 = connection.prepareStatement(updateQuery);
+                            //and then execute update query here
+                            */
+
+                        //}
+                        //catch (SQLException e){
+                            //e.printStackTrace();
+                        //}
+                    %>
                 </form>
             </div>
         </div>
