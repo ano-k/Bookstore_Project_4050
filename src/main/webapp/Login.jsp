@@ -13,6 +13,18 @@
     <title>Login</title>
 
 </head>
+<%
+    String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
+    String username = "root";
+    String password = "WebProg2020";
+    try {
+        Connection connection = DriverManager.getConnection(dbURL, username, password);
+        out.println("<p>Successfully connected to database</p>");
+
+        String emailQuery = "SELECT Email, ID FROM Users"; //get a list of usernames of every user
+        PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
+        ResultSet emailResults = pstmt1.executeQuery(emailQuery);
+%>
 <body>
 <div class="column left"></div>
 
@@ -36,7 +48,9 @@
                 <form class ="input-form">
                     <p class="info-wrap">
                         <label class="form-label" for="useremail">Email</label>
-                        <input type="text" id="useremail" name="useremail" class="form-input"/>
+
+                        <input type="text" id="useremail" name="useremail" class="form-input" />
+
                     </p>
                     <br/>
                     <p class="info-wrap">
@@ -50,31 +64,8 @@
                     </p>
                     <br/>
                     <input type="submit" class="form-submit" value="Login" onclick="location.href='Homepage.jsp';"/> <!-- onclick, code should check role and redirect to the correct webpage -->
-                    <%
-                        String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
-                        String username = "root";
-                        String password = "WebProg2020";
-                        try {
-                            Connection connection = DriverManager.getConnection(dbURL, username, password);
-                            out.println("<p>Successfully connected to database</p>");
-                            String emailQuery = "SELECT Email, ID FROM Users"; //get a list of usernames of every user
-                            PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
-                            ResultSet emailResults = pstmt1.executeQuery(emailQuery);
-                            String inputEmail = "SystemAdmin@books.com";
 
-                            while(emailResults.next()) {
-                                out.println("<p>test</p>");
-                                out.println("<p>" + emailResults.getString(0)+ "</p>");
-                                /*
-                                if(inputEmail.equals(emailResults.getString(0))) {
-                                    out.println("<p>Successfully found the email</p>");
-                                }
-                                else {
-                                    out.println("<p>Email not found here</p>");
-                                }
-                                */
-
-                            }
+                            <!--
 
                             //String passwordQuery = "SELECT password, status, role FROM User WHERE userID = "; //get a list of passwords of every user
                             //PreparedStatement pstmt2 = connection.prepareStatement(passwordQuery);
@@ -84,13 +75,14 @@
                             //if the account does not exist, create a try again notification
                             //if the account does exist, check if the inputted password matches the one stored in the database
 
-                        }
-                        catch (SQLException e){
-                            //out.println("<p>Unsuccessful connection to database</p>");
-                            e.printStackTrace();
-                        }
-                    %>
+                            -->
                 </form>
+                <%
+                    while(emailResults.next()) {
+
+                    }
+
+                %>
                 <br/>
                 <br>
                 <p><a href="ForgotPassword.jsp">Forgot your password?</a></p>
@@ -109,4 +101,12 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
+<%
+    }
+    catch (SQLException e){
+        //out.println("<p>Unsuccessful connection to database</p>");
+        e.printStackTrace();
+    }
+
+%>
 </html>
