@@ -1,3 +1,8 @@
+<%@page import="java.util.*"%>
+<%@page import="java.sql.*"%>
+<%@page import="javax.mail.*"%>
+<%@ page import="java.net.InterfaceAddress" %>
+<%@ page import="javax.mail.internet.*" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -33,7 +38,7 @@
                     <h2 class="registration-header">Enter your personal information:</h2>
                     <h5>* - indicates required field</h5>
                     <br>
-                    <form class="input-form">
+                    <form class="input-form" method="post" action="PersonalRegistration.jsp">
                         <p class="info-wrap">
                             <label class="form-label" for="firstname"> * First Name</label>
                             <input type="text" id="firstname" name="firstname" class="form-input"/>
@@ -67,7 +72,44 @@
                     </form>
                 </div>
             </div>
+            <%
+                String to = request.getParameter("email");
+                System.out.println(to);//DELETE LATER
+                String from = "bookstore.helper@gmail.com";
 
+                Properties prop = System.getProperties();
+                prop.put("mail.smtp.host", "smtp.gmail.com");
+                prop.put("mail.smtp.port", "587");
+                prop.put("mail.smtp.starttls.enable", "true");
+                prop.put("mail.smtp.auth", "true");
+                prop.put("mail.smtp.ssl.trust", "*");
+
+                final String username = "bookstore.helper@gmail.com";
+                final String password = "oeprimytgjyhvsbc";
+
+                Session sess = Session.getInstance(prop, new javax.mail.Authenticator(){
+                    protected PasswordAuthentication getPasswordAuthentication(){
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+                try{
+                    MimeMessage context = new MimeMessage(sess);
+                    InternetAddress fromIA = new InternetAddress(from);
+                    context.setFrom(from);
+                    if(to != null) {
+                        InternetAddress toIA = new InternetAddress(to);
+                        context.addRecipient(Message.RecipientType.TO, toIA);
+
+                        context.setSubject("Testing out my mail sending code!");
+                        context.setText("Thanks for signing up for our Bookstore!");
+                        System.out.println("sending email...");
+                        Transport.send(context);
+                        System.out.println("Message sent successfully.");
+                    }
+                }catch(MessagingException mE){
+                    mE.printStackTrace();
+                }
+            %>
         </main>
     </div>
 
