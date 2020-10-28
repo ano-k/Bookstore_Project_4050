@@ -178,7 +178,9 @@ html, body
 }
 
 .form-input {
-    display: table-cell;
+    /*display: table-cell;*/
+    /*padding-left: 0;*/
+    width: 100%;
 }
 
 .form-submit{
