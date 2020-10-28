@@ -1,3 +1,4 @@
+<%@ page import="java.lang.String" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -29,18 +30,18 @@
 
         <div class="main content">
             <div class="cart-information">
-                <h2 class="page-header">Enter your email so we can send a link to change your password:</h2>
-                <br>
-                <form class ="input-form">
-                    <p class="info-wrap">
-                        <label class="form-label" for="useremail">Enter your Email</label>
-                        <input type="text" id="useremail" name="useremail" class="form-input"/>
-                    </p>
+                <h2 class="page-header">Enter your email so we can send a link to change your password:</h2> 
+                   <br>
+                    <form class="input-form" action="PasswordEmail.jsp">
+                        <p class="info-wrap">
+                            <label class="form-label" for="useremail">Enter your Email</label>
+                            <input type="text" id="useremail" name="useremail" class="form-input" />
+                        </p>
+                        <br/>
+                        <input type="submit" class="form-submit" value="Submit" />
+                    </form>
                     <br/>
-                    <input type="submit" class="form-submit" value="Submit" onclick="location.href='PasswordEmail.jsp';"/>
-                </form>
-                <br/>
-                <br>
+                    <br>
             </div>
         </div>
     </main>

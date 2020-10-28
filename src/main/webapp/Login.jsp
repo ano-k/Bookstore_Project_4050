@@ -20,16 +20,12 @@
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
     String dbPassword = "WebProg2020";
-
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-
         String emailQuery = "SELECT Email, ID, Password, type FROM Users"; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
-
         if(request.getParameter("user") != null) {
-
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))) {
                     if(request.getParameter("password").equals(userResults.getString(3))) {
@@ -52,7 +48,6 @@
                             document.getElementById("userInfoForm").submit();
                         </script>
                         <%
-
                     }
                 }
             }
@@ -285,6 +280,5 @@
         //out.println("<p>Unsuccessful connection to database</p>");
         e.printStackTrace();
     }
-
 %>
 </html>

@@ -35,6 +35,16 @@
                 <h5 class="page-header">Change password link has been sent to the email you provided</h5>
                 <br>
                 <nav class="buttons">
+
+                    <form action=""> <!--Implement the code verification, use the form button to redirect to a change password site.
+                                         From there, you can pull relevant info using the request.getParameter("verification") to 
+                                         verify the user inputted the correct information-->
+                        <label for="verification">Verfication code: </label>
+                        <input type="text" id="verification" name="verification">
+                        <input type="submit" value="Submit">
+                    </form>
+                    <br>
+                    <br>
                     <button><a href="EditProfile.jsp">View Profile</a></button>
                     <button><a href="">Resend Link</a></button>
                 </nav>

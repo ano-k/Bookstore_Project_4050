@@ -39,7 +39,7 @@
             <div class="cart-information">
                 <h2 class="page-header">Edit Profile</h2>
                 <br>
-                <form class ="input-form">
+                <form class ="input-form" action="PasswordEmail.jsp">
                     <h4>Personal Info</h4>
                     <br>
                     <p class="info-wrap">
@@ -54,6 +54,11 @@
                     <hr>
                     <br/>
                     <h4>Password</h4>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="currentpassword"> Current Password</label>
+                        <input type="password" id="currentpassword" name="currentpassword" class="form-input" value="old password"/>    
+                    </p>
                     <br>
                     <p class="info-wrap">
                         <label class="form-label" for="changepassword">Change Password</label>
@@ -82,15 +87,50 @@
                         <label class="form-label" for="changecvv">Change CVV</label>
                         <input type="text" id="changecvv" name="changecvv" class="form-input" value="1234"/>
                     </p>
+                    <!--Optional Credit Information for CC #2-->
+                    <br>
+                    <h6>(Optional)</h6>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecreditnum2">Change Credit Card Number</label>
+                        <input type="text" id="changecreditnum2" name="changecreditnum2" class="form-input" value="123456789"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changeexpdate2">Change Expiration</label>
+                        <input type="month" id="changeexpdate2" name="changeexpdate2" min="2020-09" value="2020-10" class="form-input"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecvv2">Change CVV</label>
+                        <input type="text" id="changecvv2" name="changecvv2" class="form-input" value="1234"/>
+                    </p>
+                    <!--Optional Credit Information for CC #3-->
+                    <br>
+                    <h6>(Optional)</h6>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecreditnum3">Change Credit Card Number</label>
+                        <input type="text" id="changecreditnum3" name="changecreditnum3" class="form-input" value="123456789"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changeexpdate3">Change Expiration</label>
+                        <input type="month" id="changeexpdate3" name="changeexpdate3" min="2020-09" value="2020-10" class="form-input"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecvv3">Change CVV</label>
+                        <input type="text" id="changecvv3" name="changecvv3" class="form-input" value="1234"/>
+                    </p>
                     <hr>
                     <br>
+                    <!--Address information starts here-->
                     <h4>Address Info</h4>
                     <br>
                     <p class="info-wrap">
                         <label class="form-label" for="changestreetandnum">Change Address Line</label>
-                        <input type="text" id="changestreetandnum" name="changestreetandnum" class="form-input" value="100 Example Street/>
-                    </p>"
-                    <br/>
+                        <input type="text" id="changestreetandnum" name="changestreetandnum" class="form-input" value="100 Example Street"/>
+                    </p>
+                    <br>
                     <p class="info-wrap">
                         <label class="form-label" for="changecity">Change City</label>
                         <input type="text" id="changecity" name="changecity" class="form-input" value="Athens"/>
@@ -155,14 +195,170 @@
                     <br/>
                     <p class="info-wrap">
                         <label class="form-label" for="changezip">Change Zip Code</label>
-                        <input type="text" id="changezip" name="changezip" class="form-input" value="30605"/>
+                        <input type="text" id="changezip" name="changezip" class="form-input" value="30605" pattern="[0-9]{5}"/>
+                        <!-- Added a pattern to recognize ZIPs as five digit codes, I assume that's what needed changing?1-->
+                    </p>
+                    <!--Address info block ends here-->
+                    <br>
+                    <br>
+                    <h6>(Optional)</h6>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changestreetandnum2">Change Address Line</label>
+                        <input type="text" id="changestreetandnum2" name="changestreetandnum2" class="form-input" value="100 Example Street"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecity2">Change City</label>
+                        <input type="text" id="changecity2" name="changecity2" class="form-input" value="Athens"/>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changestate2">Change State</label>
+                        <select id="changestate2" name="changestate2" class="form-input">
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="DC">District Of Columbia</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA" selected>Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changezip2">Change Zip Code</label>
+                        <input type="text" id="changezip2" name="changezip2" class="form-input" value="30605" pattern="[0-9]{5}"/>
+                        <!-- Added a pattern to recognize ZIPs as five digit codes, I assume that's what needed changing?1-->
+                    <!--Address info block ends here-->
+                    </p>
+                    <br>
+                    <h6>(Optional)</h6>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changestreetandnum3">Change Address Line</label>
+                        <input type="text" id="changestreetandnum3" name="changestreetandnum3" class="form-input" value="100 Example Street"/>
+                    </p>
+                    <br>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changecity3">Change City</label>
+                        <input type="text" id="changecity3" name="changecity3" class="form-input" value="Athens"/>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changestate3">Change State</label>
+                        <select id="changestate3" name="changestate3" class="form-input">
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="DC">District Of Columbia</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA" selected>Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </p>
+                    <br/>
+                    <p class="info-wrap">
+                        <label class="form-label" for="changezip3">Change Zip Code</label>
+                        <input type="text" id="changezip3" name="changezip3" class="form-input" value="30605" pattern="[0-9]{5}"/>
+                        <!-- Added a pattern to recognize ZIPs as five digit codes, I assume that's what needed changing?1-->
                     </p>
                     <hr>
-                    <br>
                     <div class="form-submit">
-                        <input type="submit" value="Submit Changes" onclick="location.href='Homepage.jsp';"/>
+                        <input type="submit" value="Submit Changes"/>
+                        <!-- Wouldn't recommend using js redirect function to redirect a form, it does not store in the url I think onclick="location.href='Homepage.jsp';"-->
                     </div>
-                    <%
+                    <%--
+                    For this one, all the relevant information is stored in the request.getParameters, so we can use an email verfication
+                    with this request stored so the user will have to input code before we make changes to the database.
+                    --%>
+                    <%--
 
                         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
                         String username = "root";
@@ -209,7 +405,7 @@
                         //catch (SQLException e){
                             //e.printStackTrace();
                         //}
-                    %>
+                    --%>
                 </form>
             </div>
         </div>

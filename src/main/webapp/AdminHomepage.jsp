@@ -20,6 +20,10 @@
     <button><a>Manage Users</a></button>
     <button><a>Manage Promotions</a></button>
     <button><a>Manage Books</a></button>
+      <form style="float : right;">
+          <input id="searchbar" name="searchbar" type="text" placeholder="Search Employee, Roles, Status, ETC"/>
+          <input type="submit" value="Submit">
+      </form>
   </nav>
   <table class="admin-table">
     <tr>

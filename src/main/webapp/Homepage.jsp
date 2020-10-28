@@ -55,7 +55,10 @@
 <div class="temp-information">
     <div class="hp-sidebar">
         <div class="search-bar">
-            <input id="search-bar" type="text" placeholder="Search title, author, ISBN, ..."/>
+            <form>
+                <input id="searchbar" name="searchbar" type="text" placeholder="Search title, author, ISBN, ..."/>
+                <input type="submit" value="Submit">
+            </form>
         </div>
 
         <div class="filters">
@@ -96,10 +99,10 @@
             <tr class="homepage-book-row">
                 <td><a href="BookDetails.jsp"><img src="harrypotter.jpg"/></a></td>
                 <td>
-                Title: Harry Potter and the Socerer's Stone <br>
-                Author: JK Rowling <br>
-                Rating: 3 <br>
-                Price: $10
+                    Title: Harry Potter and the Socerer's Stone <br>
+                    Author: JK Rowling <br>
+                    Rating: 3 <br>
+                    Price: $10
                 </td>
                 <td>
                     <button><a href="BookDetails.jsp">Book Page</a></button>
@@ -111,10 +114,10 @@
             <tr class="homepage-book-row">
                 <td><img src="seuss.jpg"/></td>
                 <td>
-                Title: The Cat in the Hat<br>
-                Author: Dr. Seuss<br>
-                Rating: 4<br>
-                Price: $7.50
+                    Title: The Cat in the Hat<br>
+                    Author: Dr. Seuss<br>
+                    Rating: 4<br>
+                    Price: $7.50
                 </td>
                 <td>
                     <button><a href="BookDetails.jsp">Book Page</a></button>
