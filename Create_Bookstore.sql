@@ -41,7 +41,7 @@ CREATE TABLE `Address` (
 
 LOCK TABLES `Address` WRITE;
 /*!40000 ALTER TABLE `Address` DISABLE KEYS */;
-INSERT INTO `Address` VALUES (1,'Employee@gmail.com','105 Morton Walk Drive','Johns Creek','GA',30022),(2,'SystemAdmin@books.com','394 Oconee Street','Athens','GA',30601);
+INSERT INTO `Address` VALUES (1,'Employee@gmail.com','105 Morton Walk Drive','Johns Creek','GA',30022),(2,'SystemAdmin@books.com','394 Oconee Street','Athens','GA',30601),(3,'Employee@gmail.com','123 East Broad Street','Athens','GA',30609);
 /*!40000 ALTER TABLE `Address` ENABLE KEYS */;
 UNLOCK TABLES;
 
