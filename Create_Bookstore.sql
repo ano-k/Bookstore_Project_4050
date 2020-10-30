@@ -41,7 +41,7 @@ CREATE TABLE `Address` (
 
 LOCK TABLES `Address` WRITE;
 /*!40000 ALTER TABLE `Address` DISABLE KEYS */;
-INSERT INTO `Address` VALUES (1,'Employee@gmail.com','105 Morton Walk Drive','Johns Creek','GA',30022),(2,'SystemAdmin@books.com','394 Oconee Street','Athens','GA',30601),(3,'Employee@gmail.com','123 East Broad Street','Athens','GA',30609);
+INSERT INTO `Address` VALUES (1,'Employee@gmail.com','105 Morton Walk Drive','Johns Creek','Georgia',30022),(2,'SystemAdmin@books.com','394 Oconee Street','Athens','Georgia',30601),(3,'Employee@gmail.com','123 East Broad Street','Athens','Georgia',30609);
 /*!40000 ALTER TABLE `Address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,6 +108,54 @@ CREATE TABLE `Cart` (
 LOCK TABLES `Cart` WRITE;
 /*!40000 ALTER TABLE `Cart` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Cart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CardTypes`
+--
+
+DROP TABLE IF EXISTS `CardTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CardTypes` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `States`
+--
+
+LOCK TABLES `CardTypes` WRITE;
+/*!40000 ALTER TABLE `CardTypes` DISABLE KEYS */;
+INSERT INTO `CardTypes` VALUES (1,'Visa'),(2,'Amex'),(3,'MasterCard');
+/*!40000 ALTER TABLE `CardTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `States`
+--
+
+DROP TABLE IF EXISTS `States`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `States` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `States`
+--
+
+LOCK TABLES `States` WRITE;
+/*!40000 ALTER TABLE `States` DISABLE KEYS */;
+INSERT INTO `States` VALUES (1,'Alabama'),(2,'Alaska'),(3,'Arizona'),(4,'Arkansas'),(5,'California'),(6,'Colorado'),(7,'Connecticut'),(8,'Delaware'),(9,'District of Columbia'),(10,'Florida'),(11,'Georgia'),(12,'Hawaii'),(13,'Idaho'),(14,'Illinois'),(15,'Indiana'),(16,'Iowa'),(17,'Kansas'),(18,'Kentucky'),(19,'Louisiana'),(20,'Maine'),(21,'Maryland'),(22,'Massachusetts'),(23,'Michigan'),(24,'Minnesota'),(25,'Mississippi'),(26,'Missouri'),(27,'Montana'),(28,'Nebraska'),(29,'Nevada'),(30,'New Hampshire'),(31,'New Jersey'),(32,'New Mexico'),(33,'New York'),(34,'North Carolina'),(35,'North Dakota'),(36,'Ohio'),(37,'Oklahoma'),(38,'Oregon'),(39,'Pennsylvania'),(40,'Rhode Island'),(41,'South Carolina'),(42,'South Dakota'),(43,'Tennessee'),(44,'Texas'),(45,'Utah'),(46,'Vermont'),(47,'Virginia'),(48,'Washington'),(49,'West Virginia'),(50,'Wisconsin'),(51,'Wyoming');
+/*!40000 ALTER TABLE `States` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -196,7 +244,7 @@ CREATE TABLE `Payment` (
 
 LOCK TABLES `Payment` WRITE;
 /*!40000 ALTER TABLE `Payment` DISABLE KEYS */;
-INSERT INTO `Payment` VALUES (1,'Admin@gmail.com','Visa','1234-2222-1245-3333','2022-10-01',637),(2,'Employee@gmail.com','Amex','5444111145212908','2025-08-01',910);
+INSERT INTO `Payment` VALUES (1,'Admin@gmail.com','Visa','1234-2222-1245-3333','2022-10-01',637),(2,'Employee@gmail.com','Amex','5444111145212908','2025-08-01',910),(3,'Employee@gmail.com','MasterCard','1234789056784321','2023-06-01',421);
 /*!40000 ALTER TABLE `Payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
