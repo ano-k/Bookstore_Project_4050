@@ -46,5 +46,12 @@
         <jarDirectory url="jar://C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/servlet-api.jar!/" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="all" level="application" />
+    <orderEntry type="library" name="snippets-2.2" level="application" />
+    <orderEntry type="library" name="jquery-ui" level="application" />
+    <orderEntry type="library" name="twitter-bootstrap" level="application" />
+    <orderEntry type="library" name="mdbootstrap" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="popper.js" level="application" />
   </component>
 </module>

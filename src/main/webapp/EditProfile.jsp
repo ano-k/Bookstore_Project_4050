@@ -92,7 +92,6 @@
             }
 
             if(request.getParameter("addPaymentButton") != null) {
-                out.println("test1");
                 String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
                 PreparedStatement pstmt11 = connection.prepareStatement(addPaymentQuery);
                 pstmt11.setString(1, userEmail);
@@ -100,13 +99,7 @@
                 pstmt11.setString(3, request.getParameter("addCardNumber"));
                 pstmt11.setString(4, request.getParameter("addExpirationDate"));
                 pstmt11.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
-                out.println(userEmail);
-                out.println(request.getParameter("addCardType"));
-                out.println(request.getParameter("addCardNumber"));
-                out.println(request.getParameter("addExpirationDate"));
-                out.println((int)Integer.parseInt(request.getParameter("addCVV")));
                 pstmt11.executeUpdate();
-                out.println("test3");
             }
 
             if(request.getParameter("editPasswordButton") != null) {

@@ -85,7 +85,7 @@ html, body
 {
     background-color: whitesmoke;
     min-height: 100%;
-    text-align: center;
+    /*text-align: center;*/
     color: black;
 }
 
@@ -94,10 +94,18 @@ html, body
     width: 15%;
 }
 
+.logo {
+    font-size: 150%;
+    font-stretch: ultra-expanded;
+    font-family: Avantgarde;
+    margin: 0%;
+}
+
 
 /* original styling */
 .page-header {
     text-align: center;
+    font-size: 30px;
 }
 
 .cart-items {
@@ -106,6 +114,12 @@ html, body
 
 .item {
     padding : 10px;
+}
+backward {
+    display: inline-block;
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    transform: scale(-1, 1);
 }
 
 #order-sum {
@@ -168,10 +182,6 @@ html, body
     text-align: center;
 }
 
-.info-wrap {
-    display: table-row;
-}
-
 .form-label {
     display: table-cell;
     padding-right: 1em;
@@ -179,8 +189,14 @@ html, body
 
 .form-input {
     /*display: table-cell;*/
-    /*padding-left: 0;*/
+    padding-left: 0;
     width: 100%;
+    margin: 1px;
+}
+
+.input-group {
+    flex-wrap: nowrap;
+    /*margin-bottom: 1ex;*/
 }
 
 .form-submit{
@@ -189,6 +205,38 @@ html, body
     left: 50%;
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
+}
+
+.forgotPassword {
+    border: none;
+    background-color: inherit;
+    text-decoration: underline;
+    margin-top: 0%;
+    /*padding-top: 0%;*/
+    font-size: 12px;
+    font-weight: 400;
+}
+
+input[type=text]:focus, input[type=email]:focus,
+input[type=password]:focus,input[type=tel]:focus
+{
+    background-color: lightblue;
+}
+
+.ui-datepicker-calendar {
+    display: none;
+}
+.datepicker-orient-top {
+    width: 12%;
+}
+.dropdown-menu {
+    min-width: 9rem;
+}
+#newExpirationDate {
+    width: 100%;
+}
+.bootstrap-select .dropdown-menu {
+    width: 50%;
 }
 
 .order-hist-tbl {
@@ -244,7 +292,7 @@ caption {
 }
 
 .homepage-table table, .homepage-table table tr,
- .homepage-table table th, .homepage-table table td {
+.homepage-table table th, .homepage-table table td {
     border: 1px solid black;
 }
 
