@@ -214,7 +214,7 @@ CREATE TABLE `Orders` (
 
 LOCK TABLES `Orders` WRITE;
 /*!40000 ALTER TABLE `Orders` DISABLE KEYS */;
-INSERT INTO `Orders` VALUES (1,234411,1,1,22146123,12.35,'2020-10-25 00:00:00',0),(2,234411,2,2,22146123,56.95,'2020-10-25 00:00:00',0);
+INSERT INTO `Orders` VALUES (2,234411,2,2,22146123,56.95,'2020-10-25 00:00:00',0);
 /*!40000 ALTER TABLE `Orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,7 +231,7 @@ CREATE TABLE `Payment` (
   `Type` varchar(20) NOT NULL COMMENT 'Amex, Visa, etc.',
   `Number` varchar(25) NOT NULL,
   `Expiration` date NOT NULL,
-  `CCV` int(11) NOT NULL,
+  `CVV` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `UserID_idx` (`User`),
   CONSTRAINT `UserId(fk)` FOREIGN KEY (`User`) REFERENCES `users` (`Email`)

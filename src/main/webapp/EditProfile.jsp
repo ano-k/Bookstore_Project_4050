@@ -26,27 +26,113 @@
         response.setHeader("Location", redirect);
     } //checks if the user is already logged in
     else {
+        String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
         String dbPassword = "WebProg2020";
         try {
-            //address info query
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+
+            if(request.getParameter("editAddressButton") != null) {
+                String updateAddressQuery = "UPDATE Address SET Street = ?, City = ?, State = ?, Zipcode = ? WHERE ID = ? ";
+                PreparedStatement pstmt6 = connection.prepareStatement(updateAddressQuery);
+                pstmt6.setString(1, request.getParameter("updateStreetAddress"));
+                pstmt6.setString(2, request.getParameter("updateCity"));
+                pstmt6.setString(3, request.getParameter("updateState"));
+                pstmt6.setInt(4, (int)Integer.parseInt(request.getParameter("updateZipCode")));
+                pstmt6.setInt(5, (int)Integer.parseInt(request.getParameter("addressID")));
+                pstmt6.executeUpdate();
+            }
+
+            if(request.getParameter("editPaymentButton") != null) {
+                String updatePaymentQuery = "UPDATE Payment SET Type = ?, Number = ?, Expiration = ?, CVV = ? WHERE ID = ? ";
+                PreparedStatement pstmt6 = connection.prepareStatement(updatePaymentQuery);
+                pstmt6.setString(1, request.getParameter("updateCardType"));
+                pstmt6.setString(2, request.getParameter("updateCardNumber"));
+                pstmt6.setString(3, request.getParameter("updateExpirationDate"));
+                pstmt6.setInt(4, (int)Integer.parseInt(request.getParameter("updateCVV")));
+                pstmt6.setInt(5, (int)Integer.parseInt(request.getParameter("paymentID")));
+                pstmt6.executeUpdate();
+            }
+
+            if(request.getParameter("editPersonalButton") != null) {
+                String updatePersonalQuery = "UPDATE Users SET FirstName = ?, LastName = ?, Phone = ? WHERE Email = ? ";
+                PreparedStatement pstmt7 = connection.prepareStatement(updatePersonalQuery);
+                pstmt7.setString(1, request.getParameter("updateFirstName"));
+                pstmt7.setString(2, request.getParameter("updateLastName"));
+                pstmt7.setString(3, request.getParameter("updatePhoneNumber"));
+                pstmt7.setString(4, userEmail);
+                pstmt7.executeUpdate();
+            }
+
+            if(request.getParameter("deleteAddressButton") != null) {
+                String deleteAddressQuery = "DELETE FROM Address WHERE ID = ?";
+                PreparedStatement pstmt8 = connection.prepareStatement(deleteAddressQuery);
+                pstmt8.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
+                int row = pstmt8.executeUpdate();
+            }
+
+            if(request.getParameter("deletePaymentButton") != null) {
+                String deletePaymentQuery = "DELETE FROM Payment WHERE ID = ?";
+                PreparedStatement pstmt9 = connection.prepareStatement(deletePaymentQuery);
+                pstmt9.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
+                int row = pstmt9.executeUpdate();
+            }
+
+            if(request.getParameter("addAddressButton") != null) {
+                String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
+                PreparedStatement pstmt10 = connection.prepareStatement(addAddressQuery);
+                pstmt10.setString(1, userEmail);
+                pstmt10.setString(2, request.getParameter("addStreetAddress"));
+                pstmt10.setString(3, request.getParameter("addCity"));
+                pstmt10.setString(4, request.getParameter("addState"));
+                pstmt10.setInt(5, (int)Integer.parseInt(request.getParameter("addZipCode")));
+                pstmt10.executeUpdate();
+            }
+
+            if(request.getParameter("addPaymentButton") != null) {
+                out.println("test1");
+                String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
+                PreparedStatement pstmt11 = connection.prepareStatement(addPaymentQuery);
+                pstmt11.setString(1, userEmail);
+                pstmt11.setString(2, request.getParameter("addCardType"));
+                pstmt11.setString(3, request.getParameter("addCardNumber"));
+                pstmt11.setString(4, request.getParameter("addExpirationDate"));
+                pstmt11.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
+                out.println(userEmail);
+                out.println(request.getParameter("addCardType"));
+                out.println(request.getParameter("addCardNumber"));
+                out.println(request.getParameter("addExpirationDate"));
+                out.println((int)Integer.parseInt(request.getParameter("addCVV")));
+                pstmt11.executeUpdate();
+                out.println("test3");
+            }
+
+            if(request.getParameter("editPasswordButton") != null) {
+                String updatePasswordQuery = "UPDATE Users SET Password = ? WHERE Email = ? ";
+                PreparedStatement pstmt12 = connection.prepareStatement(updatePasswordQuery);
+                pstmt12.setString(1, request.getParameter("confirmNewPassword"));
+                pstmt12.setString(2, userEmail);
+                pstmt12.executeUpdate();
+            }
+
+            //address info query
             String addressQuery = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
             PreparedStatement pstmt1 = connection.prepareStatement(addressQuery);
-            pstmt1.setString(1, request.getParameter("currentUserEmail").substring(0, request.getParameter("currentUserEmail").length()-1));
+            pstmt1.setString(1, userEmail);
             ResultSet addressResults = pstmt1.executeQuery();
 
             //payment info query
             String paymentQuery = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
             PreparedStatement pstmt2 = connection.prepareStatement(paymentQuery);
-            pstmt2.setString(1, request.getParameter("currentUserEmail").substring(0, request.getParameter("currentUserEmail").length()-1));
+            pstmt2.setString(1, userEmail);
             ResultSet paymentResults = pstmt2.executeQuery();
 
             //personal info query
             String personalQuery = "SELECT * FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
             PreparedStatement pstmt3 = connection.prepareStatement(personalQuery);
-            pstmt3.setString(1, request.getParameter("currentUserEmail").substring(0, request.getParameter("currentUserEmail").length()-1));
+            pstmt3.setString(1, userEmail);
             ResultSet personalResults = pstmt3.executeQuery();
 
             //states table query
@@ -58,11 +144,6 @@
             String cardTypesQuery = "SELECT * FROM CardTypes"; //get a list of card types
             PreparedStatement pstmt5 = connection.prepareStatement(cardTypesQuery);
             ResultSet cardTypesResults = pstmt5.executeQuery();
-
-            //update address query
-            //String updateAddressQuery = "UPDATE Address SET Street = ?, City = ?, State = ?, Zipcode = ? WHERE ID = ?";
-            //PreparedStatement pstmt6 = connection.prepareStatement(updateAddressQuery);
-            //pstmt6.executeUpdate(updateAddressQuery);
 
 %>
 
@@ -123,32 +204,36 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label class="form-label" for="newFirstName">First Name</label>
-                                                    <input type="text" id="newFirstName" name="newFirstName" class="form-input" value="<%=personalResults.getString(6)%>"/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <label class="form-label" for="updateFirstName">First Name</label>
+                                                    <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" value="<%=personalResults.getString(6)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label class="form-label" for="newLastName">Last Name</label>
-                                                    <input type="text" id="newLastName" name="newLastName" class="form-input" value="<%=personalResults.getString(7)%>"/>
+                                                    <label class="form-label" for="updateLastName">Last Name</label>
+                                                    <input type="text" id="updateLastName" name="updateLastName" class="form-input" value="<%=personalResults.getString(7)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md">
-                                                    <label class="form-label" for="newPhoneNumber">Phone Number</label>
-                                                    <input type="text" id="newPhoneNumber" name="newPhoneNumber" class="form-input" value="<%=personalResults.getString(8)%>"/>
+                                                    <label class="form-label" for="updatePhoneNumber">Phone Number</label>
+                                                    <input type="tel" id="updatePhoneNumber" name="updatePhoneNumber" class="form-input" value="<%=personalResults.getString(8)%>"/>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" name="editPersonalButton">Save changes</button>
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -162,11 +247,14 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="<%%>/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="newPassword">New Password</label>
                                                     <input type="text" id="newPassword" name="newPassword" class="form-input" />
                                                 </div>
@@ -182,12 +270,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" name="editPasswordButton">Save changes</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -239,23 +327,27 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md">
-                                                    <label class="form-label" for="newStreetAddress">Address</label>
-                                                    <input type="text" id="newStreetAddress" name="newStreetAddress" class="form-input" value="<%=addressResults.getString(3)%>"/>
+                                                    <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <label class="form-label" for="updateStreetAddress">Address</label>
+                                                    <input type="text" id="updateStreetAddress" name="updateStreetAddress" class="form-input" value="<%=addressResults.getString(3)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-5">
-                                                    <label class="form-label" for="newCity">City</label>
-                                                    <input type="text" id="newCity" name="newCity" class="form-input" value="<%=addressResults.getString(4)%>"/>
+                                                    <label class="form-label" for="updateCity">City</label>
+                                                    <input type="text" id="updateCity" name="updateCity" class="form-input" value="<%=addressResults.getString(4)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label class="form-label" for="newState">State</label>
-                                                    <select id="newState" name="newState" class="form-input">
+                                                    <label class="form-label" for="updateState">State</label>
+                                                    <select id="updateState" name="updateState" class="form-input">
                                                         <%
                                                             statesResults = pstmt4.executeQuery();
                                                             while(statesResults.next()){ %>
@@ -264,17 +356,17 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3">
-                                                    <label class="form-label" for="newZipCode">Zip Code</label>
-                                                    <input type="text" id="newZipCode" name="newZipCode" class="form-input" value="<%=addressResults.getString(6)%>"/>
+                                                    <label class="form-label" for="updateZipCode">Zip Code</label>
+                                                    <input type="text" id="updateZipCode" name="updateZipCode" class="form-input" value="<%=addressResults.getInt(6)%>"/>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" id="editAddressButton" name="editAddressButton">Save changes</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -288,21 +380,25 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md">
+                                                    <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <p>Are you sure you want to delete this address?</p>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-danger">Delete Address</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger" name="deleteAddressButton">Delete Address</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -336,93 +432,96 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <div class="modal-body">
                                     <div class="container">
                                         <div class="form-row">
                                             <div class="form-group col-md">
-                                                <label class="form-label" for="newStreetAddress">Address</label>
-                                                <input type="text" id="newStreetAddress" name="newStreetAddress" class="form-input"/>
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="addStreetAddress">Address</label>
+                                                <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input"/>
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-5">
-                                                <label class="form-label" for="newCity">City</label>
-                                                <input type="text" id="newCity" name="newCity" class="form-input"/>
+                                                <label class="form-label" for="addCity">City</label>
+                                                <input type="text" id="addCity" name="addCity" class="form-input"/>
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <label class="form-label" for="newState">State</label>
-                                                <select id="newState" name="newState" class="form-input">
-                                                    <option value="AL">Alabama</option>
-                                                    <option value="AK">Alaska</option>
-                                                    <option value="AZ">Arizona</option>
-                                                    <option value="AR">Arkansas</option>
-                                                    <option value="CA">California</option>
-                                                    <option value="CO">Colorado</option>
-                                                    <option value="CT">Connecticut</option>
-                                                    <option value="DE">Delaware</option>
-                                                    <option value="DC">District Of Columbia</option>
-                                                    <option value="FL">Florida</option>
-                                                    <option value="GA">Georgia</option>
-                                                    <option value="HI">Hawaii</option>
-                                                    <option value="ID">Idaho</option>
-                                                    <option value="IL">Illinois</option>
-                                                    <option value="IN">Indiana</option>
-                                                    <option value="IA">Iowa</option>
-                                                    <option value="KS">Kansas</option>
-                                                    <option value="KY">Kentucky</option>
-                                                    <option value="LA">Louisiana</option>
-                                                    <option value="ME">Maine</option>
-                                                    <option value="MD">Maryland</option>
-                                                    <option value="MA">Massachusetts</option>
-                                                    <option value="MI">Michigan</option>
-                                                    <option value="MN">Minnesota</option>
-                                                    <option value="MS">Mississippi</option>
-                                                    <option value="MO">Missouri</option>
-                                                    <option value="MT">Montana</option>
-                                                    <option value="NE">Nebraska</option>
-                                                    <option value="NV">Nevada</option>
-                                                    <option value="NH">New Hampshire</option>
-                                                    <option value="NJ">New Jersey</option>
-                                                    <option value="NM">New Mexico</option>
-                                                    <option value="NY">New York</option>
-                                                    <option value="NC">North Carolina</option>
-                                                    <option value="ND">North Dakota</option>
-                                                    <option value="OH">Ohio</option>
-                                                    <option value="OK">Oklahoma</option>
-                                                    <option value="OR">Oregon</option>
-                                                    <option value="PA">Pennsylvania</option>
-                                                    <option value="RI">Rhode Island</option>
-                                                    <option value="SC">South Carolina</option>
-                                                    <option value="SD">South Dakota</option>
-                                                    <option value="TN">Tennessee</option>
-                                                    <option value="TX">Texas</option>
-                                                    <option value="UT">Utah</option>
-                                                    <option value="VT">Vermont</option>
-                                                    <option value="VA">Virginia</option>
-                                                    <option value="WA">Washington</option>
-                                                    <option value="WV">West Virginia</option>
-                                                    <option value="WI">Wisconsin</option>
-                                                    <option value="WY">Wyoming</option>
+                                                <label class="form-label" for="addState">State</label>
+                                                <select id="addState" name="addState" class="form-input">
+                                                    <option value="Alabama">Alabama</option>
+                                                    <option value="Alaska">Alaska</option>
+                                                    <option value="Arizona">Arizona</option>
+                                                    <option value="Arkansas">Arkansas</option>
+                                                    <option value="California">California</option>
+                                                    <option value="Colorado">Colorado</option>
+                                                    <option value="Connecticut">Connecticut</option>
+                                                    <option value="Delaware">Delaware</option>
+                                                    <option value="District Of Columbia">District Of Columbia</option>
+                                                    <option value="Florida">Florida</option>
+                                                    <option value="Georgia">Georgia</option>
+                                                    <option value="Hawaii">Hawaii</option>
+                                                    <option value="Idaho">Idaho</option>
+                                                    <option value="Illinois">Illinois</option>
+                                                    <option value="Indiana">Indiana</option>
+                                                    <option value="Iowa">Iowa</option>
+                                                    <option value="Kansas">Kansas</option>
+                                                    <option value="Kentucky">Kentucky</option>
+                                                    <option value="Louisiana">Louisiana</option>
+                                                    <option value="Maine">Maine</option>
+                                                    <option value="Maryland">Maryland</option>
+                                                    <option value="Massachusetts">Massachusetts</option>
+                                                    <option value="Michigan">Michigan</option>
+                                                    <option value="Minnesota">Minnesota</option>
+                                                    <option value="Mississippi">Mississippi</option>
+                                                    <option value="Missouri">Missouri</option>
+                                                    <option value="Montana">Montana</option>
+                                                    <option value="Nebraska">Nebraska</option>
+                                                    <option value="Nevada">Nevada</option>
+                                                    <option value="New Hampshire">New Hampshire</option>
+                                                    <option value="New Jersey">New Jersey</option>
+                                                    <option value="New Mexico">New Mexico</option>
+                                                    <option value="New York">New York</option>
+                                                    <option value="North Carolina">North Carolina</option>
+                                                    <option value="North Dakota">North Dakota</option>
+                                                    <option value="Ohio">Ohio</option>
+                                                    <option value="Oklahoma">Oklahoma</option>
+                                                    <option value="Oregon">Oregon</option>
+                                                    <option value="Pennsylvania">Pennsylvania</option>
+                                                    <option value="Rhode Island">Rhode Island</option>
+                                                    <option value="South Carolina">South Carolina</option>
+                                                    <option value="South Dakota">South Dakota</option>
+                                                    <option value="Tennessee">Tennessee</option>
+                                                    <option value="Texas">Texas</option>
+                                                    <option value="Utah">Utah</option>
+                                                    <option value="Vermont">Vermont</option>
+                                                    <option value="Virginia">Virginia</option>
+                                                    <option value="Washington">Washington</option>
+                                                    <option value="West Virginia">West Virginia</option>
+                                                    <option value="Wisconsin">Wisconsin</option>
+                                                    <option value="Wyoming">Wyoming</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-3">
-                                                <label class="form-label" for="newZipCode">Zip Code</label>
-                                                <input type="text" id="newZipCode" name="newZipCode" class="form-input"/>
+                                                <label class="form-label" for="addZipCode">Zip Code</label>
+                                                <input type="text" id="addZipCode" name="addZipCode" class="form-input"/>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Add Address</button>
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="addAddressButton">Add Address</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <% if(countAddressRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#addPayment"%>>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#addAddress"%>>
                     Add
                 </button>
                 <% } %>
@@ -449,20 +548,24 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
+
                                     <h5 class="modal-title">Edit Payment Information</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md-4">
-                                                    <label class="form-label" for="newCardType">Card Type</label>
-                                                    <select id="newState" name="newState" class="form-input">
+                                                    <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <label class="form-label" for="updateCardType">Card Type</label>
+                                                    <select id="updateCardType" name="updateCardType" class="form-input">
                                                         <%
-                                                            cardTypesResults = pstmt5.executeQuery();
                                                             while(cardTypesResults.next()){ %>
                                                         <option value = <%=cardTypesResults.getString(2)%> <%if(cardTypesResults.getString(2).equals(paymentResults.getString(3))){%> selected <%}%> > <%=cardTypesResults.getString(2)%> </option>
                                                         <%}%>
@@ -470,27 +573,28 @@
                                                     <%-- <script> compareValue("newCardType", "<%=paymentResults.getString(3)%>"); </script> --%>
                                                 </div>
                                                 <div class="form-group col-md-8">
-                                                    <label class="form-label" for="newCardNumber">Card Number</label>
-                                                    <input type="text" id="newCardNumber" name="newCardNumber" class="form-input" value="<%=paymentResults.getString(4)%>"/>
+                                                    <label class="form-label" for="updateCardNumber">Card Number</label>
+                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" value="<%=paymentResults.getString(4)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label class="form-label" for="newExpirationDate">Expiration Date</label>
-                                                    <input type="month" id="newExpirationDate" name="newExpirationDate" class="form-input" value="<%=paymentResults.getString(5)%>"/>
+                                                    <label class="form-label" for="updateExpirationDate">Expiration Date</label>
+                                                    <input type="text" id="updateExpirationDate" name="updateExpirationDate" class="form-input" value="<%=paymentResults.getString(5)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label class="form-label" for="newCVV">CVV</label>
-                                                    <input type="text" id="newCVV" name="newCVV" class="form-input" value="<%=paymentResults.getString(6)%>"/>
+                                                    <label class="form-label" for="updateCVV">CVV</label>
+                                                    <input type="text" id="updateCVV" name="updateCVV" class="form-input" value="<%=paymentResults.getString(6)%>"/>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" name="editPaymentButton">Save changes</button>
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -504,21 +608,25 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md">
+                                                    <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <p>Are you sure you want to delete this payment information?</p>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-danger">Delete Payment Information</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger" name="deletePaymentButton">Delete Payment Information</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -552,40 +660,43 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <div class="modal-body">
                                     <div class="container">
                                         <div class="form-row">
                                             <div class="form-group col-md-4">
-                                                <label class="form-label" for="newCardType">Card Type</label>
-                                                <select class="form-input" id="newCardType">
-                                                    <option value="Visa">Visa</option>
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="addCardType">Card Type</label>
+                                                <select class="form-input" id="addCardType" name="addCardType">
+                                                    <option value="Visa" selected>Visa</option>
                                                     <option value="Amex">Amex</option>
                                                     <option value="MasterCard">MasterCard</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-8">
-                                                <label class="form-label" for="newCardNumber">Card Number</label>
-                                                <input type="text" id="newCardNumber" name="newCardNumber" class="form-input" />
+                                                <label class="form-label" for="addCardNumber">Card Number</label>
+                                                <input type="text" id="addCardNumber" name="addCardNumber" class="form-input" />
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label class="form-label" for="newExpirationDate">Expiration Date</label>
-                                                <input type="month" id="newExpirationDate" name="newExpirationDate" class="form-input" />
+                                                <label class="form-label" for="addExpirationDate">Expiration Date</label>
+                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" />
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="form-label" for="newCVV">CVV</label>
-                                                <input type="text" id="newCVV" name="newCVV" class="form-input" />
+                                                <label class="form-label" for="addCVV">CVV</label>
+                                                <input type="text" id="addCVV" name="addCVV" class="form-input" />
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="addPaymentButton">Save changes</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
