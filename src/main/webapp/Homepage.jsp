@@ -43,13 +43,26 @@
 
     </style>
 </head>
+
 <body>
+    <%out.println(request.getParameter("currentUserEmail"));%>
     <h1 class="page-header">Online Bookstore</h1>
+    <form id="navMenuForm" class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+    </form>
+    <script>
+        function passHiddenInputs() {
+
+            document.getElementById('navMenuForm').submit();
+        }
+    </script>
     <nav id ="nav_menu">
         <a href="Homepage.jsp">Find Books</a>
         <a href="Login.jsp" class="current">Login/Register</a>
         <a href="ViewCart.jsp">View Cart</a>
-        <a href="EditProfile.jsp">Edit Profile</a>
+        <a onclick="passHiddenInputs()">Edit Profile</a>
         <a href="OrderHistory.html">Order History</a>
     </nav>
 <div class="temp-information">
@@ -72,7 +85,7 @@
                         <label for="genre2">Nonfiction</label><br>
                         <input type="checkbox" id="genre3" name="genre3" value="fiction">
                         <label for="genre3">Fiction</label><br>
-                
+
                         <h3>Price</h3>
                         <input type="checkbox" id="price1" name="price1" value="hi2lo">
                         <label for="price1">High to low</label><br>
@@ -85,9 +98,9 @@
         </div>
     </div>
 
-    
+
     <div class="homepage-table">
-    
+
         <h4>Featured Books</h4>
         <table>
             <tr>

@@ -20,7 +20,13 @@
     <button><a>Manage Users</a></button>
     <button><a>Manage Promotions</a></button>
     <button><a>Manage Books</a></button>
-      <form style="float : right;">
+    <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+        <button type="submit" ><a>Edit Profile</a></button>
+    </form>
+    <form style="float : right;">
           <input id="searchbar" name="searchbar" type="text" placeholder="Search Employee, Roles, Status, ETC"/>
           <input type="submit" value="Submit">
       </form>

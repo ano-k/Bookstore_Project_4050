@@ -240,7 +240,7 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form class ="input-form" action="<%%>/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
                                     <div class="modal-body">
                                         <div class="container">
                                             <div class="form-row">
