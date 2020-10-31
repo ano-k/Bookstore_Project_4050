@@ -1,77 +1,38 @@
-<%@page import="java.util.*"%>
-<%@page import="java.sql.*"%>
-<%@page import="javax.mail.*"%>
-<%@ page import="java.net.InterfaceAddress" %>
-<%@ page import="javax.mail.internet.*" %>
-
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Login</title>
-
-</head>
-
-<body>
-
-<%
+<%@page import="java.sql.*" %>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="stylesheet.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Login</title>
+    </head>
+    <body>
+    <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         String emailQuery = "SELECT Email, ID, Password, type FROM Users"; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
-        if(request.getParameter("EmailPassword") != null){
-            String to = request.getParameter("EmailPassword");
-            String from = "bookstore.helper@gmail.com";
-
-            Properties prop = System.getProperties();
-            prop.put("mail.smtp.host", "smtp.gmail.com");
-            prop.put("mail.smtp.port", "587");
-            prop.put("mail.smtp.starttls.enable", "true");
-            prop.put("mail.smtp.auth", "true");
-            prop.put("mail.smtp.ssl.trust", "*");
-
-            final String username = "bookstore.helper@gmail.com";
-            final String password = "oeprimytgjyhvsbc";
-
-            Session sess = Session.getInstance(prop, new javax.mail.Authenticator(){
-                protected PasswordAuthentication getPasswordAuthentication(){
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-            try{
-                MimeMessage context = new MimeMessage(sess);
-                InternetAddress fromIA = new InternetAddress(from);
-                context.setFrom(from);
-                if(to != null) {
-                    InternetAddress toIA = new InternetAddress(to);
-                    context.addRecipient(Message.RecipientType.TO, toIA);
-
-                    context.setSubject("Bookstore Temporary Password");
-                    context.setText("The following is your temporary password for your bookstore account");
-                    System.out.println("sending email...");
-                    Transport.send(context);
-                    System.out.println("Message sent successfully.");
-                }
-            }catch(MessagingException mE){
-                mE.printStackTrace();
-            }
-        }
         if(request.getParameter("user") != null) {
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))) {
                     if(request.getParameter("password").equals(userResults.getString(3))) {
                         %>
-
                         <form class ="input-form" id="userInfoForm"  method="post">
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
                             <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getString(2)%>/>
@@ -81,10 +42,10 @@
                             var type = document.getElementById("currentUserType").value;
                             console.log(type);
                             if(type == "0/") {
-                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/EditProfile.jsp"; //change this to go to Homepage.jsp
+                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/Homepage.jsp";
                             }
                             else {
-                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/EditProfile.jsp"; //change this to go to AdminHomePage.jsp
+                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp";
                             }
                             document.getElementById("userInfoForm").submit();
                         </script>
@@ -95,10 +56,17 @@
         }
 %>
 <div class="column left"></div>
-
 <div class="column middle">
     <header>
-        <h1 class="page-header">Online Bookstore</h1>
+        <h1 class="page-header">
+            <span style="color: red" class="logo">B</span>
+            <span style="color: orange" class="logo">OO</span>
+            <span style="color: limegreen" class="logo">K</span>
+            <span style="color: red" class="logo">S </span>
+            <backward><span style="color: royalblue" class="logo"> R </span></backward>
+            <span style="color: limegreen" class="logo"> U</span>
+            <span style="color: red" class="logo">S</span>
+        </h1>
     </header>
     <main>
         <nav id ="nav_menu">
@@ -111,34 +79,37 @@
 
         <div class="main content">
             <div class="cart-information">
-                <h2 class="page-header">Welcome Back!</h2>
-                <h6 class="page-header">We've missed you! :)</h6><br>
+                <h2 class="page-header">Welcome to your favorite Bookstore!</h2>
+                <h6 class="page-header">We've missed you! :)</h6>
                 <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Login.jsp" method="post">
-                    <p class="info-wrap">
-                        <label class="form-label" for="user">Email</label>
-                        <input type="text" id="user" name="user" class="form-input" />
-                    </p>
-                    <br/>
-                    <p class="info-wrap">
-                        <label class="form-label" for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-input"/>
-                    </p>
-                    <br/>
-                    <p class="info-wrap">
-                        <input type="checkbox" class="form-input" id="rmbr" name="rmbr" value="RM">
-                        <label for="rmbr" class="form-label"> Remember Me</label>
-                    </p>
-                    <br/>
-                    <input type="submit" class="btn btn-danger" value="Login" /> <!-- onclick, code should check role and redirect to the correct webpage -->
-                </form>
-
-                <br/>
-                <br>
-                <p> Forgot Password
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#forgotModal">
-                        Forgot Password
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fa fa-user"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="user" name="user" class="form-input" placeholder="ID/Email" style="margin-bottom: 1%" required/>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+								<span class="input-group-text">
+									<i class="fa fa-lock"></i>
+								</span>
+                        </div>
+                        <input style="margin-bottom: 0ex" type="password" id="password" name="password" class="form-input" placeholder="Password"  required/>
+                    </div>
+                    <div style="display:block;">
+                        <button type="button" class="forgotPassword" data-toggle="modal" data-target="#forgotModal">
+                            Forgot Your Password?
+                        </button>
+                        <button type="button" class="forgotPassword" data-toggle="modal" data-target="#registerModal">
+                            Don't Have Account?
+                        </button>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="display: block; width: 100%; margin-top: 1ex;">
+                        Login
                     </button>
-                </p>
+                </form>
                 <div class="modal fade" id="forgotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -149,198 +120,215 @@
                                 </button>
                             </div>
                             <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Login.jsp" method="post">
-                            <div class="modal-body">
-                                <label class="form-label" for="EmailPassword">Email</label>
-                                <input type="text" id="EmailPassword" name="EmailPassword" class="form-input"/>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Send temporary password</button>
-                            </div>
+                                <div class="modal-body">
+                                    <label class="form-label" for="EmailPassword">Email</label>
+                                    <input type="text" id="EmailPassword" name="EmailPassword" class="form-input"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Send temporary password</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <p>
-                    Don't have an account yet?
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerModal">
-                        Register Now!
-                    </button>
-                </p>
-                <!-- Modal -->
                 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-dialog modal-md" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Please enter your information</h5>
+                                <h4 class="modal-title">User Registration</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Login.jsp" method="post">
+                            <form class ="needs-validation input-form " action="/Bookstore_Project_4050_war_exploded/Login.jsp" method="post" novalidate>
+                                <div class="modal-body">
                                     <div class="container">
                                         <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newEmail">Email</label>
-                                                <input type="text" id="newEmail" name="newEmail" class="form-input"/>
+                                            <div class="form-group col-md-6 md-form">
+                                                <label class="form-label" for="newFirstName"><b>First Name</b></label>
+                                                <input type="text" id="newFirstName" name="newFirstName" class="form-control" pattern="[A-Za-z]{1,}" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Please provide a valid name</div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newPhoneNumber">Phone Number</label>
-                                                <input type="text" id="newPhoneNumber" name="newPhoneNumber" class="form-input" />
+                                            <div class="form-group col-md-6 md-form">
+                                                <label class="form-label" for="newLastName"><b>Last Name</b></label>
+                                                <input type="text" id="newLastName" name="newLastName" class="form-control" pattern="[A-Za-z]{1,}" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Please provide a valid name</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row ">
+                                            <div class="form-group col-md-6 md-form">
+                                                <label class="form-label" for="newEmail"><b>Email</b></label>
+                                                <input type="email" id="newEmail" name="newEmail" class="form-control" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Please provide a valid email </div>
+                                            </div>
+                                            <div class="form-group col-md-6 md-form">
+                                                <label class="form-label" for="newPhoneNumber"><b>Phone Number</b></label>
+                                                <input type="tel" id="newPhoneNumber" name="newPhoneNumber" class="form-control"
+                                                       pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Invalid format, please use "xxx-xxx-xxxx" </div>
                                             </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newPassword">Password</label>
-                                                <input type="text" id="newPassword" name="newPassword" class="form-input" />
+                                            <div class="form-group col-md-6 md-form" style="alignment: left">
+                                                <label class="form-label" for="newPassword"><b>Password</b></label>
+                                                <input type="password" id="newPassword" name="newPassword" class="form-control" pattern=".{8,}" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Please provide a valid password </div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="confirmPassword">Confirm Password</label>
-                                                <input type="text" id="confirmPassword" name="confirmPassword" class="form-input" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newFirstName">First Name</label>
-                                                <input type="text" id="newFirstName" name="newFirstName" class="form-input" />
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newLastName">Last Name</label>
-                                                <input type="text" id="newLastName" name="newLastName" class="form-input" />
-                                            </div>
-                                        </div>
-                                        <br><hr><br>
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md">
-                                                <label class="form-label" for="newStreetAddress">Address</label>
-                                                <input type="text" id="newStreetAddress" name="newStreetAddress" class="form-input" />
+                                            <div class="form-group col-md-6 md-form" style="alignment: right">
+                                                <label class="form-label" for="confirmPassword"><b>Confirm Password</b></label>
+                                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" pattern=".{8,}" required/>
+                                                <div class="valid-feedback">Looks good!</div>
+                                                <div class="invalid-feedback">Please provide a valid password</div>
                                             </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="form-group col-md-5">
-                                                <label class="form-label" for="newCity">City</label>
-                                                <input type="text" id="newCity" name="newCity" class="form-input" />
+                                            <div class="form-group col-md md-form">
+                                                <label class="form-label" for="newStreetAddress"><b>Address</b></label>
+                                                <input type="text" id="newStreetAddress" name="newStreetAddress" class="form-control"
+                                                       pattern="[a-zA-Z0-9\s]{1,}" />
+                                                <div class="invalid-feedback">Please provide a valid street address</div>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label class="form-label" for="newState">State</label>
-                                                <select id="newState" name="newState" class="form-input">
-                                                    <option value="AL">Alabama</option>
-                                                    <option value="AK">Alaska</option>
-                                                    <option value="AZ">Arizona</option>
-                                                    <option value="AR">Arkansas</option>
-                                                    <option value="CA">California</option>
-                                                    <option value="CO">Colorado</option>
-                                                    <option value="CT">Connecticut</option>
-                                                    <option value="DE">Delaware</option>
-                                                    <option value="DC">District Of Columbia</option>
-                                                    <option value="FL">Florida</option>
-                                                    <option value="GA">Georgia</option>
-                                                    <option value="HI">Hawaii</option>
-                                                    <option value="ID">Idaho</option>
-                                                    <option value="IL">Illinois</option>
-                                                    <option value="IN">Indiana</option>
-                                                    <option value="IA">Iowa</option>
-                                                    <option value="KS">Kansas</option>
-                                                    <option value="KY">Kentucky</option>
-                                                    <option value="LA">Louisiana</option>
-                                                    <option value="ME">Maine</option>
-                                                    <option value="MD">Maryland</option>
-                                                    <option value="MA">Massachusetts</option>
-                                                    <option value="MI">Michigan</option>
-                                                    <option value="MN">Minnesota</option>
-                                                    <option value="MS">Mississippi</option>
-                                                    <option value="MO">Missouri</option>
-                                                    <option value="MT">Montana</option>
-                                                    <option value="NE">Nebraska</option>
-                                                    <option value="NV">Nevada</option>
-                                                    <option value="NH">New Hampshire</option>
-                                                    <option value="NJ">New Jersey</option>
-                                                    <option value="NM">New Mexico</option>
-                                                    <option value="NY">New York</option>
-                                                    <option value="NC">North Carolina</option>
-                                                    <option value="ND">North Dakota</option>
-                                                    <option value="OH">Ohio</option>
-                                                    <option value="OK">Oklahoma</option>
-                                                    <option value="OR">Oregon</option>
-                                                    <option value="PA">Pennsylvania</option>
-                                                    <option value="RI">Rhode Island</option>
-                                                    <option value="SC">South Carolina</option>
-                                                    <option value="SD">South Dakota</option>
-                                                    <option value="TN">Tennessee</option>
-                                                    <option value="TX">Texas</option>
-                                                    <option value="UT">Utah</option>
-                                                    <option value="VT">Vermont</option>
-                                                    <option value="VA">Virginia</option>
-                                                    <option value="WA">Washington</option>
-                                                    <option value="WV">West Virginia</option>
-                                                    <option value="WI">Wisconsin</option>
-                                                    <option value="WY">Wyoming</option>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4 md-form">
+                                                <label class="form-label" for="newCity"><b>City</b></label>
+                                                <input type="text" id="newCity" name="newCity" class="form-control" pattern="[a-zA-Z\s]{1,}"/>
+                                                <div class="invalid-feedback">Please provide a valid city </div>
+                                            </div>
+                                            <div class="form-group col-md-5 md-form">
+                                                <select class= "form-control" id="newState" name="newState" data-live-search="true"
+                                                        data-dropup-auto="false" data-width="100%">
+                                                    <option value="" selected disabled hidden>State</option>
+                                                    <option value="Alabama">Alabama</option>
+                                                    <option value="Alaska">Alaska</option>
+                                                    <option value="Arizona">Arizona</option>
+                                                    <option value="Arkansas">Arkansas</option>
+                                                    <option value="California">California</option>
+                                                    <option value="Colorado">Colorado</option>
+                                                    <option value="Connecticut">Connecticut</option>
+                                                    <option value="Delaware">Delaware</option>
+                                                    <option value="District Of Columbia">District Of Columbia</option>
+                                                    <option value="Florida">Florida</option>
+                                                    <option value="Georgia">Georgia</option>
+                                                    <option value="Hawaii">Hawaii</option>
+                                                    <option value="Idaho">Idaho</option>
+                                                    <option value="Illinois">Illinois</option>
+                                                    <option value="Indiana">Indiana</option>
+                                                    <option value="Iowa">Iowa</option>
+                                                    <option value="Kansas">Kansas</option>
+                                                    <option value="Kentucky">Kentucky</option>
+                                                    <option value="Louisiana">Louisiana</option>
+                                                    <option value="Maine">Maine</option>
+                                                    <option value="Maryland">Maryland</option>
+                                                    <option value="Massachusetts">Massachusetts</option>
+                                                    <option value="Michigan">Michigan</option>
+                                                    <option value="Minnesota">Minnesota</option>
+                                                    <option value="Mississippi">Mississippi</option>
+                                                    <option value="Missouri">Missouri</option>
+                                                    <option value="Montana">Montana</option>
+                                                    <option value="Nebraska">Nebraska</option>
+                                                    <option value="Nevada">Nevada</option>
+                                                    <option value="New Hampshire">New Hampshire</option>
+                                                    <option value="New Jersey">New Jersey</option>
+                                                    <option value="New Mexico">New Mexico</option>
+                                                    <option value="New York">New York</option>
+                                                    <option value="North Carolina">North Carolina</option>
+                                                    <option value="North Dakota">North Dakota</option>
+                                                    <option value="Ohio">Ohio</option>
+                                                    <option value="Oklahoma">Oklahoma</option>
+                                                    <option value="Oregon">Oregon</option>
+                                                    <option value="Pennsylvania">Pennsylvania</option>
+                                                    <option value="Rhode Island">Rhode Island</option>
+                                                    <option value="South Carolina">South Carolina</option>
+                                                    <option value="South Dakota">South Dakota</option>
+                                                    <option value="Tennessee">Tennessee</option>
+                                                    <option value="Texas">Texas</option>
+                                                    <option value="Utah">Utah</option>
+                                                    <option value="Vermont">Vermont</option>
+                                                    <option value="Virginia">Virginia</option>
+                                                    <option value="Washington">Washington</option>
+                                                    <option value="West Virginia">West Virginia</option>
+                                                    <option value="Wisconsin">Wisconsin</option>
+                                                    <option value="Wyoming">Wyoming</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group col-md-3">
-                                                <label class="form-label" for="newZipCode">Zip Code</label>
-                                                <input type="text" id="newZipCode" name="newZipCode" class="form-input" />
+                                            <div class="form-group col-md-3 md-form">
+                                                <label class="form-label" for="newZipCode"><b>Zip Code</b></label>
+                                                <input type="text" id="newZipCode" name="newZipCode" class="form-control" pattern="[0-9]{5}"
+                                                    style="height: 38px"/>
+                                                <div class="invalid-feedback">Please provide a valid zipcode</div>
                                             </div>
                                         </div>
-                                        <br><hr><br>
-
                                         <div class="form-row">
-                                            <div class="form-group col-md-4">
-                                                <label class="form-label" for="newCardType">Card Type</label>
-                                                <select class="form-input" id="newCardType">
+                                            <div class="form-group col-md md-form">
+                                                <label class="form-label" for="newCardNumber"><b>Card Number</b></label>
+                                                <input type="text" id="newCardNumber" name="newCardNumber" class="form-control" pattern="[0-9]{16}"/>
+                                                <div class = "invalid-feedback">Please provide a valid card</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-5 md-form">
+                                                <label class="form-label" for="newExpirationDate"><b>Expiration Date</b></label>
+                                                <input type="text" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
+                                            </div>
+                                            <div class="form-group col-md-5 md-form">
+                                                <select id = "newCardType" data-dropup-auto="false" data-width="100%">
+                                                    <option value="" selected disabled hidden>Card Type</option>
                                                     <option value="Visa">Visa</option>
                                                     <option value="Amex">Amex</option>
                                                     <option value="MasterCard">MasterCard</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group col-md-8">
-                                                <label class="form-label" for="newCardNumber">Card Number</label>
-                                                <input type="text" id="newCardNumber" name="newCardNumber" class="form-input" />
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newExpirationDate">Expiration Date</label>
-                                                <input type="month" id="newExpirationDate" name="newExpirationDate" class="form-input" />
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="newCVV">CVV</label>
-                                                <input type="text" id="newCVV" name="newCVV" class="form-input" />
+                                            <div class="form-group col-md-2 md-form">
+                                                <label class="form-label" for="newCVV"><b>CVV</b></label>
+                                                <input type="text" id="newCVV" name="newCVV" class="form-control" pattern="[0-9]{3,4}" />
+                                                <div class = "invalid-feedback">Please provide a valid CVV</div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Register</button>
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+                <script type="text/javascript">
+                    (function() {
+                        'use strict';
+                        window.addEventListener('load', function() {
+                            var forms = document.getElementsByClassName('needs-validation');
+                            var validation = Array.prototype.filter.call(forms, function(form) {
+                                form.addEventListener('submit', function(event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
             </div>
         </div>
     </main>
 </div>
+    <div class="column right"></div>
 
-<div class="column right"></div>
-
-
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-</body>
 <%
-    }
-    catch (SQLException e){
-        //out.println("<p>Unsuccessful connection to database</p>");
+    } catch (SQLException e){
         e.printStackTrace();
     }
 %>
+
+    </body>
 </html>
