@@ -18,21 +18,58 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Login</title>
     </head>
-    <body>
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
     String dbPassword = "Hakar123";
+    Connection connection = null;
     try {
-        Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-        String emailQuery = "SELECT Email, ID, Password, type FROM Users"; //get a list of usernames of every user
+        connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+        String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
+        if (request.getParameter("registerButton") != null) {
+            out.println("HI");
+
+            int zip = 0, cvv = 0;
+            if (request.getParameter("newZipCode") != "") {
+                zip = (int) Integer.parseInt(request.getParameter("newZipCode"));
+            }
+            if (request.getParameter("newCVV") != "") {
+                cvv = (int) Integer.parseInt(request.getParameter("newCVV"));
+            }
+            String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) " + "VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement pstmt3 = connection.prepareStatement(addUserQuery);
+            pstmt3.setString(1, request.getParameter("newEmail"));
+            pstmt3.setString(2, request.getParameter("newPassword"));
+            pstmt3.setString(3, request.getParameter("newFirstName"));
+            pstmt3.setString(4, request.getParameter("newLastName"));
+            pstmt3.setString(5, request.getParameter("newPhoneNumber"));
+            pstmt3.executeUpdate();
+
+            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) " + "VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement pstmt = connection.prepareStatement(addPaymentQuery);
+            pstmt.setString(1, request.getParameter("newEmail"));
+            pstmt.setString(2, request.getParameter("newCardType"));
+            pstmt.setString(3, request.getParameter("newCardNumber"));
+            pstmt.setString(4, request.getParameter("newExpirationDate"));
+            pstmt.setInt(5, 000);
+            pstmt.executeUpdate();
+
+            String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement pstmt2 = connection.prepareStatement(addAddressQuery);
+            pstmt2.setString(1, request.getParameter("newEmail"));
+            pstmt2.setString(2, request.getParameter("newStreetAddress"));
+            pstmt2.setString(3, request.getParameter("newCity"));
+            pstmt2.setString(4, request.getParameter("newState"));
+            pstmt2.setInt(5, zip);
+            pstmt2.executeUpdate();
+        }
+
         if(request.getParameter("user") != null) {
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))) {
-                    if(request.getParameter("password").equals(userResults.getString(3))) {
-                        %>
+                    if(request.getParameter("password").equals(userResults.getString(3))) {%>
                         <form class ="input-form" id="userInfoForm"  method="post">
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
                             <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getString(2)%>/>
@@ -54,7 +91,9 @@
                 }
             }
         }
+
 %>
+    <body>
 <div class="column left"></div>
 <div class="column middle">
     <header>
@@ -295,7 +334,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Register</button>
+                                    <button type="submit" class="btn btn-primary" name="registerButton">Register</button>
                                 </div>
                             </form>
                         </div>
@@ -323,7 +362,6 @@
     </main>
 </div>
     <div class="column right"></div>
-
 <%
     } catch (SQLException e){
         e.printStackTrace();
