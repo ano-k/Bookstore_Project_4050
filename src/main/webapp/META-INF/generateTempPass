@@ -1,4 +1,4 @@
-import java.util.Random;
+
 
 private static char[] generatePassword(int length) {
         String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
