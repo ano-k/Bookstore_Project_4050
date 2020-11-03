@@ -42,6 +42,7 @@
                 return new PasswordAuthentication(username, password);
             }
         });
+        //s
         try {
             MimeMessage context = new MimeMessage(sess);
             InternetAddress fromIA = new InternetAddress(from);
