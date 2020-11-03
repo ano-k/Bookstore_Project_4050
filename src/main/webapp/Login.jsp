@@ -1,8 +1,9 @@
 <%@page import="java.sql.*" %>
 <%@page import="java.util.*"%>
 <%@page import="javax.mail.*"%>
-<%@ page import="java.net.InterfaceAddress" %>
-<%@ page import="javax.mail.internet.*" %>
+<%@page import="java.net.InterfaceAddress" %>
+<%@page import="javax.mail.internet.*" %>
+<%@page import="java.util.Random"%>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
@@ -23,44 +24,6 @@
         <title>Login</title>
     </head>
     <%
-    if (request.getParameter("sendTempPass") != null) {
-        String to = request.getParameter("EmailPassword");
-        String from = "bookstore.helper@gmail.com";
-
-        Properties prop = System.getProperties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.ssl.trust", "*");
-
-        final String username = "bookstore.helper@gmail.com";
-        final String password = "oeprimytgjyhvsbc";
-
-        Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
-        //s
-        try {
-            MimeMessage context = new MimeMessage(sess);
-            InternetAddress fromIA = new InternetAddress(from);
-            context.setFrom(from);
-            if (to != null) {
-                InternetAddress toIA = new InternetAddress(to);
-                context.addRecipient(Message.RecipientType.TO, toIA);
-
-                context.setSubject("Testing out my mail sending code!");
-                context.setText("Thanks for signing up for our Bookstore!");
-                System.out.println("sending email...");
-                Transport.send(context);
-                System.out.println("Message sent successfully.");
-            }
-        } catch (MessagingException mE) {
-            mE.printStackTrace();
-        }
-    }
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
     String dbPassword = "Hakar123";
@@ -70,6 +33,66 @@
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
+        if (request.getParameter("sendTempPass") != null) {
+            String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+            String specialCharacters = "!@#$";
+            String numbers = "1234567890";
+            String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
+            Random random = new Random();
+            char[] password = new char[8];
+
+            password[0] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+            password[1] = capitalCaseLetters.charAt(random.nextInt(capitalCaseLetters.length()));
+            password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
+            password[3] = numbers.charAt(random.nextInt(numbers.length()));
+
+            for(int i = 4; i< 8 ; i++) {
+                password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+            }
+
+            String tempPass = new String(password);
+            String to = request.getParameter("EmailPassword");
+            String from = "bookstore.helper@gmail.com";
+
+            Properties prop = System.getProperties();
+            prop.put("mail.smtp.host", "smtp.gmail.com");
+            prop.put("mail.smtp.port", "587");
+            prop.put("mail.smtp.starttls.enable", "true");
+            prop.put("mail.smtp.auth", "true");
+            prop.put("mail.smtp.ssl.trust", "*");
+            final String emailUsername = "bookstore.helper@gmail.com";
+            final String emailPassword = "oeprimytgjyhvsbc";
+
+            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailUsername, emailPassword);
+                }
+            });
+
+            try {
+                MimeMessage context = new MimeMessage(sess);
+                InternetAddress fromIA = new InternetAddress(from);
+                context.setFrom(from);
+                if (to != null) {
+                    InternetAddress toIA = new InternetAddress(to);
+                    context.addRecipient(Message.RecipientType.TO, toIA);
+
+                    context.setSubject("Testing out my mail sending code!");
+                    context.setText("Here is your temporary password: " + tempPass);
+                    System.out.println("sending email...");
+                    Transport.send(context);
+                    System.out.println("Message sent successfully.");
+                }
+            } catch (MessagingException mE) {
+                mE.printStackTrace();
+            }
+            String updateUserPassQuery = "UPDATE Users SET Password = ? where Email = ? ";
+            PreparedStatement pstmt = connection.prepareStatement(updateUserPassQuery);
+            pstmt.setString(1, tempPass);
+            pstmt.setString(2, request.getParameter("EmailPassword"));
+            pstmt.executeUpdate();
+        }
         if (request.getParameter("registerButton") != null) {
             String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) " + "VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement pstmt3 = connection.prepareStatement(addUserQuery);
@@ -101,8 +124,8 @@
 
         if(request.getParameter("user") != null) {
             while(userResults.next()) {
-                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))) {
-                    if(request.getParameter("password").equals(userResults.getString(3))) {%>
+                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
+                    if(request.getParameter("password").equals(userResults.getString(3))){%>
                         <form class ="input-form" id="userInfoForm"  method="post">
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
                             <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getString(2)%>/>
