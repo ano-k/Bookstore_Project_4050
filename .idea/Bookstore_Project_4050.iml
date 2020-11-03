@@ -53,5 +53,6 @@
     <orderEntry type="library" name="mdbootstrap" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="popper.js" level="application" />
+    <orderEntry type="library" name="javax.mail" level="application" />
   </component>
 </module>

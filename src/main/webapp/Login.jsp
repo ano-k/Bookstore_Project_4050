@@ -1,4 +1,8 @@
 <%@page import="java.sql.*" %>
+<%@page import="java.util.*"%>
+<%@page import="javax.mail.*"%>
+<%@ page import="java.net.InterfaceAddress" %>
+<%@ page import="javax.mail.internet.*" %>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
@@ -19,25 +23,53 @@
         <title>Login</title>
     </head>
     <%
+    if (request.getParameter("sendTempPass") != null) {
+        String to = request.getParameter("EmailPassword");
+        String from = "bookstore.helper@gmail.com";
+
+        Properties prop = System.getProperties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.ssl.trust", "*");
+
+        final String username = "bookstore.helper@gmail.com";
+        final String password = "oeprimytgjyhvsbc";
+
+        Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        try {
+            MimeMessage context = new MimeMessage(sess);
+            InternetAddress fromIA = new InternetAddress(from);
+            context.setFrom(from);
+            if (to != null) {
+                InternetAddress toIA = new InternetAddress(to);
+                context.addRecipient(Message.RecipientType.TO, toIA);
+
+                context.setSubject("Testing out my mail sending code!");
+                context.setText("Thanks for signing up for our Bookstore!");
+                System.out.println("sending email...");
+                Transport.send(context);
+                System.out.println("Message sent successfully.");
+            }
+        } catch (MessagingException mE) {
+            mE.printStackTrace();
+        }
+    }
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
     String dbPassword = "Hakar123";
     Connection connection = null;
-    try {
+    try { 
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
         if (request.getParameter("registerButton") != null) {
-            out.println("HI");
-
-            int zip = 0, cvv = 0;
-            if (request.getParameter("newZipCode") != "") {
-                zip = (int) Integer.parseInt(request.getParameter("newZipCode"));
-            }
-            if (request.getParameter("newCVV") != "") {
-                cvv = (int) Integer.parseInt(request.getParameter("newCVV"));
-            }
             String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) " + "VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement pstmt3 = connection.prepareStatement(addUserQuery);
             pstmt3.setString(1, request.getParameter("newEmail"));
@@ -47,23 +79,23 @@
             pstmt3.setString(5, request.getParameter("newPhoneNumber"));
             pstmt3.executeUpdate();
 
-            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) " + "VALUES (?, ?, ?, ?, ?) ";
-            PreparedStatement pstmt = connection.prepareStatement(addPaymentQuery);
-            pstmt.setString(1, request.getParameter("newEmail"));
-            pstmt.setString(2, request.getParameter("newCardType"));
-            pstmt.setString(3, request.getParameter("newCardNumber"));
-            pstmt.setString(4, request.getParameter("newExpirationDate"));
-            pstmt.setInt(5, 000);
-            pstmt.executeUpdate();
-
             String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement pstmt2 = connection.prepareStatement(addAddressQuery);
             pstmt2.setString(1, request.getParameter("newEmail"));
             pstmt2.setString(2, request.getParameter("newStreetAddress"));
             pstmt2.setString(3, request.getParameter("newCity"));
             pstmt2.setString(4, request.getParameter("newState"));
-            pstmt2.setInt(5, zip);
+            pstmt2.setString(5, request.getParameter("newZipCode"));
             pstmt2.executeUpdate();
+
+            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) " + "VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement pstmt = connection.prepareStatement(addPaymentQuery);
+            pstmt.setString(1, request.getParameter("newEmail"));
+            pstmt.setString(2, request.getParameter("newCardType"));
+            pstmt.setString(3, request.getParameter("newCardNumber"));
+            pstmt.setString(4, request.getParameter("newExpirationDate"));
+            pstmt.setString(5, request.getParameter("newCVV"));
+            pstmt.executeUpdate();
         }
 
         if(request.getParameter("user") != null) {
@@ -165,7 +197,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Send temporary password</button>
+                                    <button type="submit" name="sendTempPass" class="btn btn-primary">Send temporary password</button>
                                 </div>
                             </form>
                         </div>
@@ -241,8 +273,7 @@
                                                 <div class="invalid-feedback">Please provide a valid city </div>
                                             </div>
                                             <div class="form-group col-md-5 md-form">
-                                                <select class= "form-control" id="newState" name="newState" data-live-search="true"
-                                                        data-dropup-auto="false" data-width="100%">
+                                                <select class= "form-control" id="newState" name="newState" data-width="100%">
                                                     <option value="" selected disabled hidden>State</option>
                                                     <option value="Alabama">Alabama</option>
                                                     <option value="Alaska">Alaska</option>
@@ -314,10 +345,10 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-5 md-form">
                                                 <label class="form-label" for="newExpirationDate"><b>Expiration Date</b></label>
-                                                <input type="text" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
+                                                <input type="date" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
                                             </div>
                                             <div class="form-group col-md-5 md-form">
-                                                <select id = "newCardType" data-dropup-auto="false" data-width="100%">
+                                                <select id = "newCardType" name="newCardType" data-width="100%">
                                                     <option value="" selected disabled hidden>Card Type</option>
                                                     <option value="Visa">Visa</option>
                                                     <option value="Amex">Amex</option>
@@ -326,7 +357,7 @@
                                             </div>
                                             <div class="form-group col-md-2 md-form">
                                                 <label class="form-label" for="newCVV"><b>CVV</b></label>
-                                                <input type="text" id="newCVV" name="newCVV" class="form-control" pattern="[0-9]{3,4}" />
+                                                <input type="input" id="newCVV" name="newCVV" class="form-control" pattern="[0-9]{3,4}" />
                                                 <div class = "invalid-feedback">Please provide a valid CVV</div>
                                             </div>
                                         </div>
