@@ -4,6 +4,8 @@
 <%@page import="java.net.InterfaceAddress" %>
 <%@page import="javax.mail.internet.*" %>
 <%@page import="java.util.Random"%>
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
+
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
@@ -33,71 +35,107 @@
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
-        if (request.getParameter("sendTempPass") != null) {
-            String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
-            String specialCharacters = "!@#$";
-            String numbers = "1234567890";
-            String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
-            Random random = new Random();
-            char[] password = new char[8];
-
-            password[0] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
-            password[1] = capitalCaseLetters.charAt(random.nextInt(capitalCaseLetters.length()));
-            password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
-            password[3] = numbers.charAt(random.nextInt(numbers.length()));
-
-            for(int i = 4; i< 8 ; i++) {
-                password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
-            }
-
-            String tempPass = new String(password);
-            String to = request.getParameter("EmailPassword");
-            String from = "bookstore.helper@gmail.com";
-
-            Properties prop = System.getProperties();
-            prop.put("mail.smtp.host", "smtp.gmail.com");
-            prop.put("mail.smtp.port", "587");
-            prop.put("mail.smtp.starttls.enable", "true");
-            prop.put("mail.smtp.auth", "true");
-            prop.put("mail.smtp.ssl.trust", "*");
-            final String emailUsername = "bookstore.helper@gmail.com";
-            final String emailPassword = "oeprimytgjyhvsbc";
-
-            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(emailUsername, emailPassword);
-                }
-            });
-
-            try {
-                MimeMessage context = new MimeMessage(sess);
-                InternetAddress fromIA = new InternetAddress(from);
-                context.setFrom(from);
-                if (to != null) {
-                    InternetAddress toIA = new InternetAddress(to);
-                    context.addRecipient(Message.RecipientType.TO, toIA);
-
-                    context.setSubject("Testing out my mail sending code!");
-                    context.setText("Here is your temporary password: " + tempPass);
-                    System.out.println("sending email...");
-                    Transport.send(context);
-                    System.out.println("Message sent successfully.");
-                }
-            } catch (MessagingException mE) {
-                mE.printStackTrace();
-            }
-            String updateUserPassQuery = "UPDATE Users SET Password = ? where Email = ? ";
-            PreparedStatement pstmt = connection.prepareStatement(updateUserPassQuery);
-            pstmt.setString(1, tempPass);
-            pstmt.setString(2, request.getParameter("EmailPassword"));
-            pstmt.executeUpdate();
-        }
+//        if (request.getParameter("sendTempPass") != null) {
+//            Random rand = new Random();
+//            int capLetters = rand.nextInt((90-65)+1) + 65;
+//            int lowerLetters = rand.nextInt((122-97)+1) + 97;
+//            int numbers = rand.nextInt((57-48)+1) + 65;
+//            String password = "";
+//            char cL = 'a';
+//            char sL = 'a';
+//            char nL = 'a';
+//            int count = 0;
+//            int options = rand.nextInt(3);
+//
+//            while (count <8) {
+//                if ((count == 0) || (count == 4) || (count == 7)) {//this is for the first letter
+//                    if (options == 0) {
+//                        cL = (char) capLetters;
+//                        password += cL;
+//                        capLetters = rand.nextInt((90 - 65) + 1) + 65;
+//                        ++count;
+//                    } else if (options == 1) {
+//                        nL = (char) numbers;
+//                        password += nL;
+//                        numbers = rand.nextInt((57 - 48) + 1) + 65;
+//                        ++count;
+//                    } else {
+//                        sL = (char) lowerLetters;
+//                        password += sL;
+//                        lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
+//                        ++count;
+//                    }
+//                }//rando options
+//
+//                if ((count == 2) || (count == 5)) {
+//                    //second letter
+//                    cL = (char) capLetters;
+//                    password += cL;
+//                    capLetters = rand.nextInt((90 - 65) + 1) + 65;
+//                    ++count;
+//                }//cap letters
+//
+//                if ((count == 3)) {
+//                    sL = (char) lowerLetters;
+//                    password += sL;
+//                    lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
+//                    ++count;
+//                }//third letter
+//
+//                nL = (char) numbers;
+//                numbers = rand.nextInt((57 - 48) + 1) + 65;
+//                password += nL;
+//                ++count;
+//            }
+//
+//            String to = request.getParameter("EmailPassword");
+//            String from = "bookstore.helper@gmail.com";
+//
+//            Properties prop = System.getProperties();
+//            prop.put("mail.smtp.host", "smtp.gmail.com");
+//            prop.put("mail.smtp.port", "587");
+//            prop.put("mail.smtp.starttls.enable", "true");
+//            prop.put("mail.smtp.auth", "true");
+//            prop.put("mail.smtp.ssl.trust", "*");
+//            final String emailUsername = "bookstore.helper@gmail.com";
+//            final String emailPassword = "oeprimytgjyhvsbc";
+//
+//            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+//                protected PasswordAuthentication getPasswordAuthentication() {
+//                    return new PasswordAuthentication(emailUsername, emailPassword);
+//                }
+//            });
+//
+//            try {
+//                MimeMessage context = new MimeMessage(sess);
+//                InternetAddress fromIA = new InternetAddress(from);
+//                context.setFrom(from);
+//                if (to != null) {
+//                    InternetAddress toIA = new InternetAddress(to);
+//                    context.addRecipient(Message.RecipientType.TO, toIA);
+//
+//                    context.setSubject("Testing out my mail sending code!");
+//                    context.setText("Here is your temporary password: " + password);
+//                    System.out.println("sending email...");
+//                    Transport.send(context);
+//                    System.out.println("Message sent successfully.");
+//                }
+//            } catch (MessagingException mE) {
+//                mE.printStackTrace();
+//            }
+//            String updateUserPassQuery = "UPDATE Users SET Password = ? where Email = ? ";
+//            PreparedStatement pstmt = connection.prepareStatement(updateUserPassQuery);
+//            pstmt.setString(1, password);
+//            pstmt.setString(2, request.getParameter("EmailPassword"));
+//            pstmt.executeUpdate();
+//        }
         if (request.getParameter("registerButton") != null) {
+//            String preHash = request.getParameter("newPassword");
+            String hashedPass = DigestUtils.sha256Hex(request.getParameter("newPassword"));
             String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) " + "VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement pstmt3 = connection.prepareStatement(addUserQuery);
             pstmt3.setString(1, request.getParameter("newEmail"));
-            pstmt3.setString(2, request.getParameter("newPassword"));
+            pstmt3.setString(2, hashedPass);
             pstmt3.setString(3, request.getParameter("newFirstName"));
             pstmt3.setString(4, request.getParameter("newLastName"));
             pstmt3.setString(5, request.getParameter("newPhoneNumber"));

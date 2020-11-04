@@ -54,5 +54,6 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="popper.js" level="application" />
     <orderEntry type="library" name="javax.mail" level="application" />
+    <orderEntry type="library" name="commons-codec-1.15" level="application" />
   </component>
 </module>
