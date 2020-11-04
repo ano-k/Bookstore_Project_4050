@@ -35,143 +35,190 @@
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
-//        if (request.getParameter("sendTempPass") != null) {
-//            Random rand = new Random();
-//            int capLetters = rand.nextInt((90-65)+1) + 65;
-//            int lowerLetters = rand.nextInt((122-97)+1) + 97;
-//            int numbers = rand.nextInt((57-48)+1) + 65;
-//            String password = "";
-//            char cL = 'a';
-//            char sL = 'a';
-//            char nL = 'a';
-//            int count = 0;
-//            int options = rand.nextInt(3);
-//
-//            while (count <8) {
-//                if ((count == 0) || (count == 4) || (count == 7)) {//this is for the first letter
-//                    if (options == 0) {
-//                        cL = (char) capLetters;
-//                        password += cL;
-//                        capLetters = rand.nextInt((90 - 65) + 1) + 65;
-//                        ++count;
-//                    } else if (options == 1) {
-//                        nL = (char) numbers;
-//                        password += nL;
-//                        numbers = rand.nextInt((57 - 48) + 1) + 65;
-//                        ++count;
-//                    } else {
-//                        sL = (char) lowerLetters;
-//                        password += sL;
-//                        lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
-//                        ++count;
-//                    }
-//                }//rando options
-//
-//                if ((count == 2) || (count == 5)) {
-//                    //second letter
-//                    cL = (char) capLetters;
-//                    password += cL;
-//                    capLetters = rand.nextInt((90 - 65) + 1) + 65;
-//                    ++count;
-//                }//cap letters
-//
-//                if ((count == 3)) {
-//                    sL = (char) lowerLetters;
-//                    password += sL;
-//                    lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
-//                    ++count;
-//                }//third letter
-//
-//                nL = (char) numbers;
-//                numbers = rand.nextInt((57 - 48) + 1) + 65;
-//                password += nL;
-//                ++count;
-//            }
-//
-//            String to = request.getParameter("EmailPassword");
-//            String from = "bookstore.helper@gmail.com";
-//
-//            Properties prop = System.getProperties();
-//            prop.put("mail.smtp.host", "smtp.gmail.com");
-//            prop.put("mail.smtp.port", "587");
-//            prop.put("mail.smtp.starttls.enable", "true");
-//            prop.put("mail.smtp.auth", "true");
-//            prop.put("mail.smtp.ssl.trust", "*");
-//            final String emailUsername = "bookstore.helper@gmail.com";
-//            final String emailPassword = "oeprimytgjyhvsbc";
-//
-//            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
-//                protected PasswordAuthentication getPasswordAuthentication() {
-//                    return new PasswordAuthentication(emailUsername, emailPassword);
-//                }
-//            });
-//
-//            try {
-//                MimeMessage context = new MimeMessage(sess);
-//                InternetAddress fromIA = new InternetAddress(from);
-//                context.setFrom(from);
-//                if (to != null) {
-//                    InternetAddress toIA = new InternetAddress(to);
-//                    context.addRecipient(Message.RecipientType.TO, toIA);
-//
-//                    context.setSubject("Testing out my mail sending code!");
-//                    context.setText("Here is your temporary password: " + password);
-//                    System.out.println("sending email...");
-//                    Transport.send(context);
-//                    System.out.println("Message sent successfully.");
-//                }
-//            } catch (MessagingException mE) {
-//                mE.printStackTrace();
-//            }
-//            String updateUserPassQuery = "UPDATE Users SET Password = ? where Email = ? ";
-//            PreparedStatement pstmt = connection.prepareStatement(updateUserPassQuery);
-//            pstmt.setString(1, password);
-//            pstmt.setString(2, request.getParameter("EmailPassword"));
-//            pstmt.executeUpdate();
-//        }
-        if (request.getParameter("registerButton") != null) {
-//            String preHash = request.getParameter("newPassword");
-            String hashedPass = DigestUtils.sha256Hex(request.getParameter("newPassword"));
-            String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) " + "VALUES (?, ?, ?, ?, ?) ";
-            PreparedStatement pstmt3 = connection.prepareStatement(addUserQuery);
-            pstmt3.setString(1, request.getParameter("newEmail"));
-            pstmt3.setString(2, hashedPass);
-            pstmt3.setString(3, request.getParameter("newFirstName"));
-            pstmt3.setString(4, request.getParameter("newLastName"));
-            pstmt3.setString(5, request.getParameter("newPhoneNumber"));
-            pstmt3.executeUpdate();
+        if (request.getParameter("sendTempPass") != null) {
+            Random rand = new Random();
+            int capLetters = rand.nextInt((90-65)+1) + 65;
+            int lowerLetters = rand.nextInt((122-97)+1) + 97;
+            int numbers = rand.nextInt((57-48)+1) + 65;
+            String password = "";
+            char cL = 'a';
+            char sL = 'a';
+            char nL = 'a';
+            int count = 0;
+            int options = rand.nextInt(3);
 
-            String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
-            PreparedStatement pstmt2 = connection.prepareStatement(addAddressQuery);
-            pstmt2.setString(1, request.getParameter("newEmail"));
-            pstmt2.setString(2, request.getParameter("newStreetAddress"));
-            pstmt2.setString(3, request.getParameter("newCity"));
-            pstmt2.setString(4, request.getParameter("newState"));
-            pstmt2.setString(5, request.getParameter("newZipCode"));
-            pstmt2.executeUpdate();
+            while (count <8) {
+                if ((count == 0) || (count == 4) || (count == 7)) {//this is for the first letter
+                    if (options == 0) {
+                        cL = (char) capLetters;
+                        password += cL;
+                        capLetters = rand.nextInt((90 - 65) + 1) + 65;
+                        ++count;
+                    } else if (options == 1) {
+                        nL = (char) numbers;
+                        password += nL;
+                        numbers = rand.nextInt((57 - 48) + 1) + 65;
+                        ++count;
+                    } else {
+                        sL = (char) lowerLetters;
+                        password += sL;
+                        lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
+                        ++count;
+                    }
+                }//rando options
 
-            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) " + "VALUES (?, ?, ?, ?, ?) ";
-            PreparedStatement pstmt = connection.prepareStatement(addPaymentQuery);
-            pstmt.setString(1, request.getParameter("newEmail"));
-            pstmt.setString(2, request.getParameter("newCardType"));
-            pstmt.setString(3, request.getParameter("newCardNumber"));
-            pstmt.setString(4, request.getParameter("newExpirationDate"));
-            pstmt.setString(5, request.getParameter("newCVV"));
+                if ((count == 2) || (count == 5)) {
+                    //second letter
+                    cL = (char) capLetters;
+                    password += cL;
+                    capLetters = rand.nextInt((90 - 65) + 1) + 65;
+                    ++count;
+                }//cap letters
+
+                if ((count == 3)) {
+                    sL = (char) lowerLetters;
+                    password += sL;
+                    lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
+                    ++count;
+                }//third letter
+
+                nL = (char) numbers;
+                numbers = rand.nextInt((57 - 48) + 1) + 65;
+                password += nL;
+                ++count;
+            }
+
+            String to = request.getParameter("EmailPassword");
+            String from = "bookstore.helper@gmail.com";
+
+            Properties prop = System.getProperties();
+            prop.put("mail.smtp.host", "smtp.gmail.com");
+            prop.put("mail.smtp.port", "587");
+            prop.put("mail.smtp.starttls.enable", "true");
+            prop.put("mail.smtp.auth", "true");
+            prop.put("mail.smtp.ssl.trust", "*");
+            final String emailUsername = "bookstore.helper@gmail.com";
+            final String emailPassword = "oeprimytgjyhvsbc";
+
+            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailUsername, emailPassword);
+                }
+            });
+
+            try {
+                MimeMessage context = new MimeMessage(sess);
+                InternetAddress fromIA = new InternetAddress(from);
+                context.setFrom(from);
+                if (to != null) {
+                    InternetAddress toIA = new InternetAddress(to);
+                    context.addRecipient(Message.RecipientType.TO, toIA);
+
+                    context.setSubject("Testing out my mail sending code!");
+                    context.setText("Here is your temporary password: " + password);
+                    System.out.println("sending email...");
+                    Transport.send(context);
+                    System.out.println("Message sent successfully.");
+                }
+            } catch (MessagingException mE) {
+                mE.printStackTrace();
+            }
+            String updateUserPassQuery = "UPDATE Users SET Password = ? where Email = ? ";
+            PreparedStatement pstmt = connection.prepareStatement(updateUserPassQuery);
+            String hashedPass = DigestUtils.sha256Hex(password);
+            pstmt.setString(1, hashedPass);
+            pstmt.setString(2, request.getParameter("EmailPassword"));
             pstmt.executeUpdate();
-        }
+        } else if (request.getParameter("registerButton") != null) {
+            String hashedPass = DigestUtils.sha256Hex(request.getParameter("newPassword"));
+            String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement addUserQuery_pmst = connection.prepareStatement(addUserQuery);
+            addUserQuery_pmst.setString(1, request.getParameter("newEmail"));
+            addUserQuery_pmst.setString(2, hashedPass);
+            addUserQuery_pmst.setString(3, request.getParameter("newFirstName"));
+            addUserQuery_pmst.setString(4, request.getParameter("newLastName"));
+            addUserQuery_pmst.setString(5, request.getParameter("newPhoneNumber"));
+            addUserQuery_pmst.executeUpdate();
 
-        if(request.getParameter("user") != null) {
+            String street = request.getParameter("newStreetAddress");
+            String city = request.getParameter("newCity");
+            String state = request.getParameter("newState");
+            String zip = request.getParameter("newZipCode");
+            String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement addAddressQuery_pmst = connection.prepareStatement(addAddressQuery);
+            addAddressQuery_pmst.setString(1, request.getParameter("newEmail"));
+            if(street != null && street != ""){
+                addAddressQuery_pmst.setString(2, street);
+            } else {
+                addAddressQuery_pmst.setString(2, "N/A");
+            }
+
+            if(city != null && city != ""){
+                addAddressQuery_pmst.setString(3, city);
+            } else {
+                addAddressQuery_pmst.setString(3, "N/A");
+            }
+
+            if(state != null && state != ""){
+                addAddressQuery_pmst.setString(4, state);
+            } else {
+                addAddressQuery_pmst.setString(4, "N/A");
+            }
+
+            if(zip != null && zip != ""){
+                addAddressQuery_pmst.setString(5, zip);
+            } else {
+                addAddressQuery_pmst.setString(5, "N/A");
+            }
+            addAddressQuery_pmst.executeUpdate();
+
+            String type = request.getParameter("newCardType");
+            String number = request.getParameter("newCardNumber");
+            String expiration = request.getParameter("newExpirationDate");
+            String cvv = request.getParameter("newCVV");
+            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement addPaymentQuery_pmst = connection.prepareStatement(addPaymentQuery);
+            addPaymentQuery_pmst.setString(1, request.getParameter("newEmail"));
+            if(type != null && type != "") {
+                addPaymentQuery_pmst.setString(2, type);
+            } else {
+                addPaymentQuery_pmst.setString(2, "N/A");
+            }
+
+            if(number != null && number != "") {
+                addPaymentQuery_pmst.setString(3, number);
+            } else {
+                addPaymentQuery_pmst.setString(3, "N/A");
+            }
+
+            if(expiration != null && expiration != "") {
+                addPaymentQuery_pmst.setString(4, expiration);
+            } else {
+                addPaymentQuery_pmst.setString(4, "N/A");
+            }
+            if(cvv != null && cvv != "") {
+                addPaymentQuery_pmst.setString(5, cvv);
+            } else {
+                addPaymentQuery_pmst.setString(5, "N/A");
+            }
+            addPaymentQuery_pmst.executeUpdate();
+            %>
+            <form class ="input-form" id="userInfoForm" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
+                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("newEmail")%>/>
+            </form>
+            <script>
+                document.getElementById("userInfoForm").submit();
+            </script>
+        <% } else if(request.getParameter("user") != null) {
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
-                    if(request.getParameter("password").equals(userResults.getString(3))){%>
-                        <form class ="input-form" id="userInfoForm"  method="post">
+                    if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3))){%>
+                        <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getString(2)%>/>
                             <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
                         </form>
                         <script>
                             var type = document.getElementById("currentUserType").value;
-                            console.log(type);
                             if(type == "0/") {
                                 document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/Homepage.jsp";
                             }
@@ -203,11 +250,15 @@
     </header>
     <main>
         <nav id ="nav_menu">
-            <a href="Homepage.jsp">Find Books</a>
-            <a href="Login.jsp" class="current">Login/Register</a>
-            <a href="ViewCart.jsp">View Cart</a>
-            <a href="EditProfile.jsp">Edit Profile</a>
-            <a href="OrderHistory.html">Order History</a>
+            <form id ="find_books" method="post" action="Homepage.jsp">
+                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+            </form>
+<%--            <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
+<%--                <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
+<%--                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
+<%--                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
+<%--                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
+<%--            </form>--%>
         </nav>
 
         <div class="main content">
@@ -407,7 +458,7 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-5 md-form">
                                                 <label class="form-label" for="newExpirationDate"><b>Expiration Date</b></label>
-                                                <input type="date" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
+                                                <input type="text" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
                                             </div>
                                             <div class="form-group col-md-5 md-form">
                                                 <select id = "newCardType" name="newCardType" data-width="100%">
@@ -419,7 +470,7 @@
                                             </div>
                                             <div class="form-group col-md-2 md-form">
                                                 <label class="form-label" for="newCVV"><b>CVV</b></label>
-                                                <input type="input" id="newCVV" name="newCVV" class="form-control" pattern="[0-9]{3,4}" />
+                                                <input type="text" id="newCVV" name="newCVV" class="form-control" pattern="[0-9]{3,4}" />
                                                 <div class = "invalid-feedback">Please provide a valid CVV</div>
                                             </div>
                                         </div>

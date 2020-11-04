@@ -1,180 +1,166 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: mpcer
-  Date: 9/29/2020
-  Time: 10:34 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Edit Profile</title>
-</head>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="stylesheet.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Edit Profile</title>
+    </head>
 <body>
 <%
-    if(request.getParameter("currentUserEmail") == null) {
-        String redirect = new String("/Bookstore_Project_4050_war_exploded/Login.jsp");
-        response.setStatus(response.SC_MOVED_TEMPORARILY);
-        response.setHeader("Location", redirect);
-    } //checks if the user is already logged in
-    else {
+//    if(request.getParameter("currentUserEmail") == null) {
+//        String redirect = new String("/Bookstore_Project_4050_war_exploded/Login.jsp");
+//        response.setStatus(response.SC_MOVED_TEMPORARILY);
+//        response.setHeader("Location", redirect);
+//    } //checks if the user is already logged in
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
-
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
         String dbPassword = "Hakar123";
+
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+            String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
+            PreparedStatement address_pmst = connection.prepareStatement(address);
+            address_pmst.setString(1, userEmail);
+            ResultSet addressResults = address_pmst.executeQuery();
 
+            String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
+            PreparedStatement payment_pmst = connection.prepareStatement(payment);
+            payment_pmst.setString(1, userEmail);
+            ResultSet paymentResults = payment_pmst.executeQuery();
+
+            String personalInfo = "SELECT * FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
+            PreparedStatement personalInfo_pmst = connection.prepareStatement(personalInfo);
+            personalInfo_pmst.setString(1, userEmail);
+            ResultSet personalResults = personalInfo_pmst.executeQuery();
             if(request.getParameter("editAddressButton") != null) {
                 String updateAddressQuery = "UPDATE Address SET Street = ?, City = ?, State = ?, Zipcode = ? WHERE ID = ? ";
-                PreparedStatement pstmt6 = connection.prepareStatement(updateAddressQuery);
-                pstmt6.setString(1, request.getParameter("updateStreetAddress"));
-                pstmt6.setString(2, request.getParameter("updateCity"));
-                pstmt6.setString(3, request.getParameter("updateState"));
-                pstmt6.setInt(4, (int)Integer.parseInt(request.getParameter("updateZipCode")));
-                pstmt6.setInt(5, (int)Integer.parseInt(request.getParameter("addressID")));
-                pstmt6.executeUpdate();
-            }
+                PreparedStatement updateAddressQuery_pmst = connection.prepareStatement(updateAddressQuery);
+                updateAddressQuery_pmst.setString(1, request.getParameter("updateStreetAddress"));
+                updateAddressQuery_pmst.setString(2, request.getParameter("updateCity"));
+                updateAddressQuery_pmst.setString(3, request.getParameter("updateState"));
+                updateAddressQuery_pmst.setString(4, request.getParameter("updateZipCode"));
+                updateAddressQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addressID")));
+                updateAddressQuery_pmst.executeUpdate();
 
-            if(request.getParameter("editPaymentButton") != null) {
+            } else if(request.getParameter("editPaymentButton") != null) {
                 String updatePaymentQuery = "UPDATE Payment SET Type = ?, Number = ?, Expiration = ?, CVV = ? WHERE ID = ? ";
-                PreparedStatement pstmt6 = connection.prepareStatement(updatePaymentQuery);
-                pstmt6.setString(1, request.getParameter("updateCardType"));
-                pstmt6.setString(2, request.getParameter("updateCardNumber"));
-                pstmt6.setString(3, request.getParameter("updateExpirationDate"));
-                pstmt6.setInt(4, (int)Integer.parseInt(request.getParameter("updateCVV")));
-                pstmt6.setInt(5, (int)Integer.parseInt(request.getParameter("paymentID")));
-                pstmt6.executeUpdate();
-            }
+                PreparedStatement updatePaymentQuery_pmst = connection.prepareStatement(updatePaymentQuery);
+                updatePaymentQuery_pmst.setString(1, request.getParameter("updateCardType"));
+                updatePaymentQuery_pmst.setString(2, request.getParameter("updateCardNumber"));
+                updatePaymentQuery_pmst.setString(3, request.getParameter("updateExpirationDate"));
+                updatePaymentQuery_pmst.setString(4, request.getParameter("updateCVV"));
+                updatePaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("paymentID")));
+                updatePaymentQuery_pmst.executeUpdate();
 
-            if(request.getParameter("editPersonalButton") != null) {
+            } else if(request.getParameter("editPersonalButton") != null) {
                 String updatePersonalQuery = "UPDATE Users SET FirstName = ?, LastName = ?, Phone = ? WHERE Email = ? ";
-                PreparedStatement pstmt7 = connection.prepareStatement(updatePersonalQuery);
-                pstmt7.setString(1, request.getParameter("updateFirstName"));
-                pstmt7.setString(2, request.getParameter("updateLastName"));
-                pstmt7.setString(3, request.getParameter("updatePhoneNumber"));
-                pstmt7.setString(4, userEmail);
-                pstmt7.executeUpdate();
-            }
+                PreparedStatement updatePersonalQuery_pmst = connection.prepareStatement(updatePersonalQuery);
+                updatePersonalQuery_pmst.setString(1, request.getParameter("updateFirstName"));
+                updatePersonalQuery_pmst.setString(2, request.getParameter("updateLastName"));
+                updatePersonalQuery_pmst.setString(3, request.getParameter("updatePhoneNumber"));
+                updatePersonalQuery_pmst.setString(4, userEmail);
+                updatePersonalQuery_pmst.executeUpdate();
 
-            if(request.getParameter("deleteAddressButton") != null) {
+            } else if(request.getParameter("deleteAddressButton") != null) {
                 String deleteAddressQuery = "DELETE FROM Address WHERE ID = ?";
-                PreparedStatement pstmt8 = connection.prepareStatement(deleteAddressQuery);
-                pstmt8.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
-                int row = pstmt8.executeUpdate();
-            }
+                PreparedStatement deleteAddressQuery_pmst = connection.prepareStatement(deleteAddressQuery);
+                deleteAddressQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
+                deleteAddressQuery_pmst.executeUpdate();
 
-            if(request.getParameter("deletePaymentButton") != null) {
+            } else if(request.getParameter("deletePaymentButton") != null) {
                 String deletePaymentQuery = "DELETE FROM Payment WHERE ID = ?";
-                PreparedStatement pstmt9 = connection.prepareStatement(deletePaymentQuery);
-                pstmt9.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
-                int row = pstmt9.executeUpdate();
-            }
+                PreparedStatement deletePaymentQuery_pmst = connection.prepareStatement(deletePaymentQuery);
+                deletePaymentQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
+                deletePaymentQuery_pmst.executeUpdate();
 
-            if(request.getParameter("addAddressButton") != null) {
+            } else if(request.getParameter("addAddressButton") != null) {
                 String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
-                PreparedStatement pstmt10 = connection.prepareStatement(addAddressQuery);
-                pstmt10.setString(1, userEmail);
-                pstmt10.setString(2, request.getParameter("addStreetAddress"));
-                pstmt10.setString(3, request.getParameter("addCity"));
-                pstmt10.setString(4, request.getParameter("addState"));
-                pstmt10.setInt(5, (int)Integer.parseInt(request.getParameter("addZipCode")));
-                pstmt10.executeUpdate();
-            }
+                PreparedStatement addAddressQuery_pmst = connection.prepareStatement(addAddressQuery);
+                addAddressQuery_pmst.setString(1, userEmail);
+                addAddressQuery_pmst.setString(2, request.getParameter("addStreetAddress"));
+                addAddressQuery_pmst.setString(3, request.getParameter("addCity"));
+                addAddressQuery_pmst.setString(4, request.getParameter("addState"));
+                addAddressQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addZipCode")));
+                addAddressQuery_pmst.executeUpdate();
 
-            if(request.getParameter("addPaymentButton") != null) {
+            } else if(request.getParameter("addPaymentButton") != null) {
                 String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
-                PreparedStatement pstmt11 = connection.prepareStatement(addPaymentQuery);
-                pstmt11.setString(1, userEmail);
-                pstmt11.setString(2, request.getParameter("addCardType"));
-                pstmt11.setString(3, request.getParameter("addCardNumber"));
-                pstmt11.setString(4, request.getParameter("addExpirationDate"));
-                pstmt11.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
-                pstmt11.executeUpdate();
-            }
+                PreparedStatement addPaymentQuery_pmst = connection.prepareStatement(addPaymentQuery);
+                addPaymentQuery_pmst.setString(1, userEmail);
+                addPaymentQuery_pmst.setString(2, request.getParameter("addCardType"));
+                addPaymentQuery_pmst.setString(3, request.getParameter("addCardNumber"));
+                addPaymentQuery_pmst.setString(4, request.getParameter("addExpirationDate"));
+                addPaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
+                addPaymentQuery_pmst.executeUpdate();
 
-            if(request.getParameter("editPasswordButton") != null) {
+            } else if(request.getParameter("editPasswordButton") != null) {
                 String updatePasswordQuery = "UPDATE Users SET Password = ? WHERE Email = ? ";
-                PreparedStatement pstmt12 = connection.prepareStatement(updatePasswordQuery);
-                pstmt12.setString(1, request.getParameter("confirmNewPassword"));
-                pstmt12.setString(2, userEmail);
-                pstmt12.executeUpdate();
+                PreparedStatement updatePasswordQuery_pmst = connection.prepareStatement(updatePasswordQuery);
+                updatePasswordQuery_pmst.setString(1, request.getParameter("confirmNewPassword"));
+                updatePasswordQuery_pmst.setString(2, userEmail);
+                updatePasswordQuery_pmst.executeUpdate();
             }
-
-            //address info query
-            String addressQuery = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
-            PreparedStatement pstmt1 = connection.prepareStatement(addressQuery);
-            pstmt1.setString(1, userEmail);
-            ResultSet addressResults = pstmt1.executeQuery();
-
-            //payment info query
-            String paymentQuery = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
-            PreparedStatement pstmt2 = connection.prepareStatement(paymentQuery);
-            pstmt2.setString(1, userEmail);
-            ResultSet paymentResults = pstmt2.executeQuery();
-
-            //personal info query
-            String personalQuery = "SELECT * FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
-            PreparedStatement pstmt3 = connection.prepareStatement(personalQuery);
-            pstmt3.setString(1, userEmail);
-            ResultSet personalResults = pstmt3.executeQuery();
 
             //states table query
-            String statesQuery = "SELECT * FROM States"; //get a list of states
-            PreparedStatement pstmt4 = connection.prepareStatement(statesQuery);
-            ResultSet statesResults = pstmt4.executeQuery();
+//            String statesQuery = "SELECT * FROM States"; //get a list of states
+//            PreparedStatement pstmt4 = connection.prepareStatement(statesQuery);
+//            ResultSet statesResults = pstmt4.executeQuery();
 
             //card types table query
-            String cardTypesQuery = "SELECT * FROM CardTypes"; //get a list of card types
-            PreparedStatement pstmt5 = connection.prepareStatement(cardTypesQuery);
-            ResultSet cardTypesResults = pstmt5.executeQuery();
+//            String cardTypesQuery = "SELECT * FROM CardTypes"; //get a list of card types
+//            PreparedStatement pstmt5 = connection.prepareStatement(cardTypesQuery);
+//            ResultSet cardTypesResults = pstmt5.executeQuery();
 
 %>
-
-<script>
-    function compareValue(id, dbValue) {
-
-        var select = document.getElementById(id);
-        var x = select.options.length;
-
-        for (var i = 0; i < x; i++) {
-            if (dbValue === select.options[i].value) {
-                select.options[i].selected = true;
-            }
-        }
-    }
-</script>
-
 <div class="column left"></div>
 
 <div class="column middle">
     <header>
-        <h1 class="page-header">Online Bookstore</h1>
+        <h1 class="page-header">
+            <span style="color: red" class="logo">B</span>
+            <span style="color: orange" class="logo">OO</span>
+            <span style="color: limegreen" class="logo">K</span>
+            <span style="color: red" class="logo">S </span>
+            <backward><span style="color: royalblue" class="logo"> R </span></backward>
+            <span style="color: limegreen" class="logo"> U</span>
+            <span style="color: red" class="logo">S</span>
+        </h1>
     </header>
 
     <main>
         <nav id ="nav_menu">
-            <a href="Homepage.jsp">Find Books</a>
-            <a href="Login.jsp">Login/Register</a>
-            <a href="ViewCart.jsp">View Cart</a>
-            <a href="EditProfile.jsp" class="current">Edit Profile</a>
-            <a href="OrderHistory.html">Order History</a>
+            <form id ="find_books" method="post" action="Homepage.jsp">
+                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+            </form>
+
+            <%--            <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
+<%--                <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
+<%--                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
+<%--                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
+<%--                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
+<%--            </form>--%>
         </nav>
 
         <div class="main content">
             <div class="cart-information">
                 <h2 class="page-header">Edit Profile</h2>
-                <br>
-
                 <h6 class="page-header">Personal Information</h6>
                 <%-- Table for personal information --%>
                 <table class="table">
@@ -202,8 +188,7 @@
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="updateFirstName">First Name</label>
                                                     <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" value="<%=personalResults.getString(6)%>"/>
@@ -245,8 +230,7 @@
                                         <div class="container">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="newPassword">New Password</label>
                                                     <input type="text" id="newPassword" name="newPassword" class="form-input" />
@@ -274,7 +258,6 @@
                     </div>
 
                     <tr>
-
                         <td><%=personalResults.getString(6)%></td>
                         <td><%=personalResults.getString(7)%></td>
                         <td><%=personalResults.getString(8)%></td>
@@ -287,9 +270,7 @@
                             </button>
                         </td>
                     </tr>
-
                     <% } %>
-
                     </tbody>
                 </table>
 
@@ -341,11 +322,58 @@
                                                 <div class="form-group col-md-4">
                                                     <label class="form-label" for="updateState">State</label>
                                                     <select id="updateState" name="updateState" class="form-input">
-                                                        <%
-                                                            statesResults = pstmt4.executeQuery();
-                                                            while(statesResults.next()){ %>
-                                                            <option value = <%=statesResults.getString(2)%> <%if(statesResults.getString(2).equals(addressResults.getString(5))){%> selected <%}%> > <%=statesResults.getString(2)%> </option>
-                                                        <%}%>
+                                                        <option value="" selected disabled hidden>State</option>
+                                                        <option value="Alabama">Alabama</option>
+                                                        <option value="Alaska">Alaska</option>
+                                                        <option value="Arizona">Arizona</option>
+                                                        <option value="Arkansas">Arkansas</option>
+                                                        <option value="California">California</option>
+                                                        <option value="Colorado">Colorado</option>
+                                                        <option value="Connecticut">Connecticut</option>
+                                                        <option value="Delaware">Delaware</option>
+                                                        <option value="District Of Columbia">District Of Columbia</option>
+                                                        <option value="Florida">Florida</option>
+                                                        <option value="Georgia">Georgia</option>
+                                                        <option value="Hawaii">Hawaii</option>
+                                                        <option value="Idaho">Idaho</option>
+                                                        <option value="Illinois">Illinois</option>
+                                                        <option value="Indiana">Indiana</option>
+                                                        <option value="Iowa">Iowa</option>
+                                                        <option value="Kansas">Kansas</option>
+                                                        <option value="Kentucky">Kentucky</option>
+                                                        <option value="Louisiana">Louisiana</option>
+                                                        <option value="Maine">Maine</option>
+                                                        <option value="Maryland">Maryland</option>
+                                                        <option value="Massachusetts">Massachusetts</option>
+                                                        <option value="Michigan">Michigan</option>
+                                                        <option value="Minnesota">Minnesota</option>
+                                                        <option value="Mississippi">Mississippi</option>
+                                                        <option value="Missouri">Missouri</option>
+                                                        <option value="Montana">Montana</option>
+                                                        <option value="Nebraska">Nebraska</option>
+                                                        <option value="Nevada">Nevada</option>
+                                                        <option value="New Hampshire">New Hampshire</option>
+                                                        <option value="New Jersey">New Jersey</option>
+                                                        <option value="New Mexico">New Mexico</option>
+                                                        <option value="New York">New York</option>
+                                                        <option value="North Carolina">North Carolina</option>
+                                                        <option value="North Dakota">North Dakota</option>
+                                                        <option value="Ohio">Ohio</option>
+                                                        <option value="Oklahoma">Oklahoma</option>
+                                                        <option value="Oregon">Oregon</option>
+                                                        <option value="Pennsylvania">Pennsylvania</option>
+                                                        <option value="Rhode Island">Rhode Island</option>
+                                                        <option value="South Carolina">South Carolina</option>
+                                                        <option value="South Dakota">South Dakota</option>
+                                                        <option value="Tennessee">Tennessee</option>
+                                                        <option value="Texas">Texas</option>
+                                                        <option value="Utah">Utah</option>
+                                                        <option value="Vermont">Vermont</option>
+                                                        <option value="Virginia">Virginia</option>
+                                                        <option value="Washington">Washington</option>
+                                                        <option value="West Virginia">West Virginia</option>
+                                                        <option value="Wisconsin">Wisconsin</option>
+                                                        <option value="Wyoming">Wyoming</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3">
@@ -379,8 +407,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <p>Are you sure you want to delete this address?</p>
                                                 </div>
@@ -397,7 +424,6 @@
                     </div>
 
                     <tr>
-
                         <td><%=addressResults.getString(3)%></td>
                         <td><%=addressResults.getString(4)%></td>
                         <td><%=addressResults.getString(5)%></td>
@@ -411,12 +437,11 @@
                             </button>
                         </td>
                     </tr>
-
                     <% } %>
 
                     </tbody>
                 </table>
-                <div class="modal fade" id=<%="addAddress"%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -430,8 +455,7 @@
                                     <div class="container">
                                         <div class="form-row">
                                             <div class="form-group col-md">
-                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
                                                 <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input"/>
@@ -514,7 +538,7 @@
                     </div>
                 </div>
                 <% if(countAddressRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#addAddress"%>>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
                     Add
                 </button>
                 <% } %>
@@ -553,17 +577,15 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-4">
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="updateCardType">Card Type</label>
                                                     <select id="updateCardType" name="updateCardType" class="form-input">
-                                                        <%
-                                                            while(cardTypesResults.next()){ %>
-                                                        <option value = <%=cardTypesResults.getString(2)%> <%if(cardTypesResults.getString(2).equals(paymentResults.getString(3))){%> selected <%}%> > <%=cardTypesResults.getString(2)%> </option>
-                                                        <%}%>
+                                                        <option value="" selected disabled hidden>Card Type</option>
+                                                        <option value="Visa">Visa</option>
+                                                        <option value="Amex">Amex</option>
+                                                        <option value="MasterCard">MasterCard</option>
                                                     </select>
-                                                    <%-- <script> compareValue("newCardType", "<%=paymentResults.getString(3)%>"); </script> --%>
                                                 </div>
                                                 <div class="form-group col-md-8">
                                                     <label class="form-label" for="updateCardNumber">Card Number</label>
@@ -607,8 +629,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <p>Are you sure you want to delete this payment information?</p>
                                                 </div>
@@ -625,7 +646,6 @@
                     </div>
 
                     <tr>
-
                         <td><%=paymentResults.getString(3)%></td>
                         <td><%=paymentResults.getString(4)%></td>
                         <td><%=paymentResults.getString(5)%></td>
@@ -644,7 +664,7 @@
 
                     </tbody>
                 </table>
-                <div class="modal fade" id=<%="addPayment"%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -659,7 +679,6 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                 <label class="form-label" for="addCardType">Card Type</label>
                                                 <select class="form-input" id="addCardType" name="addCardType">
@@ -693,26 +712,20 @@
                         </div>
                     </div>
                 </div>
+
                 <% if(countPaymentRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#addPayment"%>>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
                     Add
                 </button>
-                <% } %>
+                <%}%>
             </div>
         </div>
     </main>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-</body>
 <%
-        }
-            catch (SQLException e){
+        } catch (SQLException e){
             //out.println("<p>Unsuccessful connection to database</p>");
             e.printStackTrace();
         }
-    }
 %>
 </html>
