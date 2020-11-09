@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
@@ -29,7 +30,7 @@
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "Hakar123";
+        String dbPassword = "G97t678!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -109,11 +110,29 @@
                 addPaymentQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("editPasswordButton") != null) {
-                String updatePasswordQuery = "UPDATE Users SET Password = ? WHERE Email = ? ";
-                PreparedStatement updatePasswordQuery_pmst = connection.prepareStatement(updatePasswordQuery);
-                updatePasswordQuery_pmst.setString(1, request.getParameter("confirmNewPassword"));
-                updatePasswordQuery_pmst.setString(2, userEmail);
-                updatePasswordQuery_pmst.executeUpdate();
+                //get new pass, current pass and hash it to compare
+                String newPass = request.getParameter("newPassword");
+                String currentHashedPass = DigestUtils.sha256Hex(request.getParameter("currentPassword"));
+
+                String checkPasswordQuery = "SELECT Password FROM Users WHERE Email = ? ";
+                PreparedStatement checkPassword_pmst = connection.prepareStatement(checkPasswordQuery);
+                checkPassword_pmst.setString(1, userEmail);
+                ResultSet checkPassResults = checkPassword_pmst.executeQuery();
+                System.out.println("Hey Im before 117");
+                checkPassResults.next();
+                String dataPass = checkPassResults.getString(1);
+
+                if(dataPass.equals(currentHashedPass)){//checks password
+                    if(newPass.equals(request.getParameter("confirmNewPassword"))){
+                        String hashedPass = DigestUtils.sha256Hex(request.getParameter("confirmNewPassword"));
+                        String updatePasswordQuery = "UPDATE Users SET Password = ? WHERE Email = ? ";
+                        PreparedStatement updatePasswordQuery_pmst = connection.prepareStatement(updatePasswordQuery);
+                        updatePasswordQuery_pmst.setString(1, hashedPass);
+                        updatePasswordQuery_pmst.setString(2, userEmail);
+                        updatePasswordQuery_pmst.executeUpdate();
+                    }
+                }
+
             }
 
             //states table query
@@ -144,11 +163,15 @@
 
     <main>
         <nav id ="nav_menu">
-            <form id ="find_books" method="post" action="Homepage.jsp">
-                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+            <ul>
+           <li><form id ="find_books" method="post" action="Homepage.jsp">
+               <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-            </form>
+           </form></li>
+            <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+            </form></li>
 
             <%--            <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
 <%--                <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
@@ -156,6 +179,7 @@
 <%--                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
 <%--                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
 <%--            </form>--%>
+            </ul>
         </nav>
 
         <div class="main content">
@@ -240,6 +264,7 @@
                                                     <input type="text" id="confirmNewPassword" name="confirmNewPassword" class="form-input" />
                                                 </div>
                                             </div>
+
                                             <div class="form-row">
                                                 <div class="form-group col-md">
                                                     <label class="form-label" for="currentPassword">Current Password</label>
@@ -256,6 +281,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <tr>
                         <td><%=personalResults.getString(6)%></td>

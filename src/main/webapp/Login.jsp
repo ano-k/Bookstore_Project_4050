@@ -28,8 +28,9 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "G97t678!";
     Connection connection = null;
+    System.out.println("HEEEEEEEEEEY");
     try { 
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
@@ -250,15 +251,17 @@
     </header>
     <main>
         <nav id ="nav_menu">
-            <form id ="find_books" method="post" action="Homepage.jsp">
+            <ul>
+            <li><form id ="find_books" method="post" action="Homepage.jsp">
                 <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
-            </form>
+            </form></li>
 <%--            <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
 <%--                <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
 <%--                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
 <%--                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
 <%--                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
 <%--            </form>--%>
+            </ul>
         </nav>
 
         <div class="main content">

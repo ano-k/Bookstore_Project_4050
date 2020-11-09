@@ -69,7 +69,8 @@
     </header>
     <main>
         <nav id ="nav_menu" style="align-content: center">
-            <form id ="login_edit" method="post" action=<%if(request.getParameter("currentUserEmail") == null){%>
+            <ul>
+            <li><form id ="login_edit" method="post" action=<%if(request.getParameter("currentUserEmail") == null){%>
                     "/Bookstore_Project_4050_war_exploded/Login.jsp" <%}else {%>
                      "/Bookstore_Project_4050_war_exploded/EditProfile.jsp"
             <%}%>>
@@ -80,13 +81,17 @@
                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                 <%}%>
-            </form>
+                </form></li>
+                <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                </form></li>
     <%--        <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
     <%--            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
     <%--            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
     <%--            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
     <%--            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
     <%--        </form>--%>
+            </ul>
         </nav>
     <div class="temp-information">
         <div class="hp-sidebar">
