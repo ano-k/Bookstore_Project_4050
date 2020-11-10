@@ -30,7 +30,7 @@
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "G97t678!";
+        String dbPassword = "WebProg2020";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -118,7 +118,6 @@
                 PreparedStatement checkPassword_pmst = connection.prepareStatement(checkPasswordQuery);
                 checkPassword_pmst.setString(1, userEmail);
                 ResultSet checkPassResults = checkPassword_pmst.executeQuery();
-                System.out.println("Hey Im before 117");
                 checkPassResults.next();
                 String dataPass = checkPassResults.getString(1);
 

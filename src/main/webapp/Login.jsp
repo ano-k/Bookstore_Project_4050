@@ -28,10 +28,9 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "G97t678!";
+    String dbPassword = "WebProg2020";
     Connection connection = null;
-    System.out.println("HEEEEEEEEEEY");
-    try { 
+    try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
