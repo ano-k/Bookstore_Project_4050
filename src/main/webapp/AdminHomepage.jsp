@@ -58,7 +58,13 @@
                 updateBookQuery_pmst.setString(12, request.getParameter("ISBN"));
                 updateBookQuery_pmst.executeUpdate();
 
-            } if(request.getParameter("addBookButton") != null) {
+            } else if(request.getParameter("archiveBookButton") != null) {
+                String archiveBookQuery = "UPDATE Books SET IsArchived = 1 WHERE ISBN = ? ";
+                PreparedStatement archiveBookQuery_pmst = connection.prepareStatement(archiveBookQuery);
+                archiveBookQuery_pmst.setString(1, request.getParameter("ISBN"));
+                archiveBookQuery_pmst.executeUpdate();
+
+            } else if(request.getParameter("addBookButton") != null) {
                 String newBookQuery = "INSERT INTO Books (Quantity, ISBN, Title, Author, Edition, Publisher, Year, Genre, Image, MinThreshold, BuyPrice, SellPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
                 PreparedStatement newBookQuery_pmst = connection.prepareStatement(newBookQuery);
                 newBookQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("updateQuantity")));
@@ -134,13 +140,13 @@
                   }
                 }
 
-            }//TODO: archive book query thing
+            }
 
             String promotionQuery = "SELECT * FROM Promotions "; //get a list of all promotions
             PreparedStatement promotion_pmst = connection.prepareStatement(promotionQuery);
             ResultSet promotionResults = promotion_pmst.executeQuery();
 
-            String bookQuery = "SELECT * FROM Books "; //get a list of all books
+            String bookQuery = "SELECT * FROM Books WHERE IsArchived = 0 "; //get a list of all books
             PreparedStatement book_pmst = connection.prepareStatement(bookQuery);
             ResultSet bookResults = book_pmst.executeQuery();
 
@@ -365,95 +371,11 @@
             </td>
             <td>
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editUser_" + i%>>
-                Launch demo modal
-              </button>
-            </td>
-          </tr>
-          <!-- Button trigger modal -->
-
-          <%--
-          <div class="modal fade" id=<%="editUser_" + userResults.getString(3)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Edit User Details</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
-                  <div class="modal-body">
-                    <div class="container">
-                      <div class="form-row">
-                        <div class="form-group col-md-6">
-                          <input type="hidden" id="email" name="email" value="<%=userResults.getString(3)%>"/>
-                          <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                          <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                          <label class="form-label" for="updateType">Type</label>
-                          <select id="updateType" name="updateType" class="form-input">
-                            <option value="" selected disabled hidden>Type</option>
-                            <option value=0>User</option>
-                            <option value=1>Employee</option>
-                            <option value=2>Admin</option>
-                          </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                          <label class="form-label" for="updateStatus">Status</label>
-                          <select id="updateStatus" name="updateStatus" class="form-input">
-                            <option value="" selected disabled hidden>Status</option>
-                            <option value=0>Inactive</option>
-                            <option value=1>Active</option>
-                            <option value=2>Suspended</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="editUserButton" name="editUserButton">Save changes</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <tr>
-            <td><%=userResults.getString(5)%></td>
-            <td><%=userResults.getString(3)%></td>
-            <td><%=userResults.getString(6)%></td>
-            <td><%=userResults.getString(7)%></td>
-            <td>
-              <%if(userResults.getInt(1) == 0) {
-                %>User<%
-              } else if(userResults.getInt(1) == 1) {
-                 %>Employee<%
-              } else if(userResults.getInt(1) == 2) {
-                %>Administrator<%
-              } else if(userResults.getInt(1) == 3) {
-                %>System Admininistrator<%
-              } else {
-                %>Invalid<%
-              }%>
-            </td>
-            <td>
-              <%if(userResults.getInt(2) == 0) {
-                %>Inactive<%
-              } else if(userResults.getInt(2) == 1) {
-                %>Active<%
-              } else if(userResults.getInt(2) == 2) {
-                %>Suspended<%
-              } else {
-                %>Invalid<%
-              }%>
-            </td>
-            <td>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editUser_" + userResults.getString(3)%>>
                 Edit
               </button>
             </td>
           </tr>
-          --%>
+
           <% i++;
             } %>
 
@@ -570,38 +492,37 @@
             </div>
           </div>
 
-          <%-- TODO: Make this the archive book button
-          <div class="modal fade" id=<%="deletePayment_" + paymentResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id=<%="archiveBook_" + bookResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Delete Payment Information</h5>
+                  <h5 class="modal-title">Archive Book</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
                   <div class="modal-body">
                     <div class="container">
                       <div class="form-row">
                         <div class="form-group col-md">
-                          <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
+                          <input type="hidden" id="ISBN" name="ISBN" value="<%=bookResults.getString(2)%>"/>
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                          <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                          <p>Are you sure you want to delete this payment information?</p>
+                          <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                          <p>Are you sure you want to archive this book?</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger" name="deletePaymentButton">Delete Payment Information</button>
+                    <button type="submit" class="btn btn-danger" name="archiveBookButton">Archive Book</button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-          --%>
+
 
           <tr>
             <td><%=bookResults.getString(1)%></td>
@@ -612,11 +533,10 @@
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editBook_" + bookResults.getString(2)%>>
                 Edit
               </button>
-              <%--
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#deletePayment_" + paymentResults.getInt(1)%>>
-                Delete
-              </button
-              --%>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#archiveBook_" + bookResults.getString(2)%>>
+                Archive
+              </button>
+
             </td>
           </tr>
 
