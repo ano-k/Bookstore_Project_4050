@@ -45,18 +45,35 @@
                 String updateBookQuery = "UPDATE Books SET Quantity = ?, Title = ?, Author = ?, Edition = ?, Publisher = ?, Year = ?, Genre = ?, Image = ?, MinThreshold = ?, BuyPrice = ?, SellPrice = ? WHERE ISBN = ? ";
                 PreparedStatement updateBookQuery_pmst = connection.prepareStatement(updateBookQuery);
                 updateBookQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("updateQuantity")));
-                updateBookQuery_pmst.setString(2, request.getParameter("updateISBN"));
-                updateBookQuery_pmst.setString(3, request.getParameter("updateTitle"));
-                updateBookQuery_pmst.setString(4, request.getParameter("updateAuthor"));
-                updateBookQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("updateEdition")));
-                updateBookQuery_pmst.setString(6, request.getParameter("updatePublisher"));
-                updateBookQuery_pmst.setInt(7, (int)Integer.parseInt(request.getParameter("updateYear")));
+                updateBookQuery_pmst.setString(2, request.getParameter("updateTitle"));
+                updateBookQuery_pmst.setString(3, request.getParameter("updateAuthor"));
+                updateBookQuery_pmst.setInt(4, (int)Integer.parseInt(request.getParameter("updateEdition")));
+                updateBookQuery_pmst.setString(5, request.getParameter("updatePublisher"));
+                updateBookQuery_pmst.setString(6, request.getParameter("updateYear"));
+                updateBookQuery_pmst.setInt(7, (int)Integer.parseInt(request.getParameter("updateGenre")));
                 updateBookQuery_pmst.setString(8, request.getParameter("updateImage"));
                 updateBookQuery_pmst.setDouble(9, (double)Double.parseDouble(request.getParameter("updateMinThreshold")));
                 updateBookQuery_pmst.setDouble(10, (double)Double.parseDouble(request.getParameter("updateBuyPrice")));
                 updateBookQuery_pmst.setDouble(11, (double)Double.parseDouble(request.getParameter("updateSellPrice")));
-                updateBookQuery_pmst.setInt(12, (int)Integer.parseInt(request.getParameter("ISBN")));
+                updateBookQuery_pmst.setString(12, request.getParameter("ISBN"));
                 updateBookQuery_pmst.executeUpdate();
+
+            } if(request.getParameter("addBookButton") != null) {
+                String newBookQuery = "INSERT INTO Books (Quantity, ISBN, Title, Author, Edition, Publisher, Year, Genre, Image, MinThreshold, BuyPrice, SellPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+                PreparedStatement newBookQuery_pmst = connection.prepareStatement(newBookQuery);
+                newBookQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("updateQuantity")));
+                newBookQuery_pmst.setString(2, request.getParameter("newISBN"));
+                newBookQuery_pmst.setString(3, request.getParameter("updateTitle"));
+                newBookQuery_pmst.setString(4, request.getParameter("updateAuthor"));
+                newBookQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("updateEdition")));
+                newBookQuery_pmst.setString(6, request.getParameter("updatePublisher"));
+                newBookQuery_pmst.setString(7, request.getParameter("updateYear"));
+                newBookQuery_pmst.setInt(8, (int)Integer.parseInt(request.getParameter("updateGenre")));
+                newBookQuery_pmst.setString(9, request.getParameter("updateImage"));
+                newBookQuery_pmst.setDouble(10, (double)Double.parseDouble(request.getParameter("updateMinThreshold")));
+                newBookQuery_pmst.setDouble(11, (double)Double.parseDouble(request.getParameter("updateBuyPrice")));
+                newBookQuery_pmst.setDouble(12, (double)Double.parseDouble(request.getParameter("updateSellPrice")));
+                newBookQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("editUserButton") != null) {
                 String updateUserQuery = "UPDATE Users SET Type = ?, Status = ? WHERE Email = ? ";
@@ -267,8 +284,94 @@
           </thead>
           <tbody>
           <%
+            int i = 0;
             while(userResults.next()) {
           %>
+          <!-- Modal -->
+          <div class="modal fade" id=<%="editUser_" + i%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
+                  <div class="modal-body">
+                    <div class="container">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <input type="hidden" id="email" name="email" value="<%=userResults.getString(3)%>"/>
+                          <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                          <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                          <label class="form-label" for="updateType">Type</label>
+                          <select id="updateType" name="updateType" class="form-input" required>
+                            <option value="" selected disabled hidden>Type</option>
+                            <option value=0>User</option>
+                            <option value=1>Employee</option>
+                            <option value=2>Admin</option>
+                          </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label class="form-label" for="updateStatus">Status</label>
+                          <select id="updateStatus" name="updateStatus" class="form-input" required>
+                            <option value="" selected disabled hidden>Status</option>
+                            <option value=0>Inactive</option>
+                            <option value=1>Active</option>
+                            <option value=2>Suspended</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="editUserButton" name="editUserButton">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <tr>
+            <td><%=userResults.getString(5)%></td>
+            <td><%=userResults.getString(3)%></td>
+            <td><%=userResults.getString(6)%></td>
+            <td><%=userResults.getString(7)%></td>
+            <td>
+              <%if(userResults.getInt(1) == 0) {
+              %>User<%
+            } else if(userResults.getInt(1) == 1) {
+            %>Employee<%
+            } else if(userResults.getInt(1) == 2) {
+            %>Administrator<%
+            } else if(userResults.getInt(1) == 3) {
+            %>System Admininistrator<%
+            } else {
+            %>Invalid<%
+              }%>
+            </td>
+            <td>
+              <%if(userResults.getInt(2) == 0) {
+              %>Inactive<%
+            } else if(userResults.getInt(2) == 1) {
+            %>Active<%
+            } else if(userResults.getInt(2) == 2) {
+            %>Suspended<%
+            } else {
+            %>Invalid<%
+              }%>
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editUser_" + i%>>
+                Launch demo modal
+              </button>
+            </td>
+          </tr>
+          <!-- Button trigger modal -->
+
+          <%--
           <div class="modal fade" id=<%="editUser_" + userResults.getString(3)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -350,7 +453,9 @@
               </button>
             </td>
           </tr>
-          <% } %>
+          --%>
+          <% i++;
+            } %>
 
           </tbody>
         </table>
@@ -373,7 +478,7 @@
             while(bookResults.next()) {
           %>
           <div class="modal fade" id=<%="editBook_" + bookResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
                 <div class="modal-header">
 
@@ -419,26 +524,26 @@
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateGenre">Genre</label>
-                          <select id="updateGenre" name="updateGenre" class="form-input">
+                          <select id="updateGenre" name="updateGenre" class="form-input" required>
                             <option value="" selected disabled hidden>Genre</option>
-                            <option value="Action & Adventure">Action & Adventure</option>
-                            <option value="Children\'s">Children<span>&#39;</span>s</option>
-                            <option value="Classic">Classic</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Fantasy">Fantasy</option>
-                            <option value="Graphic Novel">Graphic Novel</option>
-                            <option value="Horror">Horror</option>
-                            <option value="Mystery & Crime">Mystery & Crime</option>
-                            <option value="Non-Fiction">Non-Fiction</option>
-                            <option value="Romance">Romance</option>
-                            <option value="Science Fiction">Science Fiction</option>
+                            <option value=1>Action & Adventure</option>
+                            <option value=2>Children<span>&#39;</span>s</option>
+                            <option value=3>Classic</option>
+                            <option value=4>Drama</option>
+                            <option value=5>Fantasy</option>
+                            <option value=6>Graphic Novel</option>
+                            <option value=7>Horror</option>
+                            <option value=8>Mystery & Crime</option>
+                            <option value=9>Non-Fiction</option>
+                            <option value=10>Romance</option>
+                            <option value=11>Science Fiction</option>
                           </select>
                         </div>
                         <div class="form-group col-md-8">
                           <label class="form-label" for="updateImage">Image</label>
                           <input type="text" id="updateImage" name="updateImage" class="form-input" value="<%=bookResults.getString(9)%>"/>
                         </div>
-                      </div
+                      </div>
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
@@ -521,7 +626,7 @@
         </table>
 
         <div class="modal fade" id=<%="addBook"%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
+          <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-header">
 
@@ -533,10 +638,16 @@
               <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
                 <div class="modal-body">
                   <div class="container">
+                    <div class="form-row ">
+                      <div class="form-group col-md-12">
+                        <label class="form-label" for="newISBN">ISBN</label>
+                        <input type="text" id="newISBN" name="newISBN" class="form-input"/>
+                      </div>
+                    </div>
                     <div class="form-row">
                       <div class="form-group col-md-2">
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         <label class="form-label" for="updateQuantity">Quantity</label>
                         <input type="text" id="updateQuantity" name="updateQuantity" class="form-input"/>
                       </div>
@@ -568,24 +679,24 @@
                         <label class="form-label" for="updateGenre">Genre</label>
                         <select id="updateGenre" name="updateGenre" class="form-input">
                           <option value="" selected disabled hidden>Genre</option>
-                          <option value="Action & Adventure">Action & Adventure</option>
-                          <option value="Children\'s">Children<span>&#39;</span>s</option>
-                          <option value="Classic">Classic</option>
-                          <option value="Drama">Drama</option>
-                          <option value="Fantasy">Fantasy</option>
-                          <option value="Graphic Novel">Graphic Novel</option>
-                          <option value="Horror">Horror</option>
-                          <option value="Mystery & Crime">Mystery & Crime</option>
-                          <option value="Non-Fiction">Non-Fiction</option>
-                          <option value="Romance">Romance</option>
-                          <option value="Science Fiction">Science Fiction</option>
+                          <option value=1>Action & Adventure</option>
+                          <option value=2>Children<span>&#39;</span>s</option>
+                          <option value=3>Classic</option>
+                          <option value=4>Drama</option>
+                          <option value=5>Fantasy</option>
+                          <option value=6>Graphic Novel</option>
+                          <option value=7>Horror</option>
+                          <option value=8>Mystery & Crime</option>
+                          <option value=9>Non-Fiction</option>
+                          <option value=10>Romance</option>
+                          <option value=11>Science Fiction</option>
                         </select>
                       </div>
                       <div class="form-group col-md-8">
                         <label class="form-label" for="updateImage">Image</label>
                         <input type="text" id="updateImage" name="updateImage" class="form-input"/>
                       </div>
-                    </div
+                    </div>
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
@@ -604,16 +715,15 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary" name="editPaymentButton">Save changes</button>
+                  <button type="submit" class="btn btn-primary" name="addBookButton">Save changes</button>
                 </div>
               </form>
-
             </div>
           </div>
-          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addBook">
-            Add
-          </button>
         </div>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addBook">
+          Add
+        </button>
 
       </div>
     </div>

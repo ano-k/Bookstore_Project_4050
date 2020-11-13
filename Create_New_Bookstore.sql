@@ -64,9 +64,9 @@ CREATE TABLE `Books` (
   `Year` varchar(4) NOT NULL,
   `Genre` int NOT NULL,
   `Image` varchar(150) NOT NULL,
-  `MinThreshold` decimal(6,2) NOT NULL,
-  `BuyPrice` decimal(6,2) NOT NULL,
-  `SellPrice` decimal(6,2) NOT NULL,
+  `MinThreshold` double(6,2) NOT NULL,
+  `BuyPrice` double(6,2) NOT NULL,
+  `SellPrice` double(6,2) NOT NULL,
   PRIMARY KEY (`ISBN`),
   UNIQUE KEY `ISBN_UNIQUE` (`ISBN`),
   KEY `Genre_idx` (`Genre`),
@@ -271,7 +271,7 @@ CREATE TABLE `Users` (
   `FirstName` varchar(100) NOT NULL,
   `LastName` varchar(100) NOT NULL,
   `Phone` varchar(20) NOT NULL,
-  `Notifications` int DEFAULT NULL COMMENT 'Signed up for emails?',
+  `Notifications` int DEFAULT NULL COMMENT 'Signed up for emails? 0 -> NO 1 -> YES',
   PRIMARY KEY (`Email`),
   UNIQUE KEY `email_UNIQUE` (`Email`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
@@ -284,7 +284,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (2,0,'anoboii@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Admin','Test','444-111-2222',NULL),(0,0,'anokara98@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Example','User','123-123-1233',NULL);
+INSERT INTO `Users` VALUES (2,0,'anoboii@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Admin','Test','444-111-2222',NULL),(0,0,'anokara98@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Example','User','123-123-1233',NULL),(0,1,'jason.c.wahl@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Jason','Wahl','123-123-1233',1);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
