@@ -34,20 +34,7 @@
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-            String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
-            PreparedStatement address_pmst = connection.prepareStatement(address);
-            address_pmst.setString(1, userEmail);
-            ResultSet addressResults = address_pmst.executeQuery();
 
-            String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
-            PreparedStatement payment_pmst = connection.prepareStatement(payment);
-            payment_pmst.setString(1, userEmail);
-            ResultSet paymentResults = payment_pmst.executeQuery();
-
-            String personalInfo = "SELECT * FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
-            PreparedStatement personalInfo_pmst = connection.prepareStatement(personalInfo);
-            personalInfo_pmst.setString(1, userEmail);
-            ResultSet personalResults = personalInfo_pmst.executeQuery();
             if(request.getParameter("editAddressButton") != null) {
                 String updateAddressQuery = "UPDATE Address SET Street = ?, City = ?, State = ?, Zipcode = ? WHERE ID = ? ";
                 PreparedStatement updateAddressQuery_pmst = connection.prepareStatement(updateAddressQuery);
@@ -76,6 +63,13 @@
                 updatePersonalQuery_pmst.setString(3, request.getParameter("updatePhoneNumber"));
                 updatePersonalQuery_pmst.setString(4, userEmail);
                 updatePersonalQuery_pmst.executeUpdate();
+
+            } else if(request.getParameter("notificationsButton") != null) {
+                String updateNotificationsQuery = "UPDATE Users SET Notifications = ? WHERE Email = ? ";
+                PreparedStatement updateNotificationsQuery_pmst = connection.prepareStatement(updateNotificationsQuery);
+                updateNotificationsQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("notifications")));
+                updateNotificationsQuery_pmst.setString(2, userEmail);
+                updateNotificationsQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("deleteAddressButton") != null) {
                 String deleteAddressQuery = "DELETE FROM Address WHERE ID = ?";
@@ -131,8 +125,22 @@
                         updatePasswordQuery_pmst.executeUpdate();
                     }
                 }
-
             }
+
+            String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
+            PreparedStatement address_pmst = connection.prepareStatement(address);
+            address_pmst.setString(1, userEmail);
+            ResultSet addressResults = address_pmst.executeQuery();
+
+            String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
+            PreparedStatement payment_pmst = connection.prepareStatement(payment);
+            payment_pmst.setString(1, userEmail);
+            ResultSet paymentResults = payment_pmst.executeQuery();
+
+            String personalInfo = "SELECT * FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
+            PreparedStatement personalInfo_pmst = connection.prepareStatement(personalInfo);
+            personalInfo_pmst.setString(1, userEmail);
+            ResultSet personalResults = personalInfo_pmst.executeQuery();
 
             //states table query
 //            String statesQuery = "SELECT * FROM States"; //get a list of states
@@ -281,6 +289,41 @@
                         </div>
                     </div>
 
+                    <div class="modal fade" id=<%="notifications_" + personalResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Notifications?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
+                                        <div class="container">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
+                                                    <select id="notifications" name="notifications" class="form-input" required>
+                                                        <option value="" selected disabled hidden>Select One</option>
+                                                        <option value=1>Yes</option>
+                                                        <option value=0>No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" name="notificationsButton">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <tr>
                         <td><%=personalResults.getString(6)%></td>
@@ -292,6 +335,9 @@
                             </button>
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editPassword_" + personalResults.getInt(1)%>>
                                 Edit Password
+                            </button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>
+                                Notifications?
                             </button>
                         </td>
                     </tr>

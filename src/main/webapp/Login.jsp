@@ -32,7 +32,7 @@
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-        String emailQuery = "SELECT Email, ID, Password, type FROM Users "; //get a list of usernames of every user
+        String emailQuery = "SELECT Email, ID, Password, type, Status FROM Users "; //get a list of usernames of every user
         PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
         ResultSet userResults = pstmt1.executeQuery(emailQuery);
         if (request.getParameter("sendTempPass") != null) {
@@ -212,7 +212,7 @@
         <% } else if(request.getParameter("user") != null) {
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
-                    if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3))){%>
+                    if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3)) && (userResults.getInt(5) != 2)){%>
                         <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
                             <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
