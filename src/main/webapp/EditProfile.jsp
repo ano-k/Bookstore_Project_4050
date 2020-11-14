@@ -30,7 +30,7 @@
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "AubaFli9!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -222,17 +222,17 @@
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="updateFirstName">First Name</label>
-                                                    <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" value="<%=personalResults.getString(6)%>"/>
+                                                    <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your first name" value="<%=personalResults.getString(6)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label class="form-label" for="updateLastName">Last Name</label>
-                                                    <input type="text" id="updateLastName" name="updateLastName" class="form-input" value="<%=personalResults.getString(7)%>"/>
+                                                    <input type="text" id="updateLastName" name="updateLastName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your last name" value="<%=personalResults.getString(7)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md">
                                                     <label class="form-label" for="updatePhoneNumber">Phone Number</label>
-                                                    <input type="tel" id="updatePhoneNumber" name="updatePhoneNumber" class="form-input" value="<%=personalResults.getString(8)%>"/>
+                                                    <input type="tel" id="updatePhoneNumber" name="updatePhoneNumber" class="form-input" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" title="Please enter a phone number -> ###-###-####" value="<%=personalResults.getString(8)%>"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -382,13 +382,13 @@
                                                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="updateStreetAddress">Address</label>
-                                                    <input type="text" id="updateStreetAddress" name="updateStreetAddress" class="form-input" value="<%=addressResults.getString(3)%>"/>
+                                                    <input type="text" id="updateStreetAddress" name="updateStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address" value="<%=addressResults.getString(3)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-5">
                                                     <label class="form-label" for="updateCity">City</label>
-                                                    <input type="text" id="updateCity" name="updateCity" class="form-input" value="<%=addressResults.getString(4)%>"/>
+                                                    <input type="text" id="updateCity" name="updateCity" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the name of a valid city" value="<%=addressResults.getString(4)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label class="form-label" for="updateState">State</label>
@@ -449,7 +449,7 @@
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label class="form-label" for="updateZipCode">Zip Code</label>
-                                                    <input type="text" id="updateZipCode" name="updateZipCode" class="form-input" value="<%=addressResults.getInt(6)%>"/>
+                                                    <input type="text" id="updateZipCode" name="updateZipCode" class="form-input" pattern="(\d{5}([\-]\d{4})?)" title="Enter ##### or #####-#### zip code" value="<%=addressResults.getInt(6)%>"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -529,13 +529,13 @@
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
-                                                <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input"/>
+                                                <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-5">
                                                 <label class="form-label" for="addCity">City</label>
-                                                <input type="text" id="addCity" name="addCity" class="form-input"/>
+                                                <input type="text" id="addCity" name="addCity" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the name of a valid city"/>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label class="form-label" for="addState">State</label>
@@ -595,7 +595,7 @@
                                             </div>
                                             <div class="form-group col-md-3">
                                                 <label class="form-label" for="addZipCode">Zip Code</label>
-                                                <input type="text" id="addZipCode" name="addZipCode" class="form-input"/>
+                                                <input type="text" id="addZipCode" name="addZipCode" class="form-input" pattern="(\d{5}([\-]\d{4})?)" title="Enter ##### or #####-#### zip code"/>
                                             </div>
                                         </div>
                                     </div>
@@ -660,17 +660,17 @@
                                                 </div>
                                                 <div class="form-group col-md-8">
                                                     <label class="form-label" for="updateCardNumber">Card Number</label>
-                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" value="<%=paymentResults.getString(4)%>"/>
+                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value="<%=paymentResults.getString(4)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <label class="form-label" for="updateExpirationDate">Expiration Date</label>
-                                                    <input type="text" id="updateExpirationDate" name="updateExpirationDate" class="form-input" value="<%=paymentResults.getString(5)%>"/>
+                                                    <input type="text" id="updateExpirationDate" name="updateExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" value="<%=paymentResults.getString(5)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label class="form-label" for="updateCVV">CVV</label>
-                                                    <input type="text" id="updateCVV" name="updateCVV" class="form-input" value="<%=paymentResults.getString(6)%>"/>
+                                                    <input type="text" id="updateCVV" name="updateCVV" class="form-input" pattern="[0-9]{3,4}" title="Enter a 3 or 4 digit CVV" value="<%=paymentResults.getString(6)%>"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -760,17 +760,17 @@
                                             </div>
                                             <div class="form-group col-md-8">
                                                 <label class="form-label" for="addCardNumber">Card Number</label>
-                                                <input type="text" id="addCardNumber" name="addCardNumber" class="form-input" />
+                                                <input type="text" id="addCardNumber" name="addCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number"/>
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label class="form-label" for="addExpirationDate">Expiration Date</label>
-                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" />
+                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" />
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label class="form-label" for="addCVV">CVV</label>
-                                                <input type="text" id="addCVV" name="addCVV" class="form-input" />
+                                                <input type="text" id="addCVV" name="addCVV" class="form-input" pattern="[0-9]{3,4}" title="Enter a 3 or 4 digit CVV"/>
                                             </div>
                                         </div>
                                     </div>

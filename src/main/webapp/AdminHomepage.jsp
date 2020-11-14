@@ -35,7 +35,7 @@
         String userType = request.getParameter("currentUserType").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "AubaFli9!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -247,15 +247,15 @@
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addDiscount">Discount</label>
-                        <input type="text" id="addDiscount" name="addDiscount" class="form-input"/>
+                        <input type="text" id="addDiscount" name="addDiscount" class="form-input" pattern="[0-9]?[0-9]" title="Enter number 0 through 99"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addStart">Start Date</label>
-                        <input type="text" id="addStart" name="addStart" class="form-input"/>
+                        <input type="text" id="addStart" name="addStart" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addEnd">End Date</label>
-                        <input type="text" id="addEnd" name="addEnd" class="form-input"/>
+                        <input type="text" id="addEnd" name="addEnd" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd"/>
                       </div>
                     </div>
                   </div>
@@ -418,7 +418,7 @@
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                           <label class="form-label" for="updateQuantity">Quantity</label>
-                          <input type="text" id="updateQuantity" name="updateQuantity" class="form-input" value="<%=bookResults.getInt(1)%>"/>
+                          <input type="text" id="updateQuantity" name="updateQuantity" pattern="[0-9]{1,}" title="Enter a number for the quantity of book" class="form-input" value="<%=bookResults.getInt(1)%>"/>
                         </div>
                         <div class="form-group col-md-5">
                           <label class="form-label" for="updateTitle">Title</label>
@@ -440,7 +440,7 @@
                         </div>
                         <div class="form-group col-md-2">
                           <label class="form-label" for="updateYear">Year</label>
-                          <input type="text" id="updateYear" name="updateYear" class="form-input" value="<%=bookResults.getString(7)%>"/>
+                          <input type="text" id="updateYear" name="updateYear" class="form-input" pattern="[0-9]{4}" title="Enter a four digit year" value="<%=bookResults.getString(7)%>"/>
                         </div>
                       </div>
                       <div class="form-row">
@@ -469,15 +469,15 @@
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
-                          <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" value="<%=bookResults.getString(10)%>"/>
+                          <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" pattern="[0-9]{1,}" title="Enter a number threshold" value="<%=bookResults.getString(10)%>"/>
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" value="<%=bookResults.getString(11)%>"/>
+                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price" value="<%=bookResults.getString(11)%>"/>
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateSellPrice">Selling Price</label>
-                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" value="<%=bookResults.getString(12)%>"/>
+                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price" value="<%=bookResults.getString(12)%>"/>
                         </div>
                       </div>
                     </div>
@@ -561,7 +561,7 @@
                     <div class="form-row ">
                       <div class="form-group col-md-12">
                         <label class="form-label" for="newISBN">ISBN</label>
-                        <input type="text" id="newISBN" name="newISBN" class="form-input"/>
+                        <input type="text" id="newISBN" name="newISBN" class="form-input" pattern="(?:(?=.{17}$)97[89][ -](?:[0-9]+[ -]){2}[0-9]+[ -][0-9]|97[89][0-9]{10}|(?=.{13}$)(?:[0-9]+[ -]){2}[0-9]+[ -][0-9Xx]|[0-9]{9}[0-9Xx])" title="Enter a valid ISBN"/>
                       </div>
                     </div>
                     <div class="form-row">
@@ -569,7 +569,7 @@
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         <label class="form-label" for="updateQuantity">Quantity</label>
-                        <input type="text" id="updateQuantity" name="updateQuantity" class="form-input"/>
+                        <input type="text" id="updateQuantity" name="updateQuantity" class="form-input" pattern="[0-9]{1,}" title="Enter a number for the quantity of book"/>
                       </div>
                       <div class="form-group col-md-5">
                         <label class="form-label" for="updateTitle">Title</label>
@@ -591,7 +591,7 @@
                       </div>
                       <div class="form-group col-md-2">
                         <label class="form-label" for="updateYear">Year</label>
-                        <input type="text" id="updateYear" name="updateYear" class="form-input"/>
+                        <input type="text" id="updateYear" name="updateYear" class="form-input" pattern="[0-9]{4}" title="Enter a four digit year"/>
                       </div>
                     </div>
                     <div class="form-row">
@@ -620,15 +620,15 @@
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
-                        <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input"/>
+                        <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" pattern="[0-9]{1,}" title="Enter a number threshold"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input"/>
+                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateSellPrice">Selling Price</label>
-                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input"/>
+                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price"/>
                       </div>
                     </div>
                   </div>
