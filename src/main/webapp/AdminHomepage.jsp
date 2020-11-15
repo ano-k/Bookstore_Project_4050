@@ -35,7 +35,7 @@
         String userType = request.getParameter("currentUserType").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "AubaFli9!";
+        String dbPassword = "WebProg2020";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -473,11 +473,11 @@
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price" value="<%=bookResults.getString(11)%>"/>
+                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price" value="<%=bookResults.getString(11)%>"/>
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateSellPrice">Selling Price</label>
-                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price" value="<%=bookResults.getString(12)%>"/>
+                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price" value="<%=bookResults.getString(12)%>"/>
                         </div>
                       </div>
                     </div>
@@ -624,11 +624,11 @@
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price"/>
+                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateSellPrice">Selling Price</label>
-                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='[0-9]+(\\.[0-9][0-9]?)?' title="Enter a valid price"/>
+                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price"/>
                       </div>
                     </div>
                   </div>

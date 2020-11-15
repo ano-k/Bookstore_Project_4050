@@ -30,7 +30,7 @@
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "AubaFli9!";
+        String dbPassword = "WebProg2020";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
