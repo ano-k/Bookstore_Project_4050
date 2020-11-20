@@ -173,7 +173,7 @@
             addAddressQuery_pmst.executeUpdate();
 
             String type = request.getParameter("newCardType");
-            String number = request.getParameter("newCardNumber");
+            String cardNumber = request.getParameter("newCardNumber");
             String expiration = request.getParameter("newExpirationDate");
             String cvv = request.getParameter("newCVV");
             String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
@@ -185,8 +185,13 @@
                 addPaymentQuery_pmst.setString(2, "N/A");
             }
 
-            if(number != null && number != "") {
-                addPaymentQuery_pmst.setString(3, number);
+            if(cardNumber != null && cardNumber != "") {
+                //addPaymentQuery_pmst.setString(3, number); //right here
+                String first12 = cardNumber.substring(0,12);
+                String last4 = cardNumber.substring(12);
+                String hashedFirst12 = DigestUtils.sha256Hex(first12);
+                String hashedPayment = hashedFirst12 + last4;
+                addPaymentQuery_pmst.setString(3, hashedPayment);
             } else {
                 addPaymentQuery_pmst.setString(3, "N/A");
             }
@@ -210,27 +215,40 @@
                 document.getElementById("userInfoForm").submit();
             </script>
         <% } else if(request.getParameter("user") != null) {
+            boolean userFound = false;
             while(userResults.next()) {
                 if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
-                    if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3)) && (userResults.getInt(5) != 2)){%>
-                        <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
-                        </form>
-                        <script>
-                            var type = document.getElementById("currentUserType").value;
-                            if(type == "0/") {
-                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/Homepage.jsp";
-                            }
-                            else {
-                                document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp";
-                            }
-                            document.getElementById("userInfoForm").submit();
-                        </script>
-                        <%
+                    if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3))){
+                        userFound = true;
+                        if((userResults.getInt(5) == 2)) { %>
+                            <script>
+                                    alert("This user is suspended.");
+                            </script>
+                        <%}
+                        else {%>
+                            <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
+                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
+                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
+                            </form>
+                            <script>
+                                var type = document.getElementById("currentUserType").value;
+                                if(type == "0/") {
+                                    document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/Homepage.jsp";
+                                }
+                                else {
+                                    document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp";
+                                }
+                                document.getElementById("userInfoForm").submit();
+                            </script>
+                        <%}
                     }
                 }
             }
+            if(!userFound) {%>
+                <script>
+                    alert("Incorrect login information, please try again.");
+                </script>
+            <%}
         }
 
 %>

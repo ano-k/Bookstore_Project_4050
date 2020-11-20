@@ -53,6 +53,19 @@
 
     </style>
 </head>
+<%
+    String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+    String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
+    String dbUsername = "root";
+    String dbPassword = "WebProg2020";
+
+    try {
+        Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+
+        String book = "SELECT * FROM Books "; //get a list of usernames of the logged in user
+        PreparedStatement book_pmst = connection.prepareStatement(book);
+        ResultSet bookResults = book_pmst.executeQuery();
+%>
 <body>
 <div class="column left"></div>
 <div class="column middle">
@@ -209,9 +222,170 @@
                     </td>
                 </tr>
             </table>
+
+            <h6 class="page-header">All Books</h6>
+            <%-- Table for personal information --%>
+            <table class="table">
+                <%--
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Details</th>
+                </tr>
+                </thead>
+                --%>
+                <tbody>
+                <% while(bookResults.next()) { %>
+                <%--
+                <div class="modal fade" id=<%="bookInfo_" + bookResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Book Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="updateFirstName">First Name</label>
+                                                <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your first name" value="<%=personalResults.getString(6)%>"/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="form-label" for="updateLastName">Last Name</label>
+                                                <input type="text" id="updateLastName" name="updateLastName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your last name" value="<%=personalResults.getString(7)%>"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md">
+                                                <label class="form-label" for="updatePhoneNumber">Phone Number</label>
+                                                <input type="tel" id="updatePhoneNumber" name="updatePhoneNumber" class="form-input" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" title="Please enter a phone number -> ###-###-####" value="<%=personalResults.getString(8)%>"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="editPersonalButton">Save changes</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                --%>
+                <%--
+                <div class="modal fade" id=<%="editPassword_" + personalResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Password</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="newPassword">New Password</label>
+                                                <input type="text" id="newPassword" name="newPassword" class="form-input" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+                                                <input type="text" id="confirmNewPassword" name="confirmNewPassword" class="form-input" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-md">
+                                                <label class="form-label" for="currentPassword">Current Password</label>
+                                                <input type="text" id="currentPassword" name="currentPassword" class="form-input" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="editPasswordButton">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div> --%>
+                <%--
+                <div class="modal fade" id=<%="notifications_" + personalResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Notifications?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-12">
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
+                                                <select id="notifications" name="notifications" class="form-input" required>
+                                                    <option value="" selected disabled hidden>Select One</option>
+                                                    <option value=1>Yes</option>
+                                                    <option value=0>No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="notificationsButton">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                --%>
+
+                <tr>
+                    <td><img src=<%=bookResults.getString(9)%> width="90" height="140"></td>
+                    <td><%=bookResults.getString(3)%> <br><br>by <%=bookResults.getString(4)%></td>
+                    <td>$<%=bookResults.getDouble(11)%> <br><br> <%="x"%>/5</td> <%-- TODO: WE NEED TO ADD RATINGS TO BOOK TABLE --%>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#bookInfo_" + bookResults.getString(2)%>>
+                            More Information
+                        </button>
+
+                    </td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+
         </div>
     </div>
     </main>
 </div>
 </body>
+<%
+    } catch (SQLException e){
+    //out.println("<p>Unsuccessful connection to database</p>");
+    e.printStackTrace();
+    }
+%>
 </html>

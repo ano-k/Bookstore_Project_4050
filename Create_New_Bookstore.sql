@@ -20,7 +20,6 @@ USE `Bookstore`;
 --
 -- Table structure for table `Address`
 --
-
 DROP TABLE IF EXISTS `Address`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -63,10 +62,11 @@ CREATE TABLE `Books` (
   `Publisher` varchar(150) NOT NULL,
   `Year` varchar(4) NOT NULL,
   `Genre` int NOT NULL,
-  `Image` varchar(150) NOT NULL,
+  `Image` varchar(500) NOT NULL,
   `MinThreshold` double(6,2) NOT NULL,
   `BuyPrice` double(6,2) NOT NULL,
   `SellPrice` double(6,2) NOT NULL,
+  `IsArchived` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`ISBN`),
   UNIQUE KEY `ISBN_UNIQUE` (`ISBN`),
   KEY `Genre_idx` (`Genre`),
@@ -80,7 +80,7 @@ CREATE TABLE `Books` (
 
 LOCK TABLES `Books` WRITE;
 /*!40000 ALTER TABLE `Books` DISABLE KEYS */;
-INSERT INTO `Books` VALUES (1,'9780062667632','Leave the World Behind: A Novel (Hardcover)','Cinelle Barnes',1,'Hub City Press','2020',3,'https://images.booksense.com/images/books/719/235/FC9781938235719.JPG',12.95,7.95,17.95),(1,'9781938235719','A Measure of Belonging: Twenty-One Writers of Color on the New American South (Paperback)','Ruuman Alam',1,'Ecco','2020',1,'https://images.booksense.com/images/books/632/667/FC9780062667632.JPG',22.95,17.95,27.95);
+INSERT INTO `Books` VALUES (1,'9780062667632','Leave the World Behind: A Novel (Hardcover)','Cinelle Barnes',1,'Hub City Press','2020',3,'https://images.booksense.com/images/books/719/235/FC9781938235719.JPG',12.95,7.95,17.95,0),(1,'9781938235719','A Measure of Belonging: Twenty-One Writers of Color on the New American South (Paperback)','Ruuman Alam',1,'Ecco','2020',1,'https://images.booksense.com/images/books/632/667/FC9780062667632.JPG',22.95,17.95,27.95,0);
 /*!40000 ALTER TABLE `Books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +182,7 @@ CREATE TABLE `Payment` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `User` varchar(150) NOT NULL,
   `Type` varchar(20) DEFAULT NULL COMMENT 'Amex, Visa, etc.',
-  `Number` varchar(25) DEFAULT NULL,
+  `Number` varchar(250) DEFAULT NULL,
   `Expiration` varchar(20) DEFAULT NULL,
   `CVV` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`ID`),

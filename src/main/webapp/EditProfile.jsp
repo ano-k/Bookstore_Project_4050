@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
+<%@page import="java.util.*"%>
+<%@page import="javax.mail.*"%>
+<%@page import="java.net.InterfaceAddress" %>
+<%@page import="javax.mail.internet.*" %>
 <%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
@@ -49,7 +53,12 @@
                 String updatePaymentQuery = "UPDATE Payment SET Type = ?, Number = ?, Expiration = ?, CVV = ? WHERE ID = ? ";
                 PreparedStatement updatePaymentQuery_pmst = connection.prepareStatement(updatePaymentQuery);
                 updatePaymentQuery_pmst.setString(1, request.getParameter("updateCardType"));
-                updatePaymentQuery_pmst.setString(2, request.getParameter("updateCardNumber"));
+                String cardNumber = request.getParameter("updateCardNumber");
+                String first12 = cardNumber.substring(0,12);
+                String last4 = cardNumber.substring(12);
+                String hashedFirst12 = DigestUtils.sha256Hex(first12);
+                String hashedPayment = hashedFirst12 + last4;
+                updatePaymentQuery_pmst.setString(2, hashedPayment);
                 updatePaymentQuery_pmst.setString(3, request.getParameter("updateExpirationDate"));
                 updatePaymentQuery_pmst.setString(4, request.getParameter("updateCVV"));
                 updatePaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("paymentID")));
@@ -98,7 +107,12 @@
                 PreparedStatement addPaymentQuery_pmst = connection.prepareStatement(addPaymentQuery);
                 addPaymentQuery_pmst.setString(1, userEmail);
                 addPaymentQuery_pmst.setString(2, request.getParameter("addCardType"));
-                addPaymentQuery_pmst.setString(3, request.getParameter("addCardNumber"));
+                String cardNumber = request.getParameter("addCardNumber");
+                String first12 = cardNumber.substring(0,12);
+                String last4 = cardNumber.substring(12);
+                String hashedFirst12 = DigestUtils.sha256Hex(first12);
+                String hashedPayment = hashedFirst12 + last4;
+                addPaymentQuery_pmst.setString(3, hashedPayment);
                 addPaymentQuery_pmst.setString(4, request.getParameter("addExpirationDate"));
                 addPaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
                 addPaymentQuery_pmst.executeUpdate();
@@ -123,8 +137,54 @@
                         updatePasswordQuery_pmst.setString(1, hashedPass);
                         updatePasswordQuery_pmst.setString(2, userEmail);
                         updatePasswordQuery_pmst.executeUpdate();
-                    }
+
+                        String to = userEmail;
+                        String from = "bookstore.helper@gmail.com";
+
+                        Properties prop = System.getProperties();
+                        prop.put("mail.smtp.host", "smtp.gmail.com");
+                        prop.put("mail.smtp.port", "587");
+                        prop.put("mail.smtp.starttls.enable", "true");
+                        prop.put("mail.smtp.auth", "true");
+                        prop.put("mail.smtp.ssl.trust", "*");
+                        final String emailUsername = "bookstore.helper@gmail.com";
+                        final String emailPassword = "oeprimytgjyhvsbc";
+
+                        Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(emailUsername, emailPassword);
+                            }
+                        });
+
+                        try {
+                            MimeMessage context = new MimeMessage(sess);
+                            InternetAddress fromIA = new InternetAddress(from);
+                            context.setFrom(from);
+                            if (to != null) {
+                                InternetAddress toIA = new InternetAddress(to);
+                                context.addRecipient(Message.RecipientType.TO, toIA);
+
+                                context.setSubject("Password Change for Online Bookstore");
+                                context.setText("The password for your account at our online bookstore has been changed");
+                                System.out.println("sending email...");
+                                Transport.send(context);
+                                System.out.println("Message sent successfully.");
+                            }
+                        } catch (MessagingException mE) {
+                            mE.printStackTrace();
+                        }
+                    } else {%>
+                        <script>
+                            alert("New password must match confirm password");
+                        </script>
+                    <%}
+
                 }
+                else { %>
+                    <script>
+                        alert("Incorrect current password");
+                    </script>
+                <%}
             }
 
             String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
@@ -191,7 +251,7 @@
 
         <div class="main content">
             <div class="cart-information">
-                <h2 class="page-header">Edit Profile</h2>
+                <h2 class="page-header">Profile</h2>
                 <h6 class="page-header">Personal Information</h6>
                 <%-- Table for personal information --%>
                 <table class="table">
@@ -660,7 +720,7 @@
                                                 </div>
                                                 <div class="form-group col-md-8">
                                                     <label class="form-label" for="updateCardNumber">Card Number</label>
-                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value="<%=paymentResults.getString(4)%>"/>
+                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value="<%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%>"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
@@ -718,7 +778,7 @@
 
                     <tr>
                         <td><%=paymentResults.getString(3)%></td>
-                        <td><%=paymentResults.getString(4)%></td>
+                        <td><%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%></td>
                         <td><%=paymentResults.getString(5)%></td>
                         <td><%=paymentResults.getString(6)%></td>
                         <td>
