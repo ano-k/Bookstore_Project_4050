@@ -61,10 +61,54 @@
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-
         String book = "SELECT * FROM Books "; //get a list of usernames of the logged in user
+        String featured;
+        String bestSellers;
+
+        //loop through genre1 - genre11, to see if any selection was made
+        boolean chop = false;
+        for(int i = 0; i < 10; i++) {
+            if(request.getParameter("genre" + i) != null) {
+                chop = true;
+                book += "WHERE ";
+                break;
+            }
+        } //checks if a selection was made, and if so, concat a WHERE to the string
+
+        for(int i = 0; i < 10; i++) {
+            if(request.getParameter("genre" + i) != null) {
+                book += "Genre = " + request.getParameter("genre" + i) + " OR ";
+            }
+        } //applies all seletions made
+        if(chop) {
+            book = book.substring(0, (book.length()-3));
+            featured = book + "AND isFeatured = 1 ";
+            bestSellers = book + "AND isBestSeller = 1 ";
+        }
+        else {
+            featured = book + "WHERE isFeatured = 1 ";
+            bestSellers = book + "WHERE isBestSeller = 1 ";
+        }
+        if(request.getParameter("price1") != null) {
+            book += "ORDER BY SellPrice DESC" ;
+            featured += "ORDER BY SellPrice DESC" ;
+            bestSellers += "ORDER BY SellPrice DESC" ;
+        }
+        else if(request.getParameter("price2") != null) {
+            book += "ORDER BY SellPrice ASC" ;
+            featured += "ORDER BY SellPrice ASC" ;
+            bestSellers += "ORDER BY SellPrice ASC" ;
+        }
+
         PreparedStatement book_pmst = connection.prepareStatement(book);
         ResultSet bookResults = book_pmst.executeQuery();
+
+        PreparedStatement featured_pmst = connection.prepareStatement(featured);
+        ResultSet featuredResults = featured_pmst.executeQuery();
+
+        PreparedStatement bestSellers_pmst = connection.prepareStatement(bestSellers);
+        ResultSet bestSellersResults = bestSellers_pmst.executeQuery();
+
 %>
 <body>
 <div class="column left"></div>
@@ -116,21 +160,40 @@
             </div>
 
             <div class="filters">
-                <form>
+                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
                     <div class="parent-filter-div">
                         <div class="temp-block">
                             <h3>Genre</h3>
-                            <input type="checkbox" id="genre1" name="genre1" value="scifi">
-                            <label for="genre1">Science Fiction</label><br>
-                            <input type="checkbox" id="genre2" name="genre2" value="nonfiction">
-                            <label for="genre2">Nonfiction</label><br>
-                            <input type="checkbox" id="genre3" name="genre3" value="fiction">
-                            <label for="genre3">Fiction</label><br>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                            <input type="checkbox" id="genre1" name="genre1" value=1>
+                            <label for="genre1">Action & Adventure</label><br>
+                            <input type="checkbox" id="genre2" name="genre2" value=2>
+                            <label for="genre2">Children&#39;s</label><br>
+                            <input type="checkbox" id="genre3" name="genre3" value=3>
+                            <label for="genre3">Classic</label><br>
+                            <input type="checkbox" id="genre4" name="genre4" value=4>
+                            <label for="genre4">Drama</label><br>
+                            <input type="checkbox" id="genre5" name="genre5" value=5>
+                            <label for="genre5">Fantasy</label><br>
+                            <input type="checkbox" id="genre6" name="genre6" value=6>
+                            <label for="genre6">Graphic Novel</label><br>
+                            <input type="checkbox" id="genre7" name="genre7" value=7>
+                            <label for="genre7">Horror</label><br>
+                            <input type="checkbox" id="genre8" name="genre8" value=8>
+                            <label for="genre8">Mystery & Crime</label><br>
+                            <input type="checkbox" id="genre9" name="genre9" value=9>
+                            <label for="genre9">Nonfiction</label><br>
+                            <input type="checkbox" id="genre10" name="genre10" value=10>
+                            <label for="genre10">Romance</label><br>
+                            <input type="checkbox" id="genre11" name="genre11" value=11>
+                            <label for="genre11">Science Fiction</label><br>
 
                             <h3>Price</h3>
-                            <input type="checkbox" id="price1" name="price1" value="hi2lo">
+                            <input type="radio" id="price1" name="price1" value="hi2lo">
                             <label for="price1">High to low</label><br>
-                            <input type="checkbox" id="price2" name="price2" value="lo2hi">
+                            <input type="radio" id="price2" name="price2" value="lo2hi">
                             <label for="price2">Low to high</label><br>
                             <input type="submit" value="Submit">
                         </div>
@@ -141,236 +204,68 @@
 
 
         <div class="homepage-table">
-
-            <h4>Featured Books</h4>
-            <table>
-                <tr>
-                    <th>Book Image</th>
-                    <th>Book Details</th>
-                    <th>Link</th>
-                    <th>Add to Cart</th>
-                </tr>
-                <tr class="homepage-book-row">
-                    <td><a href="BookDetails.jsp"><img src="harrypotter.jpg"/></a></td>
-                    <td>
-                        Title: Harry Potter and the Socerer's Stone <br>
-                        Author: JK Rowling <br>
-                        Rating: 3 <br>
-                        Price: $10
-                    </td>
-                    <td>
-                        <button><a href="BookDetails.jsp">Book Page</a></button>
-                    </td>
-                    <td>
-                        <button><a href="">Add to Cart</a></button>
-                    </td>
-                </tr>
-                <tr class="homepage-book-row">
-                    <td><img src="seuss.jpg"/></td>
-                    <td>
-                        Title: The Cat in the Hat<br>
-                        Author: Dr. Seuss<br>
-                        Rating: 4<br>
-                        Price: $7.50
-                    </td>
-                    <td>
-                        <button><a href="BookDetails.jsp">Book Page</a></button>
-                    </td>
-                    <td>
-                        <button><a href="">Add to Cart</a></button>
-                    </td>
-                </tr>
-            </table>
-
-            <br>
-            <h4>Best Sellers</h4>
-            <table>
-                <tr>
-                    <th>Book Image</th>
-                    <th>Book Details</th>
-                    <th>Link</th>
-                    <th>Add to Cart</th>
-                </tr>
-                <tr class="homepage-book-row">
-                    <td><img src="theory.jpg"/></td>
-                    <td>
-                        Title:  Introduction to Theory of Computation<br>
-                        Author: Michael Sipser<br>
-                        Rating: 5<br>
-                        Price: $20
-                    </td>
-                    <td>
-                        <button><a href="BookDetails.jsp">Book Page</a></button>
-                    </td>
-                    <td>
-                        <button><a href="">Add to Cart</a></button>
-                    </td>
-                </tr>
-                <tr class="homepage-book-row">
-                    <td><img src="ahsoka.jpg"/></td>
-                    <td>
-                        Title:  Star Wars: Ahsoka<br>
-                        Author: E.K. Johnston<br>
-                        Rating: 2<br>
-                        Price: $9
-                    </td>
-                    <td>
-                        <button><a href="BookDetails.jsp">Book Page</a></button>
-                    </td>
-                    <td>
-                        <button><a href="">Add to Cart</a></button>
-                    </td>
-                </tr>
-            </table>
-
+            <% int featuredCount = 0;
+                if(featuredResults.last()) {
+                    featuredCount = featuredResults.getRow();
+                    featuredResults.beforeFirst();
+                }
+                if(featuredCount != 0) { %>
+                <h6 class="page-header">Featured Books</h6>
+                <table class="table">
+                    <tbody>
+                    <% while(featuredResults.next()) { %>
+                    <tr>
+                        <td><img src=<%=featuredResults.getString(9)%> width="90" height="140"></td>
+                        <td><%=featuredResults.getString(3)%> <br><br>by <%=featuredResults.getString(4)%></td>
+                        <td>$<%=featuredResults.getDouble(12)%> <br><br> <%=featuredResults.getInt(14)%>/5</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#bookInfo_" + featuredResults.getString(2)%>>
+                                More Information
+                            </button>
+                        </td>
+                    </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+                <br><br>
+            <% } %>
+            <% int bestSellersCount = 0;
+                if(bestSellersResults.last()) {
+                    bestSellersCount = bestSellersResults.getRow();
+                    bestSellersResults.beforeFirst();
+                }
+                if(bestSellersCount != 0) { %>
+                <h6 class="page-header">Best Sellers</h6>
+                <table class="table">
+                    <tbody>
+                    <% while(bestSellersResults.next()) { %>
+                    <tr>
+                        <td><img src=<%=bestSellersResults.getString(9)%> width="90" height="140"></td>
+                        <td><%=bestSellersResults.getString(3)%> <br><br>by <%=bestSellersResults.getString(4)%></td>
+                        <td>$<%=bestSellersResults.getDouble(12)%> <br><br> <%=bestSellersResults.getInt(14)%>/5</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#bookInfo_" + bestSellersResults.getString(2)%>>
+                                More Information
+                            </button>
+                        </td>
+                    </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+                <br><br>
+            <% } %>
             <h6 class="page-header">All Books</h6>
-            <%-- Table for personal information --%>
             <table class="table">
-                <%--
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Image</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Author</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Details</th>
-                </tr>
-                </thead>
-                --%>
                 <tbody>
                 <% while(bookResults.next()) { %>
-                <%--
-                <div class="modal fade" id=<%="bookInfo_" + bookResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Book Information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
-                                <div class="modal-body">
-                                    <div class="container">
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                                                <label class="form-label" for="updateFirstName">First Name</label>
-                                                <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your first name" value="<%=personalResults.getString(6)%>"/>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="updateLastName">Last Name</label>
-                                                <input type="text" id="updateLastName" name="updateLastName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your last name" value="<%=personalResults.getString(7)%>"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md">
-                                                <label class="form-label" for="updatePhoneNumber">Phone Number</label>
-                                                <input type="tel" id="updatePhoneNumber" name="updatePhoneNumber" class="form-input" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" title="Please enter a phone number -> ###-###-####" value="<%=personalResults.getString(8)%>"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="editPersonalButton">Save changes</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-                --%>
-                <%--
-                <div class="modal fade" id=<%="editPassword_" + personalResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Password</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
-                                <div class="modal-body">
-                                    <div class="container">
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                                                <label class="form-label" for="newPassword">New Password</label>
-                                                <input type="text" id="newPassword" name="newPassword" class="form-input" />
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
-                                                <input type="text" id="confirmNewPassword" name="confirmNewPassword" class="form-input" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md">
-                                                <label class="form-label" for="currentPassword">Current Password</label>
-                                                <input type="text" id="currentPassword" name="currentPassword" class="form-input" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="editPasswordButton">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div> --%>
-                <%--
-                <div class="modal fade" id=<%="notifications_" + personalResults.getInt(1)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Notifications?</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
-                                <div class="modal-body">
-                                    <div class="container">
-                                        <div class="form-row">
-                                            <div class="form-group col-md-12">
-                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                                                <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
-                                                <select id="notifications" name="notifications" class="form-input" required>
-                                                    <option value="" selected disabled hidden>Select One</option>
-                                                    <option value=1>Yes</option>
-                                                    <option value=0>No</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="notificationsButton">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                --%>
-
                 <tr>
                     <td><img src=<%=bookResults.getString(9)%> width="90" height="140"></td>
                     <td><%=bookResults.getString(3)%> <br><br>by <%=bookResults.getString(4)%></td>
-                    <td>$<%=bookResults.getDouble(11)%> <br><br> <%="x"%>/5</td> <%-- TODO: WE NEED TO ADD RATINGS TO BOOK TABLE --%>
+                    <td>$<%=bookResults.getDouble(12)%> <br><br> <%=bookResults.getInt(14)%>/5</td>
                     <td>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#bookInfo_" + bookResults.getString(2)%>>
                             More Information
                         </button>
-
                     </td>
                 </tr>
                 <% } %>
