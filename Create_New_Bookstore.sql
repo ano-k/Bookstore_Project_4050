@@ -95,7 +95,7 @@ INSERT INTO `Books` VALUES (20,'9780062667632','Leave the World Behind: A Novel 
     (13,'9780810993136','Diary of a Wimpy Kid','Jeff Kinney',1,'Amulet Books','2007',2,'https://prodimage.images-bn.com/pimages/9780810993136_p0_v4_s550x406.jpg',5,12.45,12.45,0,3,0,0),
 	(30,'9780316029186','The Last Wish: Introducing the Witcher','Andrezj Sapkowski',2,'Orbit','2008',5,'https://prodimage.images-bn.com/pimages/9780316029186_p0_v3_s550x406.jpg',2,8.99,8.99,0,2,0,0),
     (25,'9780743477116','Romeo and Juliet','William Shakespeare',50,'Simon & Schuster','2004',10,'https://prodimage.images-bn.com/pimages/9780743477116_p0_v2_s550x406.jpg',4,6.99,6.99,0,3,1,0),
-    (10,'9781506721729','The Search Omnibus (Avatar: The Last Airbender)','Frank Herbert',1,'Dark Horse Comics','2020',6,'https://prodimage.images-bn.com/pimages/9781506721729_p0_v2_s550x406.jpg',1,24.99,24.99,0,4,0,0),
+    (10,'9781506721729','The Search Omnibus (Avatar: The Last Airbender)','Gene Luen Yang',1,'Dark Horse Comics','2020',6,'https://prodimage.images-bn.com/pimages/9781506721729_p0_v2_s550x406.jpg',1,24.99,24.99,0,4,0,0),
     (10,'9780141182346','The Call of Cthulhu and Other Weird Stories','H.P. Lovecraft',3,'Penguin','1999',7,'https://prodimage.images-bn.com/pimages/9780141182346_p0_v1_s550x406.jpg',5,16.50,16.50,0,4,0,0),
     (14,'9781434103567','The Complete Sherlock Holmes','Arthur Conan Doyle',4,'The Editorium','2012',8,'https://prodimage.images-bn.com/pimages/9781434103567_p0_v1_s550x406.jpg',5,29.95,29.95,0,4,0,0),
 	(10,'9781524763138','Becoming','Michelle Obama',1,'Crown Publishing Group','2018',9,'https://prodimage.images-bn.com/pimages/9781524763138_p0_v6_s550x406.jpg',5,26.99,26.99,0,4,0,0),

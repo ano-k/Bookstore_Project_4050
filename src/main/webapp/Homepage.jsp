@@ -62,15 +62,17 @@
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         String book = "SELECT * FROM Books "; //get a list of usernames of the logged in user
-        String featured;
-        String bestSellers;
+        String featured = "SELECT * FROM Books ";
+        String bestSellers = "SELECT * FROM Books ";
 
         //loop through genre1 - genre11, to see if any selection was made
         boolean chop = false;
         for(int i = 0; i < 10; i++) {
             if(request.getParameter("genre" + i) != null) {
                 chop = true;
-                book += "WHERE ";
+                book += "WHERE (";
+                featured += "WHERE (";
+                bestSellers += "WHERE (";
                 break;
             }
         } //checks if a selection was made, and if so, concat a WHERE to the string
@@ -78,16 +80,33 @@
         for(int i = 0; i < 10; i++) {
             if(request.getParameter("genre" + i) != null) {
                 book += "Genre = " + request.getParameter("genre" + i) + " OR ";
+                featured += "Genre = " + request.getParameter("genre" + i) + " OR ";
+                bestSellers += "Genre = " + request.getParameter("genre" + i) + " OR ";
             }
-        } //applies all seletions made
+        } //applies all selections made
         if(chop) {
             book = book.substring(0, (book.length()-3));
+            book += ") ";
+            featured = featured.substring(0, (featured.length()-3));
+            featured += ") ";
+            bestSellers = bestSellers.substring(0, (bestSellers.length()-3));
+            bestSellers += ") ";
             featured = book + "AND isFeatured = 1 ";
             bestSellers = book + "AND isBestSeller = 1 ";
+            if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
+                book += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
+            }
         }
         else {
-            featured = book + "WHERE isFeatured = 1 ";
-            bestSellers = book + "WHERE isBestSeller = 1 ";
+            if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
+                book += "WHERE (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
+            }
+            featured += "WHERE isFeatured = 1 ";
+            bestSellers += "WHERE isBestSeller = 1 ";
+        }
+        if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
+            featured += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
+            bestSellers += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
         }
         if(request.getParameter("price1") != null) {
             book += "ORDER BY SellPrice DESC" ;
@@ -152,17 +171,20 @@
         </nav>
     <div class="temp-information">
         <div class="hp-sidebar">
+            <%--
             <div class="search-bar">
                 <form>
                     <input id="searchbar" name="searchbar" type="text" placeholder="Search title, author, ISBN, ..."/>
                     <input type="submit" value="Submit">
                 </form>
             </div>
+            --%>
 
             <div class="filters">
                 <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
                     <div class="parent-filter-div">
                         <div class="temp-block">
+                            <input id="searchbar" name="searchbar" type="text" placeholder="Search title, author, ISBN, ..."/>
                             <h3>Genre</h3>
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
                             <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
@@ -258,6 +280,128 @@
             <table class="table">
                 <tbody>
                 <% while(bookResults.next()) { %>
+                <div class="modal fade" id=<%="bookInfo_" + bookResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <h5 class="modal-title">Book Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-5">
+                                                <img src=<%=bookResults.getString(9)%> width="270" height="420">
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="form-label">Title: </label><br>
+
+                                                <label class="form-label">Author: </label><br>
+
+                                                <label class="form-label">Edition: </label><br>
+
+                                                <label class="form-label">Publisher: </label><br>
+
+                                                <label class="form-label">Genre: </label><br>
+
+                                                <label class="form-label">Price: </label><br>
+
+                                                <label class="form-label">Rating: </label><br>
+
+                                                <label class="form-label">ISBN: </label><br>
+
+                                                <label class="form-label" for="quantity">Quantity: </label>
+
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <label class="form-label"><%=bookResults.getString(3)%></label><br>
+                                                <label class="form-label"><%=bookResults.getString(4)%></label><br>
+                                                <label class="form-label"><%=bookResults.getInt(5)%></label><br>
+                                                <label class="form-label"><%=bookResults.getString(6)%></label><br>
+                                                <label class="form-label"><%=bookResults.getString(8)%></label><br>
+                                                <label class="form-label">$<%=bookResults.getDouble(12)%></label><br>
+                                                <label class="form-label"><%=bookResults.getInt(14)%>/5</label><br>
+                                                <label class="form-label"><%=bookResults.getString(2)%></label><br>
+                                                <select id="quantity" name="quantity" class="form-input" required>
+                                                    <option value="" selected disabled hidden>Select One</option>
+                                                    <%for(int i = 1; i <= bookResults.getInt(1); i++) {
+                                                    %><option value=<%=i%>><%=i%></option><%
+                                                    }%>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%--
+                                        <div class="form-row">
+                                            <div class="form-group col-md-2">
+                                                <input type="hidden" id="ISBN" name="ISBN" value="<%=bookResults.getString(2)%>"/>
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label">Quantity</label>
+                                                <label class="form-label"><%=bookResults.getInt(1)%></label>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <label class="form-label">Title</label>
+                                                <label class="form-label"><%=bookResults.getString(3)%></label>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <label class="form-label">Author</label>
+                                                <label class="form-label"><%=bookResults.getString(4)%></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-3">
+                                                <label class="form-label">Edition</label>
+                                                <label class="form-label"><%=bookResults.getInt(5)%></label>
+                                            </div>
+                                            <div class="form-group col-md-7">
+                                                <label class="form-label">Publisher</label>
+                                                <label class="form-label"><%=bookResults.getString(6)%></label>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="form-label">Year</label>
+                                                <label class="form-label"><%=bookResults.getInt(7)%></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label class="form-label">Genre</label>
+                                                <label class="form-label"><%=bookResults.getString(8)%></label>
+                                            </div>
+                                            <div class="form-group col-md-8">
+                                                <label class="form-label">Image</label>
+                                                <label class="form-label">Image</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label class="form-label">Price</label>
+                                                <label class="form-label"><%=bookResults.getDouble(12)%></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label class="form-label">Rating</label>
+                                                <label class="form-label"><%=bookResults.getInt(14)%></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                --%>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="bookInfoButton">Add to Cart</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
                 <tr>
                     <td><img src=<%=bookResults.getString(9)%> width="90" height="140"></td>
                     <td><%=bookResults.getString(3)%> <br><br>by <%=bookResults.getString(4)%></td>
