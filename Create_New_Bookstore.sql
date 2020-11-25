@@ -42,7 +42,7 @@ CREATE TABLE `Address` (
 
 LOCK TABLES `Address` WRITE;
 /*!40000 ALTER TABLE `Address` DISABLE KEYS */;
-INSERT INTO `Address` VALUES (15,'anoboii@gmail.com','N/A','N/A','N/A','N/A'),(16,'anokara98@gmail.com','N/A','N/A','N/A','N/A');
+INSERT INTO `Address` VALUES ('1','jason.c.wahl@gmail.com','1458 East Broad Street','Alpharetta','Georgia','30005');
 /*!40000 ALTER TABLE `Address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +222,7 @@ CREATE TABLE `Payment` (
 
 LOCK TABLES `Payment` WRITE;
 /*!40000 ALTER TABLE `Payment` DISABLE KEYS */;
-INSERT INTO `Payment` VALUES (7,'anoboii@gmail.com','N/A','N/A','N/A','N/A'),(8,'anokara98@gmail.com','N/A','N/A','N/A','N/A');
+INSERT INTO `Payment` VALUES ('5','jason.c.wahl@gmail.com','Amex','2134678924567689','2021-11-12','123');
 /*!40000 ALTER TABLE `Payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -309,7 +309,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (2,0,'anoboii@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Admin','Test','444-111-2222',NULL),(0,0,'anokara98@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Example','User','123-123-1233',NULL),(0,1,'jason.c.wahl@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Jason','Wahl','123-123-1233',1);
+INSERT INTO `Users` VALUES (2,1,'jason.c.wahl@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Jason','Wahl','123-123-1233',1),(0,1,'anoboii@gmail.com','42c13d905f2fa471066f528f279994778ca30e2ffde844a191d8b932885ae1ba',NULL,'Ano','Karadaghi','456-456-4567','1');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

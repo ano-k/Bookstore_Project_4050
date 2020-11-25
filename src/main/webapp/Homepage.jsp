@@ -54,13 +54,26 @@
     </style>
 </head>
 <%
+
     String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+    String userType = request.getParameter("currentUserType").replaceAll("/","");
+    String userID = request.getParameter("currentUserID").replaceAll("/","");
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
     String dbPassword = "WebProg2020";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+
+        if(request.getParameter("bookInfoButton") != null) {
+            String cartQuery = "INSERT INTO Cart (User, Book, Quantity) VALUES (?, ?, ?) ";
+            PreparedStatement cartQuery_pmst = connection.prepareStatement(cartQuery);
+            cartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
+            cartQuery_pmst.setString(2, request.getParameter("ISBN").replaceAll("/",""));
+            cartQuery_pmst.setInt(3, (int)Integer.parseInt(request.getParameter("quantity")));
+            cartQuery_pmst.executeUpdate();
+        }
+
         String book = "SELECT * FROM Books "; //get a list of usernames of the logged in user
         String featured = "SELECT * FROM Books ";
         String bestSellers = "SELECT * FROM Books ";
@@ -157,6 +170,12 @@
                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                 <%}%>
+                </form></li>
+                <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                 </form></li>
                 <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                     <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
@@ -290,7 +309,11 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp" method="post">
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
+                                <input type="hidden" id="ISBN" name="ISBN" class="form-input" value = <%=bookResults.getString(2)%>/>
+                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                 <div class="modal-body">
                                     <div class="container">
                                         <div class="form-row">
@@ -328,7 +351,15 @@
                                                 <label class="form-label"><%=bookResults.getString(2)%></label><br>
                                                 <select id="quantity" name="quantity" class="form-input" required>
                                                     <option value="" selected disabled hidden>Select One</option>
-                                                    <%for(int i = 1; i <= bookResults.getInt(1); i++) {
+                                                    <%  String sumInCartQuery = "SELECT SUM(Quantity) FROM Cart WHERE Book = " + bookResults.getString(2) + " ";
+                                                        PreparedStatement sumInCartQuery_pmst = connection.prepareStatement(sumInCartQuery);
+                                                        ResultSet inCartResults = sumInCartQuery_pmst.executeQuery();
+                                                        int sumInCart = 0;
+                                                        if(inCartResults.next()) {
+                                                            sumInCart = inCartResults.getInt(1);
+                                                        }
+                                                        //out.println("test" + sumInCart);
+                                                        for(int i = 1; i <= bookResults.getInt(1) - sumInCart; i++) {
                                                     %><option value=<%=i%>><%=i%></option><%
                                                     }%>
                                                 </select>

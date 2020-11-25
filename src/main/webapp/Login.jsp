@@ -150,25 +150,25 @@
             if(street != null && street != ""){
                 addAddressQuery_pmst.setString(2, street);
             } else {
-                addAddressQuery_pmst.setString(2, "N/A");
+                addAddressQuery_pmst.setString(2, "");
             }
 
             if(city != null && city != ""){
                 addAddressQuery_pmst.setString(3, city);
             } else {
-                addAddressQuery_pmst.setString(3, "N/A");
+                addAddressQuery_pmst.setString(3, "");
             }
 
             if(state != null && state != ""){
                 addAddressQuery_pmst.setString(4, state);
             } else {
-                addAddressQuery_pmst.setString(4, "N/A");
+                addAddressQuery_pmst.setString(4, "");
             }
 
             if(zip != null && zip != ""){
                 addAddressQuery_pmst.setString(5, zip);
             } else {
-                addAddressQuery_pmst.setString(5, "N/A");
+                addAddressQuery_pmst.setString(5, "");
             }
             addAddressQuery_pmst.executeUpdate();
 
@@ -182,7 +182,7 @@
             if(type != null && type != "") {
                 addPaymentQuery_pmst.setString(2, type);
             } else {
-                addPaymentQuery_pmst.setString(2, "N/A");
+                addPaymentQuery_pmst.setString(2, "");
             }
 
             if(cardNumber != null && cardNumber != "") {
@@ -193,18 +193,18 @@
                 String hashedPayment = hashedFirst12 + last4;
                 addPaymentQuery_pmst.setString(3, hashedPayment);
             } else {
-                addPaymentQuery_pmst.setString(3, "N/A");
+                addPaymentQuery_pmst.setString(3, "");
             }
 
             if(expiration != null && expiration != "") {
                 addPaymentQuery_pmst.setString(4, expiration);
             } else {
-                addPaymentQuery_pmst.setString(4, "N/A");
+                addPaymentQuery_pmst.setString(4, "");
             }
             if(cvv != null && cvv != "") {
                 addPaymentQuery_pmst.setString(5, cvv);
             } else {
-                addPaymentQuery_pmst.setString(5, "N/A");
+                addPaymentQuery_pmst.setString(5, "");
             }
             addPaymentQuery_pmst.executeUpdate();
             %>
@@ -229,6 +229,7 @@
                             <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
+                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getInt(5)%>/>
                             </form>
                             <script>
                                 var type = document.getElementById("currentUserType").value;

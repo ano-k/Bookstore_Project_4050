@@ -33,6 +33,7 @@
 //    } //checks if the user is already logged in
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         String userType = request.getParameter("currentUserType").replaceAll("/","");
+        String userID = request.getParameter("currentUserID").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
         String dbPassword = "WebProg2020";
@@ -183,6 +184,7 @@
           <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+          <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
         </form></li>
         <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
           <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
