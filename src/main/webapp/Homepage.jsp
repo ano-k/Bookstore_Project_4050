@@ -65,7 +65,7 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "WebProg2020";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -370,7 +370,6 @@
                                                         if(inCartResults.next()) {
                                                             sumInCart = inCartResults.getInt(1);
                                                         }
-                                                        //out.println("test" + sumInCart);
                                                         for(int i = 1; i <= bookResults.getInt(1) - sumInCart; i++) {
                                                     %><option value=<%=i%>><%=i%></option><%
                                                     }%>
