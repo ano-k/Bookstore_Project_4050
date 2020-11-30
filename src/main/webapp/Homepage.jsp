@@ -164,34 +164,39 @@
     <main>
         <nav id ="nav_menu" style="align-content: center">
             <ul>
-                <%if(!userID.equals("0") && userEmail != ""){ %>
-                <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Manage store</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                </form></li>
-                <%}%>
-            <li><form id ="login_edit" method="post" action=<%if(request.getParameter("currentUserEmail") == null){%>
-                    "/Bookstore_Project_4050_war_exploded/Login.jsp" <%}else {%>
-                     "/Bookstore_Project_4050_war_exploded/EditProfile.jsp"
-            <%}%>>
-                <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();"><%if(request.getParameter("currentUserEmail") == null){%>
-                    Login<%}else {%>Profile<%}%></a>
-                <%if(request.getParameter("currentUserEmail") != null){%>
-                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
-                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                </form></li>
-                <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                </form></li>
-                <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
-                </form></li>
+                <%if(userEmail != ""){ %>
+                    <%if(!userType.equals("0")){ %>
+                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        </form>
+                        </li>
+                    <%}%>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                        </form>
+                    </li>
+                    <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                        </form>
+                    </li>
+                    <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                        </form>
+                    </li>
+                <%} else{%>
+                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                    </form>
+                </li>
                 <%}%>
             </ul>
         </nav>
