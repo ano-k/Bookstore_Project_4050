@@ -28,7 +28,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -209,7 +209,9 @@
             addPaymentQuery_pmst.executeUpdate();
             %>
             <form class ="input-form" id="userInfoForm" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
-                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("newEmail")%>/>
+                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("newEmail").replaceAll("/","")%>/>
+                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=0%>/>
+                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=0%>/>
             </form>
             <script>
                 document.getElementById("userInfoForm").submit();
@@ -224,10 +226,14 @@
                             <script>
                                     alert("This user is suspended.");
                             </script>
-                        <%}
-                        else {%>
+                        <%} else {
+                                String currentUserEmail = "";
+                                if(userResults.getString(1) != null){
+                                    currentUserEmail = userResults.getString(1).replaceAll("/","");
+                                }
+                        %>
                             <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
-                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
+                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=currentUserEmail%>/>
                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
                                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getInt(5)%>/>
                             </form>

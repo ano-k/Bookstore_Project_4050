@@ -54,13 +54,18 @@
     </style>
 </head>
 <%
+    String userEmail = "";
+    String userType = "";
+    String userID = "";
+    if(request.getParameter("currentUserEmail") != null){
+        userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+        userType = request.getParameter("currentUserType").replaceAll("/","");
+        userID = request.getParameter("currentUserID").replaceAll("/","");
+    }
 
-    String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
-    String userType = request.getParameter("currentUserType").replaceAll("/","");
-    String userID = request.getParameter("currentUserID").replaceAll("/","");
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -169,7 +174,6 @@
                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                <%}%>
                 </form></li>
                 <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
                     <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
@@ -180,6 +184,7 @@
                 <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                     <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                 </form></li>
+                <%}%>
     <%--        <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
     <%--            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
     <%--            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>

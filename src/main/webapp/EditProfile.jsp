@@ -32,9 +32,10 @@
 //        response.setHeader("Location", redirect);
 //    } //checks if the user is already logged in
         String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+        String userID = request.getParameter("currentUserID").replaceAll("/","");
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -233,9 +234,17 @@
             <ul>
            <li><form id ="find_books" method="post" action="Homepage.jsp">
                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
-                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+               <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+
+               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
            </form></li>
+                <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                </form></li>
             <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                 <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
             </form></li>

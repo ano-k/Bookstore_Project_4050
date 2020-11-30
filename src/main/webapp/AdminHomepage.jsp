@@ -31,19 +31,23 @@
 //        response.setStatus(response.SC_MOVED_TEMPORARILY);
 //       response.setHeader("Location", redirect);
 //    } //checks if the user is already logged in
-        String userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
-        String userType = request.getParameter("currentUserType").replaceAll("/","");
-        String userID = request.getParameter("currentUserID").replaceAll("/","");
+        String userEmail = "";
+        String userType = "";
+        String userID = "";
+        if(request.getParameter("currentUserEmail") != null){
+            userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+            userType = request.getParameter("currentUserType").replaceAll("/","");
+            userID = request.getParameter("currentUserID").replaceAll("/","");
+        }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
 
-
             if(request.getParameter("editBookButton") != null) {
-                String updateBookQuery = "UPDATE Books SET Quantity = ?, Title = ?, Author = ?, Edition = ?, Publisher = ?, Year = ?, Genre = ?, Image = ?, MinThreshold = ?, BuyPrice = ?, SellPrice = ?, Rating = ?, IsFeatured = ?, IsBestSeller = ? WHERE ISBN = ? ";
+                String updateBookQuery = "UPDATE Books SET Quantity = ?, Title = ?, Author = ?, Edition = ?, Publisher = ?, Year = ?, Genre = ?, Image = ?, MinThreshold = ?, BuyPrice = ?, SellPrice = ? WHERE ISBN = ? ";
                 PreparedStatement updateBookQuery_pmst = connection.prepareStatement(updateBookQuery);
                 updateBookQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("updateQuantity")));
                 updateBookQuery_pmst.setString(2, request.getParameter("updateTitle"));
@@ -56,10 +60,7 @@
                 updateBookQuery_pmst.setDouble(9, (double)Double.parseDouble(request.getParameter("updateMinThreshold")));
                 updateBookQuery_pmst.setDouble(10, (double)Double.parseDouble(request.getParameter("updateBuyPrice")));
                 updateBookQuery_pmst.setDouble(11, (double)Double.parseDouble(request.getParameter("updateSellPrice")));
-                updateBookQuery_pmst.setInt(12, (int)Integer.parseInt(request.getParameter("updateRating")));
-                updateBookQuery_pmst.setInt(13, (int)Integer.parseInt(request.getParameter("updateFeatured")));
-                updateBookQuery_pmst.setInt(14, (int)Integer.parseInt(request.getParameter("updateBestSeller")));
-                updateBookQuery_pmst.setString(15, request.getParameter("ISBN"));
+                updateBookQuery_pmst.setString(12, request.getParameter("ISBN"));
                 updateBookQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("archiveBookButton") != null) {
@@ -69,7 +70,7 @@
                 archiveBookQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("addBookButton") != null) {
-                String newBookQuery = "INSERT INTO Books (Quantity, ISBN, Title, Author, Edition, Publisher, Year, Genre, Image, MinThreshold, BuyPrice, SellPrice, Rating, IsFeatured, IsBestSeller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+                String newBookQuery = "INSERT INTO Books (Quantity, ISBN, Title, Author, Edition, Publisher, Year, Genre, Image, MinThreshold, BuyPrice, SellPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
                 PreparedStatement newBookQuery_pmst = connection.prepareStatement(newBookQuery);
                 newBookQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("updateQuantity")));
                 newBookQuery_pmst.setString(2, request.getParameter("newISBN"));
@@ -83,9 +84,6 @@
                 newBookQuery_pmst.setDouble(10, (double)Double.parseDouble(request.getParameter("updateMinThreshold")));
                 newBookQuery_pmst.setDouble(11, (double)Double.parseDouble(request.getParameter("updateBuyPrice")));
                 newBookQuery_pmst.setDouble(12, (double)Double.parseDouble(request.getParameter("updateSellPrice")));
-                newBookQuery_pmst.setInt(13, (int)Integer.parseInt(request.getParameter("updateRating")));
-                newBookQuery_pmst.setInt(14, (int)Integer.parseInt(request.getParameter("updateFeatured")));
-                newBookQuery_pmst.setInt(15, (int)Integer.parseInt(request.getParameter("updateBestSeller")));
                 newBookQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("editUserButton") != null) {
@@ -242,6 +240,7 @@
                   <div class="container">
                     <div class="form-row">
                       <div class="form-group col-md-4">
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         <label class="form-label" for="addCode">Code</label>
@@ -255,15 +254,15 @@
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addDiscount">Discount</label>
-                        <input type="text" id="addDiscount" name="addDiscount" class="form-input" pattern="[0-9]?[0-9]" title="Enter number 0 through 99"/>
+                        <input type="text" id="addDiscount" name="addDiscount" class="form-input"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addStart">Start Date</label>
-                        <input type="text" id="addStart" name="addStart" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd"/>
+                        <input type="text" id="addStart" name="addStart" class="form-input"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="addEnd">End Date</label>
-                        <input type="text" id="addEnd" name="addEnd" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd"/>
+                        <input type="text" id="addEnd" name="addEnd" class="form-input"/>
                       </div>
                     </div>
                   </div>
@@ -317,6 +316,7 @@
                       <div class="form-row">
                         <div class="form-group col-md-6">
                           <input type="hidden" id="email" name="email" value="<%=userResults.getString(3)%>"/>
+                          <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                           <label class="form-label" for="updateType">Type</label>
@@ -423,10 +423,11 @@
                       <div class="form-row">
                         <div class="form-group col-md-2">
                           <input type="hidden" id="ISBN" name="ISBN" value="<%=bookResults.getString(2)%>"/>
+                          <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                           <label class="form-label" for="updateQuantity">Quantity</label>
-                          <input type="text" id="updateQuantity" name="updateQuantity" pattern="[0-9]{1,}" title="Enter a number for the quantity of book" class="form-input" value="<%=bookResults.getInt(1)%>"/>
+                          <input type="text" id="updateQuantity" name="updateQuantity" class="form-input" value="<%=bookResults.getInt(1)%>"/>
                         </div>
                         <div class="form-group col-md-5">
                           <label class="form-label" for="updateTitle">Title</label>
@@ -448,7 +449,7 @@
                         </div>
                         <div class="form-group col-md-2">
                           <label class="form-label" for="updateYear">Year</label>
-                          <input type="text" id="updateYear" name="updateYear" class="form-input" pattern="[0-9]{4}" title="Enter a four digit year" value="<%=bookResults.getString(7)%>"/>
+                          <input type="text" id="updateYear" name="updateYear" class="form-input" value="<%=bookResults.getString(7)%>"/>
                         </div>
                       </div>
                       <div class="form-row">
@@ -477,46 +478,16 @@
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
-                          <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" pattern="[0-9]{1,}" title="Enter a number threshold" value="<%=bookResults.getString(10)%>"/>
+                          <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" value="<%=bookResults.getString(10)%>"/>
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price" value="<%=bookResults.getString(11)%>"/>
+                          <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" value="<%=bookResults.getString(11)%>"/>
                         </div>
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateSellPrice">Selling Price</label>
-                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price" value="<%=bookResults.getString(12)%>"/>
+                          <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" value="<%=bookResults.getString(12)%>"/>
                         </div>
-                      </div>
-                      <div class="form-row">
-                          <div class="form-group col-md-4">
-                              <label class="form-label" for="updateRating">Rating</label>
-                              <select id="updateRating" name="updateRating" class="form-input" required>
-                                <option value="" selected disabled hidden>Select One</option>
-                                <option value=0>0</option>
-                                <option value=1>1</option>
-                                <option value=2>2</option>
-                                <option value=3>3</option>
-                                <option value=4>4</option>
-                                <option value=5>5</option>
-                              </select>
-                          </div>
-                          <div class="form-group col-md-4">
-                              <label class="form-label" for="updateFeatured">Featured?</label>
-                              <select id="updateFeatured" name="updateFeatured" class="form-input" required>
-                                <option value="" selected disabled hidden>Select One</option>
-                                <option value=1>Yes</option>
-                                <option value=0>No</option>
-                              </select>
-                          </div>
-                          <div class="form-group col-md-4">
-                              <label class="form-label" for="updateBestSeller">Best Seller?</label>
-                              <select id="updateBestSeller" name="updateBestSeller" class="form-input" required>
-                                <option value="" selected disabled hidden>Select One</option>
-                                <option value=1>Yes</option>
-                                <option value=0>No</option>
-                              </select>
-                          </div>
                       </div>
                     </div>
                   </div>
@@ -545,6 +516,7 @@
                       <div class="form-row">
                         <div class="form-group col-md">
                           <input type="hidden" id="ISBN" name="ISBN" value="<%=bookResults.getString(2)%>"/>
+                          <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                           <p>Are you sure you want to archive this book?</p>
@@ -560,7 +532,6 @@
               </div>
             </div>
           </div>
-
 
           <tr>
             <td><%=bookResults.getString(1)%></td>
@@ -599,15 +570,16 @@
                     <div class="form-row ">
                       <div class="form-group col-md-12">
                         <label class="form-label" for="newISBN">ISBN</label>
-                        <input type="text" id="newISBN" name="newISBN" class="form-input" pattern="(?:(?=.{17}$)97[89][ -](?:[0-9]+[ -]){2}[0-9]+[ -][0-9]|97[89][0-9]{10}|(?=.{13}$)(?:[0-9]+[ -]){2}[0-9]+[ -][0-9Xx]|[0-9]{9}[0-9Xx])" title="Enter a valid ISBN"/>
+                        <input type="text" id="newISBN" name="newISBN" class="form-input"/>
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-2">
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         <label class="form-label" for="updateQuantity">Quantity</label>
-                        <input type="text" id="updateQuantity" name="updateQuantity" class="form-input" pattern="[0-9]{1,}" title="Enter a number for the quantity of book"/>
+                        <input type="text" id="updateQuantity" name="updateQuantity" class="form-input"/>
                       </div>
                       <div class="form-group col-md-5">
                         <label class="form-label" for="updateTitle">Title</label>
@@ -629,7 +601,7 @@
                       </div>
                       <div class="form-group col-md-2">
                         <label class="form-label" for="updateYear">Year</label>
-                        <input type="text" id="updateYear" name="updateYear" class="form-input" pattern="[0-9]{4}" title="Enter a four digit year"/>
+                        <input type="text" id="updateYear" name="updateYear" class="form-input"/>
                       </div>
                     </div>
                     <div class="form-row">
@@ -658,45 +630,15 @@
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateMinThreshold">Minimum Threshold</label>
-                        <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input" pattern="[0-9]{1,}" title="Enter a number threshold"/>
+                        <input type="text" id="updateMinThreshold" name="updateMinThreshold" class="form-input"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateBuyPrice">Buying Price</label>
-                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price"/>
+                        <input type="text" id="updateBuyPrice" name="updateBuyPrice" class="form-input"/>
                       </div>
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateSellPrice">Selling Price</label>
-                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input" pattern='\d+(.|,)\d{2}' title="Enter a valid price"/>
-                      </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-4">
-                        <label class="form-label" for="updateRating">Rating</label>
-                        <select id="updateRating" name="updateRating" class="form-input" required>
-                          <option value="" selected disabled hidden>Select One</option>
-                          <option value=0>0</option>
-                          <option value=1>1</option>
-                          <option value=2>2</option>
-                          <option value=3>3</option>
-                          <option value=4>4</option>
-                          <option value=5>5</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <label class="form-label" for="updateFeatured">Featured?</label>
-                        <select id="updateFeatured" name="updateFeatured" class="form-input" required>
-                          <option value="" selected disabled hidden>Select One</option>
-                          <option value=1>Yes</option>
-                          <option value=0>No</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <label class="form-label" for="updateBestSeller">Best Seller?</label>
-                        <select id="updateBestSeller" name="updateBestSeller" class="form-input" required>
-                          <option value="" selected disabled hidden>Select One</option>
-                          <option value=1>Yes</option>
-                          <option value=0>No</option>
-                        </select>
+                        <input type="text" id="updateSellPrice" name="updateSellPrice" class="form-input"/>
                       </div>
                     </div>
                   </div>

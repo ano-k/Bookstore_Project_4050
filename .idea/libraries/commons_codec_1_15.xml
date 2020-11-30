@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="commons-codec-1.15">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../../../Program Files/Apache Software Foundation/Tomcat 9.0/lib/commons-codec-1.15.jar!/" />
+      <root url="jar:///Program Files/Apache Software Foundation/Tomcat 9.0/lib/commons-codec-1.15.jar!/" />
       <root url="jar://$USER_HOME$/javax.mail.jar!/" />
       <root url="jar://$USER_HOME$/commons-codec-1.15.jar!/" />
     </CLASSES>
