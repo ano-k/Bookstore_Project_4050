@@ -34,7 +34,7 @@
         String userEmail = "";
         String userType = "";
         String userID = "";
-        if(request.getParameter("currentUserEmail") != null){
+        if(request.getParameter("currentUserEmail") != null ){
             userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
             userType = request.getParameter("currentUserType").replaceAll("/","");
             userID = request.getParameter("currentUserID").replaceAll("/","");
@@ -183,6 +183,12 @@
           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
           <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+        </form></li>
+        <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+          <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+          <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+          <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+          <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
         </form></li>
         <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
           <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>

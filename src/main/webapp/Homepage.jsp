@@ -70,7 +70,7 @@
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
 
-        if(request.getParameter("bookInfoButton") != null) {
+        if(request.getParameter("bookInfoButton") != null && userID != "") {
             String cartQuery = "INSERT INTO Cart (User, Book, Quantity) VALUES (?, ?, ?) ";
             PreparedStatement cartQuery_pmst = connection.prepareStatement(cartQuery);
             cartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
@@ -164,6 +164,14 @@
     <main>
         <nav id ="nav_menu" style="align-content: center">
             <ul>
+                <%if(!userID.equals("0") && userEmail != ""){ %>
+                <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Manage store</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                </form></li>
+                <%}%>
             <li><form id ="login_edit" method="post" action=<%if(request.getParameter("currentUserEmail") == null){%>
                     "/Bookstore_Project_4050_war_exploded/Login.jsp" <%}else {%>
                      "/Bookstore_Project_4050_war_exploded/EditProfile.jsp"
@@ -185,12 +193,6 @@
                     <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                 </form></li>
                 <%}%>
-    <%--        <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
-    <%--            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
-    <%--            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
-    <%--            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
-    <%--            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
-    <%--        </form>--%>
             </ul>
         </nav>
     <div class="temp-information">

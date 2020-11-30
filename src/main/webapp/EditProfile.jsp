@@ -232,11 +232,18 @@
     <main>
         <nav id ="nav_menu">
             <ul>
+                <%if(!request.getParameter("currentUserType").equals("0")){ %>
+                <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Manage store</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                </form></li>
+                <%}%>
            <li><form id ="find_books" method="post" action="Homepage.jsp">
                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-
                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
            </form></li>
                 <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
