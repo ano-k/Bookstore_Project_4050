@@ -28,7 +28,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -130,14 +130,54 @@
             pstmt.setString(2, request.getParameter("EmailPassword"));
             pstmt.executeUpdate();
         } else if (request.getParameter("registerButton") != null) {
+            Random random = new Random();
+            int generatedID = (int)(1000000 + random.nextFloat()) * 9000000;
+            //Generates number between 1000000-9000000
+            String to = request.getParameter("newEmail");
+            String from = "bookstore.helper@gmail.com";
+
+            Properties prop = System.getProperties();
+            prop.put("mail.smtp.host", "smtp.gmail.com");
+            prop.put("mail.smtp.port", "587");
+            prop.put("mail.smtp.starttls.enable", "true");
+            prop.put("mail.smtp.auth", "true");
+            prop.put("mail.smtp.ssl.trust", "*");
+            final String emailUsername = "bookstore.helper@gmail.com";
+            final String emailPassword = "oeprimytgjyhvsbc";
+
+            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailUsername, emailPassword);
+                }
+            });
+
+            try {
+                MimeMessage context = new MimeMessage(sess);
+                InternetAddress fromIA = new InternetAddress(from);
+                context.setFrom(from);
+                if (to != null) {
+                    InternetAddress toIA = new InternetAddress(to);
+                    context.addRecipient(Message.RecipientType.TO, toIA);
+
+                    context.setSubject("Welcome to the best bookstore on the planet!");
+                    context.setText("Here is your one-time account verification: " + generatedID);
+                    System.out.println("sending email...");
+                    Transport.send(context);
+                    System.out.println("Message sent successfully.");
+                }
+            } catch (MessagingException mE) {
+                mE.printStackTrace();
+            }
+
             String hashedPass = DigestUtils.sha256Hex(request.getParameter("newPassword"));
-            String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone) VALUES (?, ?, ?, ?, ?) ";
+            String addUserQuery = "INSERT INTO Users (Email, Password, FirstName, LastName, phone, ID) VALUES (?, ?, ?, ?, ?, ?) ";
             PreparedStatement addUserQuery_pmst = connection.prepareStatement(addUserQuery);
             addUserQuery_pmst.setString(1, request.getParameter("newEmail"));
             addUserQuery_pmst.setString(2, hashedPass);
             addUserQuery_pmst.setString(3, request.getParameter("newFirstName"));
             addUserQuery_pmst.setString(4, request.getParameter("newLastName"));
             addUserQuery_pmst.setString(5, request.getParameter("newPhoneNumber"));
+            addUserQuery_pmst.setInt(6, generatedID);
             addUserQuery_pmst.executeUpdate();
 
             String street = request.getParameter("newStreetAddress");
@@ -279,12 +319,6 @@
             <li><form id ="find_books" method="post" action="Homepage.jsp">
                 <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
             </form></li>
-<%--            <form id ="view_cart" method="post" action="ViewCart.jsp">--%>
-<%--                <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">View Cart</a>--%>
-<%--                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>--%>
-<%--                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>--%>
-<%--                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>--%>
-<%--            </form>--%>
             </ul>
         </nav>
 

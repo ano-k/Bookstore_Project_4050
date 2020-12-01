@@ -41,7 +41,7 @@
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);

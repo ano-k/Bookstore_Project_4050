@@ -32,11 +32,15 @@
         if(request.getParameter("currentUserEmail") != null){
             userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
             userType = request.getParameter("currentUserType").replaceAll("/","");
-            userID = request.getParameter("currentUserID").replaceAll("/","");
+            if(request.getParameter("verificationCode") != null){
+                userID = request.getParameter("verificationCode");
+            } else {
+                userID = request.getParameter("currentUserID").replaceAll("/","");
+            }
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -80,6 +84,13 @@
                 PreparedStatement updateNotificationsQuery_pmst = connection.prepareStatement(updateNotificationsQuery);
                 updateNotificationsQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("notifications")));
                 updateNotificationsQuery_pmst.setString(2, userEmail);
+                updateNotificationsQuery_pmst.executeUpdate();
+
+            } else if(request.getParameter("verifyButton") != null){
+                String updateNotificationsQuery = "UPDATE Users SET status = ? WHERE ID = ? ";
+                PreparedStatement updateNotificationsQuery_pmst = connection.prepareStatement(updateNotificationsQuery);
+                updateNotificationsQuery_pmst.setInt(1, 1);
+                updateNotificationsQuery_pmst.setString(2, request.getParameter("verificationCode"));
                 updateNotificationsQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("deleteAddressButton") != null) {
@@ -390,6 +401,8 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
                                                     <select id="notifications" name="notifications" class="form-input" required>
@@ -409,6 +422,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal" id="userVerification" abindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">User Verification</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp" method="post">
+                                    <div class="modal-body">
+                                        <p>Please enter your one-time verification code</p><br>
+                                            <input type="text" id="verificationCode" name="verificationCode" class="form-input"/>
+                                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" id="verifyButton" name="verifyButton" class="btn btn-primary">Verify</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <tr>
                         <td style="padding-top: 1em; position: relative; bottom: 10px" class="listUser">
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=<%="#editPersonal_" + personalResults.getInt(1)%>>
@@ -416,17 +453,19 @@
                             </button>
                         </td>
                         <%if(personalResults.getInt(2) == 0){%>
-                            <td class="listUser">Please verify account first</td>
-                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 0){%>
-                            <td style="color:red" class="listUser">No</td>
-                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 1){%>
-                            <td style="color:green" class="listUser">Yes</td>
-                        <%}%>
-                        <%if(personalResults.getInt(2) == 0){%>
-                            <td style="color:red" class="listUser">Unverified</td>
+                            <td style="color:red" class="listUser"><p data-toggle="modal" data-target="#userVerification">Unverified</p></td>
                         <%}else if(personalResults.getInt(2) == 1){%>
                             <td style="color:green" class="listUser">Verified</td>
                         <%}%>
+                        <%if(personalResults.getInt(2) == 0){%>
+                            <td style="color:orange" class="listUser">Verification Required</td>
+                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 0){%>
+                            <td style="color:red" class="listUser"><p data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>Not subscribed</p></td>
+
+                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 1){%>
+                            <td style="color:green" class="listUser"><p data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>Subscribed</p></td>
+                        <%}%>
+
                         <td class="listUser"><%=personalResults.getString(3)%></td>
                         <td class="listUser"><%=personalResults.getString(6) + " " + personalResults.getString(7)%></td>
                         <td class="listUser"><%=personalResults.getString(8)%></td>
