@@ -259,7 +259,6 @@
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
-`
                     <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                         </form>
@@ -280,12 +279,15 @@
                 <%-- Table for personal information --%>
                 <table class="table">
                     <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Phone Number</th>
-                        <th scope="col"></th>
-                    </tr>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" style="">Status</th>
+                            <th scope="col">Notifications</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Phone Number</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                     <% while(personalResults.next()) { %>
@@ -407,25 +409,38 @@
                             </div>
                         </div>
                     </div>
-
-
                     <tr>
-                        <td><%=personalResults.getString(6)%></td>
-                        <td><%=personalResults.getString(7)%></td>
-                        <td><%=personalResults.getString(8)%></td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editPersonal_" + personalResults.getInt(1)%>>
-                                Edit
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editPassword_" + personalResults.getInt(1)%>>
-                                Edit Password
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>
-                                Notifications?
+                        <td style="padding-top: 1em; position: relative; bottom: 10px" class="listUser">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=<%="#editPersonal_" + personalResults.getInt(1)%>>
+                                Update Info
                             </button>
                         </td>
+                        <%if(personalResults.getInt(2) == 0){%>
+                            <td class="listUser">Please verify account first</td>
+                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 0){%>
+                            <td style="color:red" class="listUser">No</td>
+                        <%}else if(personalResults.getInt(2) == 1 && personalResults.getInt(9) == 1){%>
+                            <td style="color:green" class="listUser">Yes</td>
+                        <%}%>
+                        <%if(personalResults.getInt(2) == 0){%>
+                            <td style="color:red" class="listUser">Unverified</td>
+                        <%}else if(personalResults.getInt(2) == 1){%>
+                            <td style="color:green" class="listUser">Verified</td>
+                        <%}%>
+                        <td class="listUser"><%=personalResults.getString(3)%></td>
+                        <td class="listUser"><%=personalResults.getString(6) + " " + personalResults.getString(7)%></td>
+                        <td class="listUser"><%=personalResults.getString(8)%></td>
+
+                        <td style="padding-top: 1em; position: relative; bottom: 10px" class="listUser">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target=<%="#editPassword_" + personalResults.getInt(1)%>>
+                                Change Password
+                            </button>
+                            <%--                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>--%>
+                            <%--                                Notifications?--%>
+                            <%--                            </button>--%>
+                        </td>
                     </tr>
-                    <% } %>
+                    <%}%>
                     </tbody>
                 </table>
 

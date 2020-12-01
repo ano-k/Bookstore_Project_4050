@@ -26,6 +26,11 @@ html, body
     color: black;
 }
 
+.listUser
+{
+    text-align: center;
+}
+
 
 /*nav styling*/
 #nav_menu
