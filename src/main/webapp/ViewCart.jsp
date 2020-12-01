@@ -37,7 +37,7 @@
 
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "G97t678!";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -66,7 +66,7 @@
                 deleteCartItemQuery_pmst.executeUpdate();
             }
 
-                String cart = "select * from bookstore.cart left join bookstore.books B on bookstore.Cart.Book = B.ISBN WHERE User = ?";
+            String cart = "select * from bookstore.cart left join bookstore.books B on bookstore.Cart.Book = B.ISBN WHERE User = ? ";
             PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             cart_pmst.setInt(1, (int)Integer.parseInt(userID));

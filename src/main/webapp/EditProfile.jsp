@@ -34,13 +34,13 @@
             userType = request.getParameter("currentUserType").replaceAll("/","");
             if(request.getParameter("verificationCode") != null){
                 userID = request.getParameter("verificationCode");
-            } else {
+            } else if(request.getParameter("currentUserID") != null){
                 userID = request.getParameter("currentUserID").replaceAll("/","");
             }
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "G97t678!";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -82,7 +82,7 @@
             } else if(request.getParameter("notificationsButton") != null) {
                 String updateNotificationsQuery = "UPDATE Users SET Notifications = ? WHERE Email = ? ";
                 PreparedStatement updateNotificationsQuery_pmst = connection.prepareStatement(updateNotificationsQuery);
-                updateNotificationsQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("notifications")));
+                updateNotificationsQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("notificationsSelect")));
                 updateNotificationsQuery_pmst.setString(2, userEmail);
                 updateNotificationsQuery_pmst.executeUpdate();
 
@@ -323,7 +323,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="updateFirstName">First Name</label>
                                                     <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your first name" value="<%=personalResults.getString(6)%>"/>
                                                 </div>
@@ -345,7 +345,6 @@
                                         <button type="submit" class="btn btn-primary" name="editPersonalButton">Save changes</button>
                                     </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>
@@ -365,7 +364,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="newPassword">New Password</label>
                                                     <input type="text" id="newPassword" name="newPassword" class="form-input" />
                                                 </div>
@@ -407,15 +406,18 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
-                                                    <select id="notifications" name="notifications" class="form-input" required>
-                                                        <option value="" selected disabled hidden>Select One</option>
+                                                    <select id="notificationsSelect" name="notificationsSelect" class="form-input" required>
                                                         <option value=1>Yes</option>
                                                         <option value=0>No</option>
                                                     </select>
+                                                    <script>
+                                                        $(document).ready(function(){
+                                                            $('#notificationsSelect option[value=<%=personalResults.getInt(9)%>]').attr('selected','selected');
+                                                        });
+                                                    </script>
                                                 </div>
                                             </div>
                                         </div>
@@ -480,9 +482,6 @@
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target=<%="#editPassword_" + personalResults.getInt(1)%>>
                                 Change Password
                             </button>
-                            <%--                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target=<%="#notifications_" + personalResults.getInt(1)%>>--%>
-                            <%--                                Notifications?--%>
-                            <%--                            </button>--%>
                         </td>
                     </tr>
                     <%}%>
@@ -522,9 +521,9 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
-                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="updateStreetAddress">Address</label>
                                                     <input type="text" id="updateStreetAddress" name="updateStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address" value="<%=addressResults.getString(3)%>"/>
                                                 </div>
@@ -532,63 +531,62 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-5">
                                                     <label class="form-label" for="updateCity">City</label>
-                                                    <input type="text" id="updateCity" name="updateCity" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the name of a valid city" value="<%=addressResults.getString(4)%>"/>
+                                                    <input type="text" id="updateCity" name="updateCity" class="form-input" pattern="[A-Za-z]{3,}" title="Enter the name of a valid city" value="<%=addressResults.getString(4)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label class="form-label" for="updateState">State</label>
                                                     <select id="updateState" name="updateState" class="form-input">
-                                                        <option value="" selected disabled hidden>State</option>
-                                                        <option value="Alabama">Alabama</option>
-                                                        <option value="Alaska">Alaska</option>
-                                                        <option value="Arizona">Arizona</option>
-                                                        <option value="Arkansas">Arkansas</option>
-                                                        <option value="California">California</option>
-                                                        <option value="Colorado">Colorado</option>
-                                                        <option value="Connecticut">Connecticut</option>
-                                                        <option value="Delaware">Delaware</option>
-                                                        <option value="District Of Columbia">District Of Columbia</option>
-                                                        <option value="Florida">Florida</option>
-                                                        <option value="Georgia">Georgia</option>
-                                                        <option value="Hawaii">Hawaii</option>
-                                                        <option value="Idaho">Idaho</option>
-                                                        <option value="Illinois">Illinois</option>
-                                                        <option value="Indiana">Indiana</option>
-                                                        <option value="Iowa">Iowa</option>
-                                                        <option value="Kansas">Kansas</option>
-                                                        <option value="Kentucky">Kentucky</option>
-                                                        <option value="Louisiana">Louisiana</option>
-                                                        <option value="Maine">Maine</option>
-                                                        <option value="Maryland">Maryland</option>
-                                                        <option value="Massachusetts">Massachusetts</option>
-                                                        <option value="Michigan">Michigan</option>
-                                                        <option value="Minnesota">Minnesota</option>
-                                                        <option value="Mississippi">Mississippi</option>
-                                                        <option value="Missouri">Missouri</option>
-                                                        <option value="Montana">Montana</option>
-                                                        <option value="Nebraska">Nebraska</option>
-                                                        <option value="Nevada">Nevada</option>
-                                                        <option value="New Hampshire">New Hampshire</option>
-                                                        <option value="New Jersey">New Jersey</option>
-                                                        <option value="New Mexico">New Mexico</option>
-                                                        <option value="New York">New York</option>
-                                                        <option value="North Carolina">North Carolina</option>
-                                                        <option value="North Dakota">North Dakota</option>
-                                                        <option value="Ohio">Ohio</option>
-                                                        <option value="Oklahoma">Oklahoma</option>
-                                                        <option value="Oregon">Oregon</option>
-                                                        <option value="Pennsylvania">Pennsylvania</option>
-                                                        <option value="Rhode Island">Rhode Island</option>
-                                                        <option value="South Carolina">South Carolina</option>
-                                                        <option value="South Dakota">South Dakota</option>
-                                                        <option value="Tennessee">Tennessee</option>
-                                                        <option value="Texas">Texas</option>
-                                                        <option value="Utah">Utah</option>
-                                                        <option value="Vermont">Vermont</option>
-                                                        <option value="Virginia">Virginia</option>
-                                                        <option value="Washington">Washington</option>
-                                                        <option value="West Virginia">West Virginia</option>
-                                                        <option value="Wisconsin">Wisconsin</option>
-                                                        <option value="Wyoming">Wyoming</option>
+                                                        <option value="Alabama" <%if(addressResults.getString(5).equals("Alabama")){%>selected<%}%>>Alabama</option>
+                                                        <option value="Alaska"<%if(addressResults.getString(5).equals("Alaska")){%>selected<%}%>>Alaska</option>
+                                                        <option value="Arizona"<%if(addressResults.getString(5).equals("Arizona")){%>selected<%}%>>Arizona</option>
+                                                        <option value="Arkansas"<%if(addressResults.getString(5).equals("Arkansas")){%>selected<%}%>>Arkansas</option>
+                                                        <option value="California"<%if(addressResults.getString(5).equals("California")){%>selected<%}%>>California</option>
+                                                        <option value="Colorado"<%if(addressResults.getString(5).equals("Colorado")){%>selected<%}%>>Colorado</option>
+                                                        <option value="Connecticut"<%if(addressResults.getString(5).equals("Connecticut")){%>selected<%}%>>Connecticut</option>
+                                                        <option value="Delaware"<%if(addressResults.getString(5).equals("Delaware")){%>selected<%}%>>Delaware</option>
+                                                        <option value="District Of Columbia" <%if(addressResults.getString(5).equals("District Of Columbia")){%>selected<%}%>>District Of Columbia</option>
+                                                        <option value="Florida" <%if(addressResults.getString(5).equals("Florida")){%>selected<%}%>>Florida</option>
+                                                        <option value="Georgia" <%if(addressResults.getString(5).equals("Georgia")){%>selected<%}%>>Georgia</option>
+                                                        <option value="Hawaii" <%if(addressResults.getString(5).equals("Hawaii")){%>selected<%}%>>Hawaii</option>
+                                                        <option value="Idaho" <%if(addressResults.getString(5).equals("Idaho")){%>selected<%}%>>Idaho</option>
+                                                        <option value="Illinois" <%if(addressResults.getString(5).equals("Illinois")){%>selected<%}%>>Illinois</option>
+                                                        <option value="Indiana" <%if(addressResults.getString(5).equals("Indiana")){%>selected<%}%>>Indiana</option>
+                                                        <option value="Iowa" <%if(addressResults.getString(5).equals("Iowa")){%>selected<%}%>>Iowa</option>
+                                                        <option value="Kansas" <%if(addressResults.getString(5).equals("Kansas")){%>selected<%}%>>Kansas</option>
+                                                        <option value="Kentucky" <%if(addressResults.getString(5).equals("Kentucky")){%>selected<%}%>>Kentucky</option>
+                                                        <option value="Louisiana" <%if(addressResults.getString(5).equals("Louisiana")){%>selected<%}%>>Louisiana</option>
+                                                        <option value="Maine" <%if(addressResults.getString(5).equals("Maine")){%>selected<%}%>>Maine</option>
+                                                        <option value="Maryland" <%if(addressResults.getString(5).equals("Maryland")){%>selected<%}%>>Maryland</option>
+                                                        <option value="Massachusetts" <%if(addressResults.getString(5).equals("Massachusetts")){%>selected<%}%>>Massachusetts</option>
+                                                        <option value="Michigan" <%if(addressResults.getString(5).equals("Michigan")){%>selected<%}%>>Michigan</option>
+                                                        <option value="Minnesota" <%if(addressResults.getString(5).equals("Minnesota")){%>selected<%}%>>Minnesota</option>
+                                                        <option value="Mississippi" <%if(addressResults.getString(5).equals("Mississippi")){%>selected<%}%>>Mississippi</option>
+                                                        <option value="Missouri" <%if(addressResults.getString(5).equals("Missouri")){%>selected<%}%>>Missouri</option>
+                                                        <option value="Montana" <%if(addressResults.getString(5).equals("Montana")){%>selected<%}%>>Montana</option>
+                                                        <option value="Nebraska" <%if(addressResults.getString(5).equals("Nebraska")){%>selected<%}%>>Nebraska</option>
+                                                        <option value="Nevada" <%if(addressResults.getString(5).equals("Nevada")){%>selected<%}%>>Nevada</option>
+                                                        <option value="New Hampshire" <%if(addressResults.getString(5).equals("New Hampshire")){%>selected<%}%>>New Hampshire</option>
+                                                        <option value="New Jersey" <%if(addressResults.getString(5).equals("New Jersey")){%>selected<%}%>>New Jersey</option>
+                                                        <option value="New Mexico" <%if(addressResults.getString(5).equals("New Mexico")){%>selected<%}%>>New Mexico</option>
+                                                        <option value="New York" <%if(addressResults.getString(5).equals("New York")){%>selected<%}%>>New York</option>
+                                                        <option value="North Carolina" <%if(addressResults.getString(5).equals("North Carolina")){%>selected<%}%>>North Carolina</option>
+                                                        <option value="North Dakota" <%if(addressResults.getString(5).equals("North Dakota")){%>selected<%}%>>North Dakota</option>
+                                                        <option value="Ohio" <%if(addressResults.getString(5).equals("Ohio")){%>selected<%}%>>Ohio</option>
+                                                        <option value="Oklahoma" <%if(addressResults.getString(5).equals("Oklahoma")){%>selected<%}%>>Oklahoma</option>
+                                                        <option value="Oregon" <%if(addressResults.getString(5).equals("Oregon")){%>selected<%}%>>Oregon</option>
+                                                        <option value="Pennsylvania" <%if(addressResults.getString(5).equals("Pennsylvania")){%>selected<%}%>>Pennsylvania</option>
+                                                        <option value="Rhode Island" <%if(addressResults.getString(5).equals("Rhode Island")){%>selected<%}%>>Rhode Island</option>
+                                                        <option value="South Carolina" <%if(addressResults.getString(5).equals("South Carolina")){%>selected<%}%>>South Carolina</option>
+                                                        <option value="South Dakota" <%if(addressResults.getString(5).equals("South Dakota")){%>selected<%}%>>South Dakota</option>
+                                                        <option value="Tennessee" <%if(addressResults.getString(5).equals("Tennesse")){%>selected<%}%>>Tennessee</option>
+                                                        <option value="Texas" <%if(addressResults.getString(5).equals("Texas")){%>selected<%}%>>Texas</option>
+                                                        <option value="Utah" <%if(addressResults.getString(5).equals("Utah")){%>selected<%}%>>Utah</option>
+                                                        <option value="Vermont" <%if(addressResults.getString(5).equals("Vermont")){%>selected<%}%>>Vermont</option>
+                                                        <option value="Virginia" <%if(addressResults.getString(5).equals("Virginia")){%>selected<%}%>>Virginia</option>
+                                                        <option value="Washington" <%if(addressResults.getString(5).equals("Washington")){%>selected<%}%>>Washington</option>
+                                                        <option value="West Virginia" <%if(addressResults.getString(5).equals("West Virginia")){%>selected<%}%>>West Virginia</option>
+                                                        <option value="Wisconsin" <%if(addressResults.getString(5).equals("Wisconsin")){%>selected<%}%>>Wisconsin</option>
+                                                        <option value="Wyoming" <%if(addressResults.getString(5).equals("Wyoming")){%>selected<%}%>>Wyoming</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3">
@@ -623,7 +621,7 @@
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <p>Are you sure you want to delete this address?</p>
                                                 </div>
                                             </div>
@@ -639,16 +637,16 @@
                     </div>
 
                     <tr>
-                        <td><%=addressResults.getString(3)%></td>
-                        <td><%=addressResults.getString(4)%></td>
-                        <td><%=addressResults.getString(5)%></td>
-                        <td><%=addressResults.getString(6)%></td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editAddress_" + addressResults.getInt(1)%>>
-                            Edit
+                        <td class="listUser"><%=addressResults.getString(3)%></td>
+                        <td class="listUser"><%=addressResults.getString(4)%></td>
+                        <td class="listUser"><%=addressResults.getString(5)%></td>
+                        <td class="listUser"><%=addressResults.getString(6)%></td>
+                        <td style="padding-top: 1em; position: relative; bottom: 10px" class="listUser">
+                            <button type="button" style="width: 30%" class="btn btn-warning btn-sm" data-toggle="modal" data-target=<%="#editAddress_" + addressResults.getInt(1)%>>
+                                Edit
                             </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#deleteAddress_" + addressResults.getInt(1)%>>
-                                Delete
+                            <button type="button" style="width: 35%" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target=<%="#deleteAddress_" + addressResults.getInt(1)%>>
+                                Remove
                             </button>
                         </td>
                     </tr>
@@ -671,7 +669,7 @@
                                         <div class="form-row">
                                             <div class="form-group col-md">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
                                                 <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
                                             </div>
@@ -762,13 +760,13 @@
                 <%-- Table for payment information --%>
                 <table class="table">
                     <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Card Type</th>
-                        <th scope="col">Card Number</th>
-                        <th scope="col">Expiration Date</th>
-                        <th scope="col">CVV</th>
-                        <th scope="col"></th>
-                    </tr>
+                        <tr>
+                            <th scope="col">Card Type</th>
+                            <th scope="col">Card Number</th>
+                            <th scope="col">Expiration Date</th>
+                            <th scope="col">CVV</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                     <%
@@ -780,7 +778,6 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-
                                     <h5 class="modal-title">Edit Payment Information</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
@@ -793,24 +790,23 @@
                                                 <div class="form-group col-md-4">
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="updateCardType">Card Type</label>
                                                     <select id="updateCardType" name="updateCardType" class="form-input">
-                                                        <option value="" selected disabled hidden>Card Type</option>
-                                                        <option value="Visa">Visa</option>
-                                                        <option value="Amex">Amex</option>
-                                                        <option value="MasterCard">MasterCard</option>
+                                                        <option value="Visa" <%if(paymentResults.getString(3).equals("Visa")){%>selected<%}%>>Visa</option>
+                                                        <option value="Amex" <%if(paymentResults.getString(3).equals("Amex")){%>selected<%}%>>Amex</option>
+                                                        <option value="MasterCard" <%if(paymentResults.getString(3).equals("MasterCard")){%>selected<%}%>>MasterCard</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-8">
                                                     <label class="form-label" for="updateCardNumber">Card Number</label>
-                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value="<%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%>"/>
+                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value=<%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%>/>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <label class="form-label" for="updateExpirationDate">Expiration Date</label>
-                                                    <input type="text" id="updateExpirationDate" name="updateExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" value="<%=paymentResults.getString(5)%>"/>
+                                                    <input type="text" id="updateExpirationDate" name="updateExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" placeholder="yyyy-mm-dd" value="<%=paymentResults.getString(5)%>"/>
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label class="form-label" for="updateCVV">CVV</label>
@@ -845,7 +841,7 @@
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value =<%=userType%>/>
                                                     <p>Are you sure you want to delete this payment information?</p>
                                                 </div>
                                             </div>
@@ -861,28 +857,26 @@
                     </div>
 
                     <tr>
-                        <td><%=paymentResults.getString(3)%></td>
+                        <td class="listUser"><%=paymentResults.getString(3)%></td>
                         <% String result = paymentResults.getString(4);
                             result = result.substring(64);
                             String cardNumber = "xxxxxxxxxxxx" + result;
                         %>
-                        <td><%=cardNumber%></td>
-                        <td><%=paymentResults.getString(5)%></td>
-                        <td><%=paymentResults.getString(6)%></td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editPayment_" + paymentResults.getInt(1)%>>
+                        <td class="listUser"><%=cardNumber%></td>
+                        <td class="listUser"><%=paymentResults.getString(5)%></td>
+                        <td class="listUser"><%=paymentResults.getString(6)%></td>
+                        <td style="padding-top: 1em; position: relative; bottom: 10px; right: 10px" class="listUser">
+                            <button type="button" style="width: 35%" class="btn btn-warning btn-sm" data-toggle="modal" data-target=<%="#editPayment_" + paymentResults.getInt(1)%>>
                                 Edit
                             </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#deletePayment_" + paymentResults.getInt(1)%>>
-                                Delete
+                            <button type="button" style="width: 40%" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target=<%="#deletePayment_" + paymentResults.getInt(1)%>>Remove
                             </button>
                         </td>
                     </tr>
-
                     <% } %>
-
                     </tbody>
                 </table>
+
                 <div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -897,8 +891,8 @@
                                     <div class="container">
                                         <div class="form-row">
                                             <div class="form-group col-md-4">
-                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                 <label class="form-label" for="addCardType">Card Type</label>
                                                 <select class="form-input" id="addCardType" name="addCardType">
                                                     <option value="Visa" selected>Visa</option>
@@ -914,7 +908,8 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label class="form-label" for="addExpirationDate">Expiration Date</label>
-                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" />
+                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
+                                                       placeholder="yyyy-mm-dd" title="Enter a date yyyy-mm-dd" />
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label class="form-label" for="addCVV">CVV</label>

@@ -5,7 +5,6 @@
 <%@page import="javax.mail.internet.*" %>
 <%@page import="java.util.Random"%>
 <%@page import="org.apache.commons.codec.digest.DigestUtils"%>
-
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
@@ -28,18 +27,15 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "G97t678!";
+    String dbPassword = "Hakar123";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-        String emailQuery = "SELECT Email, ID, Password, type, Status FROM Users "; //get a list of usernames of every user
-        PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
-        ResultSet userResults = pstmt1.executeQuery(emailQuery);
-        if (request.getParameter("sendTempPass") != null) {
+        if(request.getParameter("sendTempPass") != null) {
             Random rand = new Random();
-            int capLetters = rand.nextInt((90-65)+1) + 65;
-            int lowerLetters = rand.nextInt((122-97)+1) + 97;
-            int numbers = rand.nextInt((57-48)+1) + 65;
+            int capLetters = rand.nextInt((90 - 65) + 1) + 65;
+            int lowerLetters = rand.nextInt((122 - 97) + 1) + 97;
+            int numbers = rand.nextInt((57 - 48) + 1) + 65;
             String password = "";
             char cL = 'a';
             char sL = 'a';
@@ -47,7 +43,7 @@
             int count = 0;
             int options = rand.nextInt(3);
 
-            while (count <8) {
+            while (count < 8) {
                 if ((count == 0) || (count == 4) || (count == 7)) {//this is for the first letter
                     if (options == 0) {
                         cL = (char) capLetters;
@@ -90,7 +86,6 @@
 
             String to = request.getParameter("EmailPassword");
             String from = "bookstore.helper@gmail.com";
-
             Properties prop = System.getProperties();
             prop.put("mail.smtp.host", "smtp.gmail.com");
             prop.put("mail.smtp.port", "587");
@@ -113,7 +108,6 @@
                 if (to != null) {
                     InternetAddress toIA = new InternetAddress(to);
                     context.addRecipient(Message.RecipientType.TO, toIA);
-
                     context.setSubject("Testing out my mail sending code!");
                     context.setText("Here is your temporary password: " + password);
                     System.out.println("sending email...");
@@ -131,7 +125,7 @@
             pstmt.executeUpdate();
         } else if (request.getParameter("registerButton") != null) {
             Random random = new Random();
-            int generatedID = random.nextInt((9000000-1000000) + 1) +1000000;
+            int generatedID = random.nextInt((9000000 - 1000000) + 1) + 1000000;
             //Generates number between 1000000-9000000
             String to = request.getParameter("newEmail");
             String from = "bookstore.helper@gmail.com";
@@ -155,10 +149,9 @@
                 MimeMessage context = new MimeMessage(sess);
                 InternetAddress fromIA = new InternetAddress(from);
                 context.setFrom(from);
-                if (to != null) {
+                if(to != null){
                     InternetAddress toIA = new InternetAddress(to);
                     context.addRecipient(Message.RecipientType.TO, toIA);
-
                     context.setSubject("Welcome to the best bookstore on the planet!");
                     context.setText("Here is your one-time account verification: " + generatedID);
                     System.out.println("sending email...");
@@ -217,13 +210,17 @@
             String expiration = request.getParameter("newExpirationDate");
             String cvv = request.getParameter("newCVV");
             String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
+            System.out.println("I have declared my variables");
             PreparedStatement addPaymentQuery_pmst = connection.prepareStatement(addPaymentQuery);
             addPaymentQuery_pmst.setString(1, request.getParameter("newEmail"));
+            System.out.println("Email has been set");
+
             if(type != null && type != "") {
                 addPaymentQuery_pmst.setString(2, type);
             } else {
                 addPaymentQuery_pmst.setString(2, "");
             }
+            System.out.println("Payment has been set");
 
             if(cardNumber != null && cardNumber != "") {
                 //addPaymentQuery_pmst.setString(3, number); //right here
@@ -233,59 +230,59 @@
                 String hashedPayment = hashedFirst12 + last4;
                 addPaymentQuery_pmst.setString(3, hashedPayment);
             } else {
-                addPaymentQuery_pmst.setString(3, "abdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehnone");
+                addPaymentQuery_pmst.setString(3, "");
             }
+            System.out.println("# has been set");
+
 
             if(expiration != null && expiration != "") {
                 addPaymentQuery_pmst.setString(4, expiration);
             } else {
                 addPaymentQuery_pmst.setString(4, "");
             }
+            System.out.println("Expiration has been set");
+
             if(cvv != null && cvv != "") {
                 addPaymentQuery_pmst.setString(5, cvv);
             } else {
                 addPaymentQuery_pmst.setString(5, "");
             }
+            System.out.println("CVV has been set");
+
             addPaymentQuery_pmst.executeUpdate();
-            %>
-            <form class ="input-form" id="userInfoForm" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
+            System.out.println("Update has been pushed");
+%>
+            <form class ="input-form" id="userInfoForm" action="Homepage.jsp" method="post">
                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("newEmail").replaceAll("/","")%>/>
                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=0%>/>
-                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=0%>/>
+                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=generatedID%>/>
             </form>
             <script>
                 document.getElementById("userInfoForm").submit();
             </script>
-        <% } else if(request.getParameter("user") != null) {
+    <%
+         } else if(request.getParameter("user") != null) {
+            String emailQuery = "SELECT Email, ID, Password, type, Status FROM Users "; //get a list of usernames of every user
+            PreparedStatement pstmt1 = connection.prepareStatement(emailQuery);
+            ResultSet userResults = pstmt1.executeQuery(emailQuery);
             boolean userFound = false;
             while(userResults.next()) {
-                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
+                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getInt(2))){
                     if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3))){
                         userFound = true;
-                        if((userResults.getInt(5) == 2)) { %>
+                        if((userResults.getInt(4) == 2)) { %>
                             <script>
                                     alert("This user is suspended.");
                             </script>
-                        <%} else {
-                                String currentUserEmail = "";
-                                if(userResults.getString(1) != null){
-                                    currentUserEmail = userResults.getString(1).replaceAll("/","");
-                                }
-                        %>
-                            <form class ="input-form" id="userInfoForm"  method="post" action="Homepage.jsp">
-                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=currentUserEmail%>/>
-                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getString(4)%>/>
-                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getInt(5)%>/>
+                        <%} else {%>
+                            <form class ="input-form" id="userInfoForm2"  method="post" action=<%if(userResults.getInt(4) == 0){%>"Homepage.jsp">
+                                <%}else{%>"AdminHomepage.jsp"><%}%>
+                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userResults.getString(1)%>/>
+                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userResults.getInt(4)%>/>
+                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userResults.getInt(2)%>/>
                             </form>
                             <script>
-                                var type = document.getElementById("currentUserType").value;
-                                if(type == "0/") {
-                                    document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/Homepage.jsp";
-                                }
-                                else {
-                                    document.getElementById("userInfoForm").action = "/Bookstore_Project_4050_war_exploded/AdminHomepage.jsp";
-                                }
-                                document.getElementById("userInfoForm").submit();
+                                document.getElementById("userInfoForm2").submit();
                             </script>
                         <%}
                     }
@@ -296,9 +293,8 @@
                     alert("Incorrect login information, please try again.");
                 </script>
             <%}
-        }
+        }%>
 
-%>
     <body>
 <div class="column left"></div>
 <div class="column middle">
