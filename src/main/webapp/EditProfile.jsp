@@ -40,7 +40,7 @@
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "Hakar123";
+        String dbPassword = "G97t678!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -270,6 +270,12 @@
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
+                    <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    </form>
                     <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                         </form>
@@ -517,7 +523,7 @@
                                                 <div class="form-group col-md">
                                                     <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                                                     <label class="form-label" for="updateStreetAddress">Address</label>
                                                     <input type="text" id="updateStreetAddress" name="updateStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address" value="<%=addressResults.getString(3)%>"/>
@@ -856,7 +862,11 @@
 
                     <tr>
                         <td><%=paymentResults.getString(3)%></td>
-                        <td><%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%></td>
+                        <% String result = paymentResults.getString(4);
+                            result = result.substring(64);
+                            String cardNumber = "xxxxxxxxxxxx" + result;
+                        %>
+                        <td><%=cardNumber%></td>
                         <td><%=paymentResults.getString(5)%></td>
                         <td><%=paymentResults.getString(6)%></td>
                         <td>
@@ -865,7 +875,7 @@
                             </button>
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#deletePayment_" + paymentResults.getInt(1)%>>
                                 Delete
-                            </button
+                            </button>
                         </td>
                     </tr>
 

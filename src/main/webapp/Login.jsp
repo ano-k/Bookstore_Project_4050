@@ -28,7 +28,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "G97t678!";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -131,7 +131,7 @@
             pstmt.executeUpdate();
         } else if (request.getParameter("registerButton") != null) {
             Random random = new Random();
-            int generatedID = (int)(1000000 + random.nextFloat()) * 9000000;
+            int generatedID = random.nextInt((9000000-1000000) + 1) +1000000;
             //Generates number between 1000000-9000000
             String to = request.getParameter("newEmail");
             String from = "bookstore.helper@gmail.com";
@@ -233,7 +233,7 @@
                 String hashedPayment = hashedFirst12 + last4;
                 addPaymentQuery_pmst.setString(3, hashedPayment);
             } else {
-                addPaymentQuery_pmst.setString(3, "");
+                addPaymentQuery_pmst.setString(3, "abdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehnone");
             }
 
             if(expiration != null && expiration != "") {

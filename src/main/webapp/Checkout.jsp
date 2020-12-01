@@ -1,74 +1,419 @@
-<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.sql.*" %>
+<%@page import="java.util.*"%>
+<%@page import="javax.mail.*"%>
+<%@page import="java.net.InterfaceAddress" %>
+<%@page import="javax.mail.internet.*" %>
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<link rel="stylesheet" href="https://www.tutorialrepublic.com/lib/styles/snippets-2.2.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="stylesheet.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Checkout</title>
-
+    <title>Edit Profile</title>
 </head>
 <body>
+<%
+    String userEmail = "";
+    String userType = "";
+    String userID = "";
+    if(request.getParameter("currentUserEmail") != null){
+        userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
+        userType = request.getParameter("currentUserType").replaceAll("/","");
+        userID = request.getParameter("currentUserID").replaceAll("/","");
+    }
 
-<div class="page-header">
-    <h1>Online Bookstore</h1>
-</div>
-<div class="cart-information">
-<h3 class="page-header">Checkout</h3>
-<ul style="list-style-type:none;">
-    <li>
-        <label><h4>Name</h4></label>
-        <p>John Doe</p>
-    </li>
-    <br>
-    <li>
-        <label><h4>Payment Info</h4></label>
-        <p>Credit Card Number: ***********4578 [Visa]</p>
-        <button><a href="EditProfile.jsp">Change Credit Card</a></button>
-    </li>
-    <br>
-    <li>
-        <label><h4>Address</h4></label>
-        <p>100 Example Street</p>
-        <button><a href="EditProfile.jsp">Change Address</a></button>
-    </li>
-    <br>
-    <li>
-        <h4>Order Summary (List all books being purchased)</h4>
+    String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
+    String dbUsername = "root";
+    String dbPassword = "G97t678!";
 
-        <ul style="list-style-type:none;">
-            <form>
-                <button>[x]</button>
-                <label>Book 1 $12.25 | Quantity:</label>
-                <input type="number" id="quantity-1" name="quantity-1" min="1" max="100" placeholder="1">
+    try {
+        Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+
+        if(request.getParameter("editQuantityButton") != null) {
+            if(request.getParameter("quantity").equals("0")) {
+                String deleteCartItemQuery = "DELETE FROM Cart WHERE Book = ? AND User = ?";
+                PreparedStatement deleteCartItemQuery_pmst = connection.prepareStatement(deleteCartItemQuery);
+                deleteCartItemQuery_pmst.setString(1, request.getParameter("ISBN").replaceAll("/",""));
+                deleteCartItemQuery_pmst.setInt(2, (int)Integer.parseInt(userID));
+                deleteCartItemQuery_pmst.executeUpdate();
+            }
+            else {
+                String editQuantityQuery = "UPDATE Cart SET Quantity = ? WHERE Book = ? AND User = ?";
+                PreparedStatement editQuantityQuery_pmst = connection.prepareStatement(editQuantityQuery);
+                editQuantityQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("quantity")));
+                editQuantityQuery_pmst.setString(2, request.getParameter("ISBN").replaceAll("/",""));
+                editQuantityQuery_pmst.setInt(3, (int)Integer.parseInt(userID));
+                editQuantityQuery_pmst.executeUpdate();
+            }
+        } else if(request.getParameter("removeButton") != null) {
+            String deleteCartItemQuery = "DELETE FROM Cart WHERE Book = ? AND User = ?";
+            PreparedStatement deleteCartItemQuery_pmst = connection.prepareStatement(deleteCartItemQuery);
+            deleteCartItemQuery_pmst.setString(1, request.getParameter("ISBN").replaceAll("/",""));
+            deleteCartItemQuery_pmst.setInt(2, (int)Integer.parseInt(userID));
+            deleteCartItemQuery_pmst.executeUpdate();
+        }
+
+        String cart = "select * from bookstore.cart left join bookstore.books B on bookstore.Cart.Book = B.ISBN WHERE User = ?";
+        PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_UPDATABLE);
+        cart_pmst.setInt(1, (int)Integer.parseInt(userID));
+        ResultSet cartResults = cart_pmst.executeQuery();
+
+        String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
+        PreparedStatement address_pmst = connection.prepareStatement(address);
+        address_pmst.setString(1, userEmail);
+        ResultSet addressResults = address_pmst.executeQuery();
+
+        String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
+        PreparedStatement payment_pmst = connection.prepareStatement(payment);
+        payment_pmst.setString(1, userEmail);
+        ResultSet paymentResults = payment_pmst.executeQuery();
+
+%>
+<div class="column left"></div>
+
+<div class="column middle">
+    <header>
+        <h1 class="page-header">
+            <span style="color: red" class="logo">B</span>
+            <span style="color: orange" class="logo">OO</span>
+            <span style="color: limegreen" class="logo">K</span>
+            <span style="color: red" class="logo">S </span>
+            <backward><span style="color: royalblue" class="logo"> R </span></backward>
+            <span style="color: limegreen" class="logo"> U</span>
+            <span style="color: red" class="logo">S</span>
+        </h1>
+    </header>
+
+    <main>
+        <nav id ="nav_menu">
+            <ul>
+                <%if(userEmail != ""){ %>
+                <%if(!userType.equals("0")){ %>
+                <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                </form>
+                </li>
+                <%}%>
+                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                </form>
+                </li>
+
+                <li><form id ="find_books" method="post" action="Homepage.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                </form>
+                </li>
+                <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                </form>
+                </li>
+                <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                </form>
+                </li>
+                <%} else{%>
+                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                </form>
+                </li>
+                <%}%>
+            </ul>
+        </nav>
+        <div class="main content">
+            <div class="cart-information">
+                <h1 class="page-header">Checkout</h1>
+                <h4 style="text-align: center">Cart</h4>
+
+                <%
+                    if(!cartResults.next()) {
+                %>
+                <h6 class="page-header">Your cart is empty</h6>
+                <%
+                }
+                else {
+                    cartResults.beforeFirst();%>
+                <table class="table">
+                    <tbody>
+                    <%
+                        while(cartResults.next()) { %>
+                    <tr>
+                        <td>Quantity: <%=cartResults.getInt(3)%></td>
+                        <td><img src=<%=cartResults.getString(12)%> width="90" height="140"></td>
+                        <td><%=cartResults.getString(6)%> <br><br>by <%=cartResults.getString(7)%></td>
+                        <td>$<%=cartResults.getDouble(15)%> <br><br> <%=cartResults.getInt(17)%>/5</td>
+                    </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+                <h6 class="page-header">Address Information</h6>
+                <%-- Table for address information --%>
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Street Address</th>
+                        <th scope="col">City</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Zip Code</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        int countAddressRows = 0;
+                        while(addressResults.next()) {
+                            countAddressRows++;
+                    %>
+
+                    <tr>
+                        <td><%=addressResults.getString(3)%></td>
+                        <td><%=addressResults.getString(4)%></td>
+                        <td><%=addressResults.getString(5)%></td>
+                        <td><%=addressResults.getString(6)%></td>
+                        <td>
+                            <%---TODO Add radio buttons --%>
+                        </td>
+                    </tr>
+                    <% } %>
+
+                    </tbody>
+                </table>
+                <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Address Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Checkout.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md">
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="addStreetAddress">Address</label>
+                                                <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-5">
+                                                <label class="form-label" for="addCity">City</label>
+                                                <input type="text" id="addCity" name="addCity" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the name of a valid city"/>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label class="form-label" for="addState">State</label>
+                                                <select id="addState" name="addState" class="form-input">
+                                                    <option value="Alabama">Alabama</option>
+                                                    <option value="Alaska">Alaska</option>
+                                                    <option value="Arizona">Arizona</option>
+                                                    <option value="Arkansas">Arkansas</option>
+                                                    <option value="California">California</option>
+                                                    <option value="Colorado">Colorado</option>
+                                                    <option value="Connecticut">Connecticut</option>
+                                                    <option value="Delaware">Delaware</option>
+                                                    <option value="District Of Columbia">District Of Columbia</option>
+                                                    <option value="Florida">Florida</option>
+                                                    <option value="Georgia">Georgia</option>
+                                                    <option value="Hawaii">Hawaii</option>
+                                                    <option value="Idaho">Idaho</option>
+                                                    <option value="Illinois">Illinois</option>
+                                                    <option value="Indiana">Indiana</option>
+                                                    <option value="Iowa">Iowa</option>
+                                                    <option value="Kansas">Kansas</option>
+                                                    <option value="Kentucky">Kentucky</option>
+                                                    <option value="Louisiana">Louisiana</option>
+                                                    <option value="Maine">Maine</option>
+                                                    <option value="Maryland">Maryland</option>
+                                                    <option value="Massachusetts">Massachusetts</option>
+                                                    <option value="Michigan">Michigan</option>
+                                                    <option value="Minnesota">Minnesota</option>
+                                                    <option value="Mississippi">Mississippi</option>
+                                                    <option value="Missouri">Missouri</option>
+                                                    <option value="Montana">Montana</option>
+                                                    <option value="Nebraska">Nebraska</option>
+                                                    <option value="Nevada">Nevada</option>
+                                                    <option value="New Hampshire">New Hampshire</option>
+                                                    <option value="New Jersey">New Jersey</option>
+                                                    <option value="New Mexico">New Mexico</option>
+                                                    <option value="New York">New York</option>
+                                                    <option value="North Carolina">North Carolina</option>
+                                                    <option value="North Dakota">North Dakota</option>
+                                                    <option value="Ohio">Ohio</option>
+                                                    <option value="Oklahoma">Oklahoma</option>
+                                                    <option value="Oregon">Oregon</option>
+                                                    <option value="Pennsylvania">Pennsylvania</option>
+                                                    <option value="Rhode Island">Rhode Island</option>
+                                                    <option value="South Carolina">South Carolina</option>
+                                                    <option value="South Dakota">South Dakota</option>
+                                                    <option value="Tennessee">Tennessee</option>
+                                                    <option value="Texas">Texas</option>
+                                                    <option value="Utah">Utah</option>
+                                                    <option value="Vermont">Vermont</option>
+                                                    <option value="Virginia">Virginia</option>
+                                                    <option value="Washington">Washington</option>
+                                                    <option value="West Virginia">West Virginia</option>
+                                                    <option value="Wisconsin">Wisconsin</option>
+                                                    <option value="Wyoming">Wyoming</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="form-label" for="addZipCode">Zip Code</label>
+                                                <input type="text" id="addZipCode" name="addZipCode" class="form-input" pattern="(\d{5}([\-]\d{4})?)" title="Enter ##### or #####-#### zip code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="addAddressButton">Add Address</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <% if(countAddressRows < 3) {System.out.println("hello, hi"); %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
+                    Add
+                </button>
+                <% } %>
+<%--end of address --%>
+
+                <h6 class="page-header">Payment Information</h6>
+                <%-- Table for payment information --%>
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Card Type</th>
+                        <th scope="col">Card Number</th>
+                        <th scope="col">Expiration Date</th>
+                        <th scope="col">CVV</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        int countPaymentRows = 0;
+                        while(paymentResults.next()) {
+                            countPaymentRows++;
+                    %>
+                    <tr>
+                        <td><%=paymentResults.getString(3)%></td>
+                        <% String result = paymentResults.getString(4);
+                            result = result.substring(64);
+                            String cardNumber = "xxxxxxxxxxxx" + result;
+                        %>
+                        <td><%=cardNumber%></td>
+                        <td><%=paymentResults.getString(5)%></td>
+                        <td><%=paymentResults.getString(6)%></td>
+                        <td>
+                           <%-- TODO radio buttons! --%>
+                        </td>
+                    </tr>
+
+                    <% } %>
+
+                    </tbody>
+                </table>
+
+               <div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Payment Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Checkout.jsp" method="post">
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <label class="form-label" for="addCardType">Card Type</label>
+                                                <select class="form-input" id="addCardType" name="addCardType">
+                                                    <option value="Visa" selected>Visa</option>
+                                                    <option value="Amex">Amex</option>
+                                                    <option value="MasterCard">MasterCard</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-8">
+                                                <label class="form-label" for="addCardNumber">Card Number</label>
+                                                <input type="text" id="addCardNumber" name="addCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label class="form-label" for="addExpirationDate">Expiration Date</label>
+                                                <input type="text" id="addExpirationDate" name="addExpirationDate" class="form-input" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" title="Enter a date yyyy-mm-dd" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="form-label" for="addCVV">CVV</label>
+                                                <input type="text" id="addCVV" name="addCVV" class="form-input" pattern="[0-9]{3,4}" title="Enter a 3 or 4 digit CVV"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="addPaymentButton">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <% if(countPaymentRows < 3) { %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
+                    Add
+                </button>
+                <%}%>
+
+                <%-- end of payment--%>
                 <br>
-                <button>[x]</button>
-                <label>Book 2 $1.50 | Quantity:</label>
-                <input type="number" id="quantity-2" name="quantity-2" min="1" max="100" placeholder="1">
                 <br>
-                <button>[x]</button>
-                <label>Book 3 $9.25 | Quantity:</label>
-                <input type="number" id="quantity-3" name="quantity-3" min="1" max="100" placeholder="1">
-            </form>
-        </ul>
-        <h3>Total: $111.00</h3>
-
-        <h4>[x] = remove from cart</h4>
-    </li>
-</ul>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>
+                    Check Out
+                </button>
+                <%}%>
+            </div>
+        </div>
+    </main>
 </div>
-<nav class="nav-bar">
-    <button><a href="Homepage.jsp">Update Order</a></button>
-    <button><a>Confirm Order</a></button>
-</nav>
-
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
+<%
+    } catch (SQLException e){
+        //out.println("<p>Unsuccessful connection to database</p>");
+        e.printStackTrace();
+    }
+%>
 </html>
