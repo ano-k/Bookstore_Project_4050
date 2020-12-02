@@ -65,7 +65,7 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "G97t678!";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -79,7 +79,7 @@
             cartQuery_pmst.executeUpdate();
         }
 
-        String book = "SELECT * FROM Books "; //get a list of usernames of the logged in user
+        String book = "SELECT * FROM Books ";
         String featured = "SELECT * FROM Books ";
         String bestSellers = "SELECT * FROM Books ";
 
@@ -167,8 +167,8 @@
     <main>
         <nav id ="nav_menu" style="align-content: center">
             <ul>
-                <%if(userEmail != ""){ %>
-                    <%if(!userType.equals("0")){ %>
+                <%if(userEmail != ""){%>
+                    <%if(userType.equals("2") || userType.equals("1")){ %>
                         <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
                             <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>

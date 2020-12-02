@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
 <%@page import="java.util.*"%>
+<%@page import="java.time.*"%>
 <%@page import="javax.mail.*"%>
 <%@page import="java.net.InterfaceAddress" %>
 <%@page import="javax.mail.internet.*" %>
@@ -37,10 +38,11 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "G97t678!";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+        double subtotal = 0; //for the total
 
         if(request.getParameter("editQuantityButton") != null) {
             if(request.getParameter("quantity").equals("0")) {
@@ -66,10 +68,55 @@
             deleteCartItemQuery_pmst.executeUpdate();
         }
 
-        String cart = "select * from bookstore.cart left join bookstore.books B on bookstore.Cart.Book = B.ISBN WHERE User = ?";
+        if(request.getParameter("addAddressButton") != null) {
+            String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement addAddressQuery_pmst = connection.prepareStatement(addAddressQuery);
+            addAddressQuery_pmst.setString(1, userEmail);
+            addAddressQuery_pmst.setString(2, request.getParameter("addStreetAddress"));
+            addAddressQuery_pmst.setString(3, request.getParameter("addCity"));
+            addAddressQuery_pmst.setString(4, request.getParameter("addState"));
+            addAddressQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addZipCode")));
+            addAddressQuery_pmst.executeUpdate();
+
+        } else if(request.getParameter("addPaymentButton") != null) {
+            String addPaymentQuery = "INSERT INTO Payment (User, Type, Number, Expiration, CVV) VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement addPaymentQuery_pmst = connection.prepareStatement(addPaymentQuery);
+            addPaymentQuery_pmst.setString(1, userEmail);
+            addPaymentQuery_pmst.setString(2, request.getParameter("addCardType"));
+            String cardNumber = request.getParameter("addCardNumber");
+            String first12 = cardNumber.substring(0,12);
+            String last4 = cardNumber.substring(12);
+            String hashedFirst12 = DigestUtils.sha256Hex(first12);
+            String hashedPayment = hashedFirst12 + last4;
+            addPaymentQuery_pmst.setString(3, hashedPayment);
+            addPaymentQuery_pmst.setString(4, request.getParameter("addExpirationDate"));
+            addPaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
+            addPaymentQuery_pmst.executeUpdate();
+
+        } if(request.getParameter("checkoutButton") != null){
+            // TODO implement confirmation number
+            String addressID = request.getParameter("selectedAddress");
+            String paymentID = request.getParameter("selectedPayment");
+            LocalDateTime dTholder = java.time.LocalDateTime.now();
+            String dateAndTime = ""+ dTholder;
+            String checkoutQuery = "INSERT INTO Orders (User, Address, Payment, Confirmation, Total, Date) VALUES (?, ?, ?, ?, ?, ?) ";
+            PreparedStatement checkoutQuery_pmst = connection.prepareStatement(checkoutQuery);
+            checkoutQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
+            checkoutQuery_pmst.setInt(2, (int)Integer.parseInt(addressID));
+            checkoutQuery_pmst.setInt(3, (int)Integer.parseInt(paymentID));
+            checkoutQuery_pmst.setInt(4, 1254689);
+            checkoutQuery_pmst.setDouble(5, Double.parseDouble(request.getParameter("subtotal").replaceAll("/","")));
+            checkoutQuery_pmst.setString(6, dateAndTime);
+            checkoutQuery_pmst.executeUpdate();
+        }
+
+
+
+        String cart = "SELECT User, Book, SUM(Cart.Quantity) as Cart_Quantity, B.Quantity as Store_Quantity, Title, Author, Edition, Publisher, Year, Genre, Image, SellPrice, Rating FROM cart LEFT JOIN Books B on Cart.Book = B.ISBN WHERE user = ? GROUP BY User, Book ";
         PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_UPDATABLE);
         cart_pmst.setInt(1, (int)Integer.parseInt(userID));
+        System.out.println(userID);
         ResultSet cartResults = cart_pmst.executeQuery();
 
         String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
@@ -81,6 +128,7 @@
         PreparedStatement payment_pmst = connection.prepareStatement(payment);
         payment_pmst.setString(1, userEmail);
         ResultSet paymentResults = payment_pmst.executeQuery();
+
 
 %>
 <div class="column left"></div>
@@ -161,18 +209,21 @@
                 <table class="table">
                     <tbody>
                     <%
-                        while(cartResults.next()) { %>
+                        while(cartResults.next()) {
+                           subtotal+= cartResults.getInt(3)*cartResults.getDouble(12);
+                    %>
                     <tr>
                         <td>Quantity: <%=cartResults.getInt(3)%></td>
-                        <td><img src=<%=cartResults.getString(12)%> width="90" height="140"></td>
-                        <td><%=cartResults.getString(6)%> <br><br>by <%=cartResults.getString(7)%></td>
-                        <td>$<%=cartResults.getDouble(15)%> <br><br> <%=cartResults.getInt(17)%>/5</td>
+                        <td><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
+                        <td><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
+                        <td>$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
                     </tr>
                     <% } %>
                     </tbody>
                 </table>
                 <h6 class="page-header">Address Information</h6>
                 <%-- Table for address information --%>
+                <form method="post" action="Checkout.jsp">
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
@@ -196,13 +247,79 @@
                         <td><%=addressResults.getString(5)%></td>
                         <td><%=addressResults.getString(6)%></td>
                         <td>
-                            <%---TODO Add radio buttons --%>
+                              <input type="radio" id="selectedAddress" name="selectedAddress" value=<%=addressResults.getInt(1)%> required>
                         </td>
                     </tr>
                     <% } %>
 
                     </tbody>
                 </table>
+
+                <% if(countAddressRows < 3) { %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
+                    Add
+                </button>
+                <% } %>
+<%--end of address --%>
+
+                <h6 class="page-header">Payment Information</h6>
+                <%-- Table for payment information --%>
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Card Type</th>
+                        <th scope="col">Card Number</th>
+                        <th scope="col">Expiration Date</th>
+                        <th scope="col">CVV</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        int countPaymentRows = 0;
+                        while(paymentResults.next()) {
+                            countPaymentRows++;
+                    %>
+                    <tr>
+                        <td><%=paymentResults.getString(3)%></td>
+                        <% String result = paymentResults.getString(4);
+                            result = result.substring(64);
+                            String cardNumber = "xxxxxxxxxxxx" + result;
+                        %>
+                        <td><%=cardNumber%></td>
+                        <td><%=paymentResults.getString(5)%></td>
+                        <td><%=paymentResults.getString(6)%></td>
+                        <td>
+                            <input type="radio" id="selectedPayment" name="selectedPayment" value=<%=paymentResults.getInt(1)%> required>
+                        </td>
+                    </tr>
+
+                    <% } %>
+
+                    </tbody>
+                </table>
+
+                <% if(countPaymentRows < 3) { %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
+                    Add
+                </button>
+                <%}%>
+
+                <%-- end of payment--%>
+                <br>
+                <br>
+                <p>Subtotal: $<%=subtotal%></p>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    <input type="hidden" id="subtotal" name="subtotal" class="form-input" value = <%=subtotal%>/>
+
+                    <button type="submit" id="checkoutButton" name="checkoutButton" class="btn btn-success">
+                    Check Out
+                </button>
+                </form>
+
+
                 <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -219,6 +336,7 @@
                                             <div class="form-group col-md">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
                                                 <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
                                             </div>
@@ -299,51 +417,8 @@
                         </div>
                     </div>
                 </div>
-                <% if(countAddressRows < 3) {System.out.println("hello, hi"); %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
-                    Add
-                </button>
-                <% } %>
-<%--end of address --%>
 
-                <h6 class="page-header">Payment Information</h6>
-                <%-- Table for payment information --%>
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Card Type</th>
-                        <th scope="col">Card Number</th>
-                        <th scope="col">Expiration Date</th>
-                        <th scope="col">CVV</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                        int countPaymentRows = 0;
-                        while(paymentResults.next()) {
-                            countPaymentRows++;
-                    %>
-                    <tr>
-                        <td><%=paymentResults.getString(3)%></td>
-                        <% String result = paymentResults.getString(4);
-                            result = result.substring(64);
-                            String cardNumber = "xxxxxxxxxxxx" + result;
-                        %>
-                        <td><%=cardNumber%></td>
-                        <td><%=paymentResults.getString(5)%></td>
-                        <td><%=paymentResults.getString(6)%></td>
-                        <td>
-                           <%-- TODO radio buttons! --%>
-                        </td>
-                    </tr>
-
-                    <% } %>
-
-                    </tbody>
-                </table>
-
-               <div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -359,6 +434,7 @@
                                             <div class="form-group col-md-4">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                 <label class="form-label" for="addCardType">Card Type</label>
                                                 <select class="form-input" id="addCardType" name="addCardType">
                                                     <option value="Visa" selected>Visa</option>
@@ -391,19 +467,6 @@
                         </div>
                     </div>
                 </div>
-
-                <% if(countPaymentRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
-                    Add
-                </button>
-                <%}%>
-
-                <%-- end of payment--%>
-                <br>
-                <br>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>
-                    Check Out
-                </button>
                 <%}%>
             </div>
         </div>

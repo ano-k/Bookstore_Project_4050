@@ -40,7 +40,7 @@
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "Hakar123";
+        String dbPassword = "G97t678!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -324,6 +324,7 @@
                                                 <div class="form-group col-md-6">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <label class="form-label" for="updateFirstName">First Name</label>
                                                     <input type="text" id="updateFirstName" name="updateFirstName" class="form-input" pattern="[A-Za-z]{2,}" title="Enter the letters of your first name" value="<%=personalResults.getString(6)%>"/>
                                                 </div>
@@ -365,6 +366,7 @@
                                                 <div class="form-group col-md-6">
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <label class="form-label" for="newPassword">New Password</label>
                                                     <input type="text" id="newPassword" name="newPassword" class="form-input" />
                                                 </div>
@@ -445,6 +447,7 @@
                                             <input type="text" id="verificationCode" name="verificationCode" class="form-input"/>
                                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                             <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" id="verifyButton" name="verifyButton" class="btn btn-primary">Verify</button>
@@ -622,6 +625,7 @@
                                                     <input type="hidden" id="addressID" name="addressID" value="<%=addressResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <p>Are you sure you want to delete this address?</p>
                                                 </div>
                                             </div>
@@ -670,6 +674,7 @@
                                             <div class="form-group col-md">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
                                                 <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
                                             </div>
@@ -791,6 +796,7 @@
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <label class="form-label" for="updateCardType">Card Type</label>
                                                     <select id="updateCardType" name="updateCardType" class="form-input">
                                                         <option value="Visa" <%if(paymentResults.getString(3).equals("Visa")){%>selected<%}%>>Visa</option>
@@ -842,6 +848,7 @@
                                                     <input type="hidden" id="paymentID" name="paymentID" value="<%=paymentResults.getInt(1)%>"/>
                                                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value =<%=userType%>/>
+                                                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <p>Are you sure you want to delete this payment information?</p>
                                                 </div>
                                             </div>
@@ -893,6 +900,7 @@
                                             <div class="form-group col-md-4">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                 <label class="form-label" for="addCardType">Card Type</label>
                                                 <select class="form-input" id="addCardType" name="addCardType">
                                                     <option value="Visa" selected>Visa</option>

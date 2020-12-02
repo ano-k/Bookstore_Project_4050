@@ -37,7 +37,7 @@
 
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "Hakar123";
+        String dbPassword = "G97t678!";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -66,7 +66,7 @@
                 deleteCartItemQuery_pmst.executeUpdate();
             }
 
-            String cart = "select * from bookstore.cart left join bookstore.books B on bookstore.Cart.Book = B.ISBN WHERE User = ? ";
+            String cart = "SELECT User, Book, SUM(Cart.Quantity) as Cart_Quantity, B.Quantity as Store_Quantity, Title, Author, Edition, Publisher, Year, Genre, Image, SellPrice, Rating FROM cart LEFT JOIN Books B on Cart.Book = B.ISBN WHERE user = ? GROUP BY User, Book ";
             PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             cart_pmst.setInt(1, (int)Integer.parseInt(userID));
@@ -149,7 +149,9 @@
                     <table class="table">
                     <tbody>
                     <%
-                        while(cartResults.next()) { %>
+                        double subtotal = 0;
+                        while(cartResults.next()) {
+                            subtotal+= cartResults.getInt(3)*cartResults.getDouble(12);%>
                         <div class="modal fade" id=<%="editQuantity_" + cartResults.getString(2)%> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
@@ -169,7 +171,7 @@
                                             <div class="container">
                                                 <div class="form-row">
                                                     <div class="form-group col-md-5">
-                                                        <img src=<%=cartResults.getString(12)%> width="270" height="420">
+                                                        <img src=<%=cartResults.getString(11)%> width="270" height="420">
                                                     </div>
                                                     <div class="form-group col-md-2">
                                                         <label class="form-label">Title: </label><br>
@@ -192,13 +194,13 @@
 
                                                     </div>
                                                     <div class="form-group col-md-5">
+                                                        <label class="form-label"><%=cartResults.getString(5)%></label><br>
                                                         <label class="form-label"><%=cartResults.getString(6)%></label><br>
                                                         <label class="form-label"><%=cartResults.getString(7)%></label><br>
-                                                        <label class="form-label"><%=cartResults.getInt(8)%></label><br>
+                                                        <label class="form-label"><%=cartResults.getString(8)%></label><br>
                                                         <label class="form-label"><%=cartResults.getString(9)%></label><br>
-                                                        <label class="form-label"><%=cartResults.getString(11)%></label><br>
-                                                        <label class="form-label">$<%=cartResults.getDouble(15)%></label><br>
-                                                        <label class="form-label"><%=cartResults.getInt(17)%>/5</label><br>
+                                                        <label class="form-label">$<%=cartResults.getDouble(12)%></label><br>
+                                                        <label class="form-label"><%=cartResults.getInt(13)%>/5</label><br>
                                                         <label class="form-label"><%=cartResults.getString(2)%></label><br>
                                                         <select id="quantity" name="quantity" class="form-input" required>
                                                             <option value="" selected disabled hidden>Select One</option>
@@ -260,9 +262,9 @@
                         </div>
                         <tr>
                             <td>Quantity: <%=cartResults.getInt(3)%></td>
-                            <td><img src=<%=cartResults.getString(12)%> width="90" height="140"></td>
-                            <td><%=cartResults.getString(6)%> <br><br>by <%=cartResults.getString(7)%></td>
-                            <td>$<%=cartResults.getDouble(15)%> <br><br> <%=cartResults.getInt(17)%>/5</td>
+                            <td><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
+                            <td><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
+                            <td>$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
                             <td>
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editQuantity_" + cartResults.getString(2)%>>
                                     Edit Quantity
@@ -275,6 +277,7 @@
                         <% } %>
                     </tbody>
                 </table>
+                <p>Subtotal: $<%=subtotal%></p>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>
                     Check Out
                 </button>

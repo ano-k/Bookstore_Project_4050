@@ -27,7 +27,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "G97t678!";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -230,7 +230,7 @@
                 String hashedPayment = hashedFirst12 + last4;
                 addPaymentQuery_pmst.setString(3, hashedPayment);
             } else {
-                addPaymentQuery_pmst.setString(3, "");
+                addPaymentQuery_pmst.setString(3, "abdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehabdgytehnone");
             }
             System.out.println("# has been set");
 
