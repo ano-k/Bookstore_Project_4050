@@ -37,7 +37,7 @@
 
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -85,22 +85,32 @@
             <backward><span style="color: royalblue" class="logo"> R </span></backward>
             <span style="color: limegreen" class="logo"> U</span>
             <span style="color: red" class="logo">S</span>
+            <div style="display: inline-block; float: right; margin-left: 5%; height: auto; width: auto">
+                <%if(userType.equals("2") || userType.equals("1")){ %>
+                <form id ="manage_store" method="post" action="AdminHomepage.jsp" style="height: 30px;">
+                    <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">
+                        <img src="Seyuss.jpg" height="50px">
+                    </a>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                </form>
+                <%}%>
+            </div>
         </h1>
     </header>
 
     <main>
         <nav id ="nav_menu">
             <ul>
-                <%if(userEmail != ""){ %>
-                    <%if(!userType.equals("0")){ %>
-                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            </form>
-                        </li>
-                    <%}%>
+                <%if(userEmail != ""){%>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        </form>
+                    </li>
                     <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
@@ -108,9 +118,8 @@
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
-
-                    <li><form id ="find_books" method="post" action="Homepage.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                    <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                        <a href="javascript:{}" class="current" onclick="document.getElementById('view_cart').submit();">Cart</a>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
@@ -121,17 +130,17 @@
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                    </form>
-
+                        </form>
+                    </li>
                     <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                         </form>
                     </li>
-                <%} else{%>
-                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
-                    </form>
-                </li>
+                <%}else {%>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                        </form>
+                    </li>
                 <%}%>
             </ul>
         </nav>
@@ -202,7 +211,7 @@
                                                         <label class="form-label">$<%=cartResults.getDouble(12)%></label><br>
                                                         <label class="form-label"><%=cartResults.getInt(13)%>/5</label><br>
                                                         <label class="form-label"><%=cartResults.getString(2)%></label><br>
-                                                        <select id="quantity" name="quantity" class="form-input" required>
+                                                        <select id="quantity" name="quantity" class="custom-select custom-select-sm" required>
                                                             <option value="" selected disabled hidden>Select One</option>
                                                             <%  String sumInCartQuery = "SELECT SUM(Quantity) FROM Cart WHERE Book = " + cartResults.getString(2) + " AND NOT USER = ?";
                                                                 PreparedStatement sumInCartQuery_pmst = connection.prepareStatement(sumInCartQuery);
@@ -277,7 +286,7 @@
                         <% } %>
                     </tbody>
                 </table>
-                <p>Subtotal: $<%=subtotal%></p>
+                <p>Subtotal: $<%=Math.floor(subtotal*100)/100%></p>
 <%--                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>--%>
 <%--                    Check Out--%>
 <%--                </button>--%>

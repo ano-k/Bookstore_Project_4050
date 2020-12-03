@@ -30,6 +30,8 @@
         String userType = "";
         String userID = "";
         boolean isValidReorder = false;
+        boolean userVerified = false;
+
 
         if(request.getParameter("currentUserEmail") != null){
             userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
@@ -42,7 +44,7 @@
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -274,6 +276,16 @@
             orderHistory_pmst.setInt(1, (int)Integer.parseInt(userID));
             ResultSet orderResults = orderHistory_pmst.executeQuery();
 
+            String statusInfo = "SELECT status FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
+            PreparedStatement statusInfo_pmst = connection.prepareStatement(statusInfo);
+            statusInfo_pmst.setString(1, userEmail);
+            ResultSet statusResults = statusInfo_pmst.executeQuery();
+            if(statusResults.next()) {
+                if (statusResults.getInt(1) == 1){
+                    userVerified = true;
+                }
+            }
+
             //states table query
 //            String statesQuery = "SELECT * FROM States"; //get a list of states
 //            PreparedStatement pstmt4 = connection.prepareStatement(statesQuery);
@@ -307,22 +319,25 @@ if(isValidReorder) {%>
             <backward><span style="color: royalblue" class="logo"> R </span></backward>
             <span style="color: limegreen" class="logo"> U</span>
             <span style="color: red" class="logo">S</span>
+            <div style="display: inline-block; float: right; margin-left: 5%; height: auto; width: auto">
+                <%if(userType.equals("2") || userType.equals("1")){ %>
+                    <form id ="manage_store" method="post" action="AdminHomepage.jsp" style="height: 30px;">
+                        <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">
+                            <img src="Seyuss.jpg" height="50px">
+                        </a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    </form>
+                <%}%>
+            </div>
         </h1>
     </header>
 
     <main>
         <nav id ="nav_menu">
             <ul>
-                <%if(userEmail != ""){ %>
-                    <%if(!userType.equals("0")){ %>
-                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            </form>
-                        </li>
-                    <%}%>
+                <%if(!userEmail.equals("")){%>
                     <li><form id ="find_books" method="post" action="Homepage.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
@@ -330,28 +345,40 @@ if(isValidReorder) {%>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
-
-
-                    <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+                        <a href="javascript:{}" class="current" onclick="document.getElementById('login_edit').submit();">Profile</a>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                         <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
-                    <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
-                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                    </form>
-                    <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
-                        </form>
-                    </li>
-                <%} else{%>
+                    <%if(userVerified){%>
+                        <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                        <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                    <%}%>
+                        <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                            </form>
+                        </li>
+                <%}else {%>
                     <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                        </form>
+                    </li>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a class="current" href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
                         </form>
                     </li>
                 <%}%>
@@ -480,7 +507,7 @@ if(isValidReorder) {%>
                                                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <label class="form-label" for="newPassword">Would you like to receive notifications?</label>
-                                                    <select id="notificationsSelect" name="notificationsSelect" class="form-input" required>
+                                                    <select id="notificationsSelect" name="notificationsSelect" class="custom-select custom-select-sm" required>
                                                         <option value=1>Yes</option>
                                                         <option value=0>No</option>
                                                     </select>
@@ -609,7 +636,7 @@ if(isValidReorder) {%>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label class="form-label" for="updateState">State</label>
-                                                    <select id="updateState" name="updateState" class="form-input">
+                                                    <select id="updateState" name="updateState" class="custom-select custom-select-sm">
                                                         <option value="Alabama" <%if(addressResults.getString(5).equals("Alabama")){%>selected<%}%>>Alabama</option>
                                                         <option value="Alaska"<%if(addressResults.getString(5).equals("Alaska")){%>selected<%}%>>Alaska</option>
                                                         <option value="Arizona"<%if(addressResults.getString(5).equals("Arizona")){%>selected<%}%>>Arizona</option>
@@ -757,7 +784,7 @@ if(isValidReorder) {%>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label class="form-label" for="addState">State</label>
-                                                <select id="addState" name="addState" class="form-input">
+                                                <select id="addState" name="addState" class="custom-select custom-select-sm">
                                                     <option value="Alabama">Alabama</option>
                                                     <option value="Alaska">Alaska</option>
                                                     <option value="Arizona">Arizona</option>
@@ -871,7 +898,7 @@ if(isValidReorder) {%>
                                                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                     <label class="form-label" for="updateCardType">Card Type</label>
-                                                    <select id="updateCardType" name="updateCardType" class="form-input">
+                                                    <select id="updateCardType" name="updateCardType" class="custom-select custom-select-sm"">
                                                         <option value="Visa" <%if(paymentResults.getString(3).equals("Visa")){%>selected<%}%>>Visa</option>
                                                         <option value="Amex" <%if(paymentResults.getString(3).equals("Amex")){%>selected<%}%>>Amex</option>
                                                         <option value="MasterCard" <%if(paymentResults.getString(3).equals("MasterCard")){%>selected<%}%>>MasterCard</option>
@@ -975,7 +1002,7 @@ if(isValidReorder) {%>
                                                 <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
                                                 <label class="form-label" for="addCardType">Card Type</label>
-                                                <select class="form-input" id="addCardType" name="addCardType">
+                                                <select class="custom-select custom-select-sm" id="addCardType" name="addCardType">
                                                     <option value="Visa" selected>Visa</option>
                                                     <option value="Amex">Amex</option>
                                                     <option value="MasterCard">MasterCard</option>
@@ -1038,7 +1065,7 @@ if(isValidReorder) {%>
                                     <td class="listUser"><%=orderResults.getInt(5)%></td>
                                     <td class="listUser"><%=date%></td>
                                     <td class="listUser"><%=time%></td>
-                                    <td class="listUser">$<%=orderResults.getDouble(6)%></td>
+                                    <td class="listUser">$<%=Math.floor(orderResults.getDouble(6) * 100)/100%></td>
                                     <td class="listUser">
                                         <form>
                                             <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>

@@ -27,7 +27,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -267,10 +267,12 @@
             ResultSet userResults = pstmt1.executeQuery(emailQuery);
             boolean userFound = false;
             while(userResults.next()) {
-                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getInt(2))){
+                out.println(request.getParameter("user"));
+                if(request.getParameter("user").equals(userResults.getString(1)) || request.getParameter("user").equals(userResults.getString(2))){
+                    out.println(request.getParameter("user"));
                     if(DigestUtils.sha256Hex(request.getParameter("password")).equals(userResults.getString(3))){
                         userFound = true;
-                        if((userResults.getInt(4) == 2)) { %>
+                        if((userResults.getInt(5) == 2)) { %>
                             <script>
                                     alert("This user is suspended.");
                             </script>
@@ -312,9 +314,14 @@
     <main>
         <nav id ="nav_menu">
             <ul>
-            <li><form id ="find_books" method="post" action="Homepage.jsp">
-                <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
-            </form></li>
+                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                    <a href="javascript:{}" class = "current" onclick="document.getElementById('login_edit').submit();">Login</a>
+                    </form>
+                </li>
+                <li><form id ="find_books" method="post" action="Homepage.jsp">
+                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                    </form>
+                </li>
             </ul>
         </nav>
 
@@ -427,7 +434,7 @@
                                                 <div class="valid-feedback">Looks good!</div>
                                                 <div class="invalid-feedback">Please provide a valid password</div>
                                             </div>
-                                        </div>
+                                        </div><hr style="border: 1px dashed deepskyblue;">
                                         <div class="form-row">
                                             <div class="form-group col-md md-form">
                                                 <label class="form-label" for="newStreetAddress"><b>Address</b></label>
@@ -442,8 +449,8 @@
                                                 <input type="text" id="newCity" name="newCity" class="form-control" pattern="[a-zA-Z\s]{1,}"/>
                                                 <div class="invalid-feedback">Please provide a valid city </div>
                                             </div>
-                                            <div class="form-group col-md-5 md-form">
-                                                <select class= "form-control" id="newState" name="newState" data-width="100%">
+                                            <div class="form-group col-md-5 md-form" style="padding-top: 2%">
+                                                <select class="custom-select custom-select-sm" id="newState" name="newState" data-width="100%" >
                                                     <option value="" selected disabled hidden>State</option>
                                                     <option value="Alabama">Alabama</option>
                                                     <option value="Alaska">Alaska</option>
@@ -504,7 +511,7 @@
                                                     style="height: 38px"/>
                                                 <div class="invalid-feedback">Please provide a valid zipcode</div>
                                             </div>
-                                        </div>
+                                        </div><hr style="border: 1px dashed deepskyblue;">
                                         <div class="form-row">
                                             <div class="form-group col-md md-form">
                                                 <label class="form-label" for="newCardNumber"><b>Card Number</b></label>
@@ -517,8 +524,8 @@
                                                 <label class="form-label" for="newExpirationDate"><b>Expiration Date</b></label>
                                                 <input type="text" id="newExpirationDate" name="newExpirationDate" class="form-control"/>
                                             </div>
-                                            <div class="form-group col-md-5 md-form">
-                                                <select id = "newCardType" name="newCardType" data-width="100%">
+                                            <div class="form-group col-md-5 md-form" style="padding-top: 2%">
+                                                <select class="custom-select custom-select-sm" id = "newCardType" name="newCardType" data-width="100%">
                                                     <option value="" selected disabled hidden>Card Type</option>
                                                     <option value="Visa">Visa</option>
                                                     <option value="Amex">Amex</option>

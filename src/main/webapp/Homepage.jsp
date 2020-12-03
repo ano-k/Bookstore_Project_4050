@@ -37,6 +37,7 @@
             background-color: lightblue;
             border-radius: 15px;
             display: flex;
+            min-height: 160%;
         }
 
 
@@ -46,7 +47,6 @@
             padding-top: 20px;
             margin-bottom: 20px;
         }
-
         .search-bar {
             float: left;
         }
@@ -57,15 +57,18 @@
     String userEmail = "";
     String userType = "";
     String userID = "";
-    if(request.getParameter("currentUserEmail") != null){
+
+    if(request.getParameter("currentUserEmail") != null && !request.getParameter("currentUserEmail").equals("")){
         userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         userType = request.getParameter("currentUserType").replaceAll("/","");
         userID = request.getParameter("currentUserID").replaceAll("/","");
+
     }
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
+    boolean userVerified = false;
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -105,23 +108,23 @@
         }
 
 
-        String book = "SELECT * FROM Books ";
-        String featured = "SELECT * FROM Books ";
-        String bestSellers = "SELECT * FROM Books ";
+        String book = "SELECT * FROM Books WHERE IsArchived = 0 ";
+        String featured = "SELECT * FROM Books WHERE IsArchived = 0 ";
+        String bestSellers = "SELECT * FROM Books WHERE IsArchived = 0 ";
 
         //loop through genre1 - genre11, to see if any selection was made
         boolean chop = false;
-        for(int i = 0; i < 10; i++) {
+        for(int i = 1; i < 12; i++) {
             if(request.getParameter("genre" + i) != null) {
                 chop = true;
-                book += "WHERE (";
-                featured += "WHERE (";
-                bestSellers += "WHERE (";
+                book += "AND (";
+                featured += "AND (";
+                bestSellers += "AND (";
                 break;
             }
         } //checks if a selection was made, and if so, concat a WHERE to the string
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 1; i < 12; i++) {
             if(request.getParameter("genre" + i) != null) {
                 book += "Genre = " + request.getParameter("genre" + i) + " OR ";
                 featured += "Genre = " + request.getParameter("genre" + i) + " OR ";
@@ -138,29 +141,39 @@
             featured = book + "AND isFeatured = 1 ";
             bestSellers = book + "AND isBestSeller = 1 ";
             if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
-                book += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
+                book += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\')";
             }
         }
         else {
             if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
-                book += "WHERE (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
+                book += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
             }
-            featured += "WHERE isFeatured = 1 ";
-            bestSellers += "WHERE isBestSeller = 1 ";
+            featured += "AND isFeatured = 1 ";
+            bestSellers += "AND isBestSeller = 1 ";
         }
         if(request.getParameter("searchbar") != null && !request.getParameter("searchbar").trim().isEmpty()) {
             featured += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
             bestSellers += "AND (Title LIKE \'%" + request.getParameter("searchbar") + "%\' OR Author LIKE \'%" + request.getParameter("searchbar") + "%\' OR ISBN = \'" + request.getParameter("searchbar") + "\') ";
         }
-        if(request.getParameter("price1") != null) {
-            book += "ORDER BY SellPrice DESC" ;
-            featured += "ORDER BY SellPrice DESC" ;
-            bestSellers += "ORDER BY SellPrice DESC" ;
+        if(request.getParameter("priceFilter") != null) {
+            if (request.getParameter("priceFilter").equals("hi2lo")) {
+                book += "ORDER BY SellPrice DESC";
+                featured += "ORDER BY SellPrice DESC";
+                bestSellers += "ORDER BY SellPrice DESC";
+            } else if (request.getParameter("priceFilter").equals("lo2hi")) {
+                book += "ORDER BY SellPrice ASC";
+                featured += "ORDER BY SellPrice ASC";
+                bestSellers += "ORDER BY SellPrice ASC";
+            }
         }
-        else if(request.getParameter("price2") != null) {
-            book += "ORDER BY SellPrice ASC" ;
-            featured += "ORDER BY SellPrice ASC" ;
-            bestSellers += "ORDER BY SellPrice ASC" ;
+        String statusInfo = "SELECT status FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
+        PreparedStatement statusInfo_pmst = connection.prepareStatement(statusInfo);
+        statusInfo_pmst.setString(1, userEmail);
+        ResultSet statusResults = statusInfo_pmst.executeQuery();
+        if(statusResults.next()) {
+            if (statusResults.getInt(1) == 1){
+                userVerified = true;
+            }
         }
 
         PreparedStatement book_pmst = connection.prepareStatement(book, ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -188,21 +201,31 @@
             <backward><span style="color: royalblue" class="logo"> R </span></backward>
             <span style="color: limegreen" class="logo"> U</span>
             <span style="color: red" class="logo">S</span>
+                <div style="display: inline-block; float: right; margin-left: 5%; height: auto; width: auto">
+                        <%if(userType.equals("2") || userType.equals("1")){ %>
+                            <form id ="manage_store" method="post" action="AdminHomepage.jsp" style="height: 30px;">
+                                <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">
+                                    <img src="Seyuss.jpg" height="50px">
+                                </a>
+                                <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            </form>
+                        <%}%>
+                </div>
             </h1>
     </header>
     <main>
         <nav id ="nav_menu" style="align-content: center">
             <ul>
-                <%if(userEmail != ""){%>
-                    <%if(userType.equals("2") || userType.equals("1")){ %>
-                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                <%if(!userEmail.equals("")){%>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a href="javascript:{}" class="current" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
-                        </li>
-                    <%}%>
+                    </li>
                     <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
                         <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
                         <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
@@ -210,29 +233,36 @@
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
                     </li>
-                    <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
-                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                    <%if(userVerified){%>
+                        <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                        <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         </form>
-                    </li>
-                    <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
-                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                    </form>
-                    </li>
+                        </li>
+                    <%}%>
                     <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
-                        <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                            <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
                         </form>
                     </li>
-                <%} else{%>
-                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
-                    </form>
-                </li>
+                <%}else {%>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                        </form>
+                    </li>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a class="current" href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                        </form>
+                    </li>
+
                 <%}%>
             </ul>
         </nav>
@@ -248,45 +278,75 @@
             --%>
 
             <div class="filters">
-                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post">
+                <form class ="input-form" action="/Bookstore_Project_4050_war_exploded/Homepage.jsp" method="post" >
                     <div class="parent-filter-div">
                         <div class="temp-block">
-                            <input id="searchbar" name="searchbar" type="text" placeholder="Search title, author, ISBN, ..."/>
+                            <input id="searchbar" name="searchbar" type="text" placeholder="Search title, author, ISBN, ..." <%if(request.getParameter("searchbar") != null  && !request.getParameter("searchbar").equals("")){%>value=<%=request.getParameter("searchbar")%> <%}%>/>
                             <h3>Genre</h3>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=request.getParameter("currentUserEmail")%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=request.getParameter("currentUserID")%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
-                            <input type="checkbox" id="genre1" name="genre1" value=1>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            <input type="checkbox" id="genre1" name="genre1" value=1 <%if(request.getParameter("genre1") != null){%>checked <%}%>>
                             <label for="genre1">Action & Adventure</label><br>
-                            <input type="checkbox" id="genre2" name="genre2" value=2>
+                            <input type="checkbox" id="genre2" name="genre2" value=2 <%if(request.getParameter("genre2") != null){%>checked <%}%>>
                             <label for="genre2">Children&#39;s</label><br>
-                            <input type="checkbox" id="genre3" name="genre3" value=3>
+                            <input type="checkbox" id="genre3" name="genre3" value=3 <%if(request.getParameter("genre3") != null){%>checked <%}%>>
                             <label for="genre3">Classic</label><br>
-                            <input type="checkbox" id="genre4" name="genre4" value=4>
+                            <input type="checkbox" id="genre4" name="genre4" value=4 <%if(request.getParameter("genre4") != null){%>checked <%}%>>
                             <label for="genre4">Drama</label><br>
-                            <input type="checkbox" id="genre5" name="genre5" value=5>
+                            <input type="checkbox" id="genre5" name="genre5" value=5 <%if(request.getParameter("genre5") != null){%>checked <%}%>>
                             <label for="genre5">Fantasy</label><br>
-                            <input type="checkbox" id="genre6" name="genre6" value=6>
+                            <input type="checkbox" id="genre6" name="genre6" value=6 <%if(request.getParameter("genre6") != null){%>checked <%}%>>
                             <label for="genre6">Graphic Novel</label><br>
-                            <input type="checkbox" id="genre7" name="genre7" value=7>
+                            <input type="checkbox" id="genre7" name="genre7" value=7 <%if(request.getParameter("genre7") != null){%>checked <%}%>>
                             <label for="genre7">Horror</label><br>
-                            <input type="checkbox" id="genre8" name="genre8" value=8>
+                            <input type="checkbox" id="genre8" name="genre8" value=8 <%if(request.getParameter("genre8") != null){%>checked <%}%>>
                             <label for="genre8">Mystery & Crime</label><br>
-                            <input type="checkbox" id="genre9" name="genre9" value=9>
+                            <input type="checkbox" id="genre9" name="genre9" value=9 <%if(request.getParameter("genre9") != null){%>checked <%}%>>
                             <label for="genre9">Nonfiction</label><br>
-                            <input type="checkbox" id="genre10" name="genre10" value=10>
+                            <input type="checkbox" id="genre10" name="genre10" value=10 <%if(request.getParameter("genre10") != null){%>checked <%}%>>
                             <label for="genre10">Romance</label><br>
-                            <input type="checkbox" id="genre11" name="genre11" value=11>
+                            <input type="checkbox" id="genre11" name="genre11" value=11 <%if(request.getParameter("genre11") != null){%>checked <%}%>>
                             <label for="genre11">Science Fiction</label><br>
 
                             <h3>Price</h3>
-                            <input type="radio" id="price1" name="price1" value="hi2lo">
+                            <%
+                                boolean filter1 = false;
+                                boolean filter2 = false;
+
+                                if(request.getParameterValues("priceFilter") != null) {
+                                    String[] priceFilter = request.getParameterValues("priceFilter");
+                                    filter1 = false;
+                                    filter2 = false;
+
+                                    if (priceFilter[0].equals("lo2hi")) {
+                                        filter2 = true;
+                                    } else if(priceFilter[0].equals("hi2lo")) {
+                                        filter1 = true;
+                                    }
+                                }
+                            %>
+
+                            <input type="radio" id="price1" name="priceFilter" value="hi2lo" <%if(filter1){%>checked <%}%>>
                             <label for="price1">High to low</label><br>
-                            <input type="radio" id="price2" name="price2" value="lo2hi">
+                            <input type="radio" id="price2" name="priceFilter" value="lo2hi" <%if(filter2){%>checked <%}%>>
                             <label for="price2">Low to high</label><br>
-                            <input type="submit" value="Submit">
+<%--                           <form id ="resetbooks" method="post" action="Homepage.jsp">--%>
+<%--                               <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>--%>
+<%--                               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>--%>
+<%--                               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>--%>
+<%--                            <button onclick="document.getElementById('resetbooks').submit();">Reset</button>--%>
+<%--                           </form>--%>
+                            <input style="width: 50%"type="submit" value="Submit">
                         </div>
                     </div>
+                </form>
+
+                <form id ="resetbooks" method="post" action="Homepage.jsp">
+                    <button style="width:40%;position: relative; top: 333px; left: 120px;"onclick="document.getElementById('resetbooks').submit();">Reset</button>
+                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                 </form>
             </div>
         </div>
@@ -352,7 +412,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
 
-                                <h5 class="modal-title">Book Information</h5>
+                                <h6 class="modal-title"><%=bookResults.getString(3)%></h6>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -369,7 +429,7 @@
                                                 <img src=<%=bookResults.getString(9)%> width="270" height="420">
                                             </div>
                                             <div class="form-group col-md-2">
-                                                <label class="form-label">Title: </label><br>
+<!--                                                <label class="form-label">Title: </label><br>-->
 
                                                 <label class="form-label">Author: </label><br>
 
@@ -389,7 +449,7 @@
 
                                             </div>
                                             <div class="form-group col-md-5">
-                                                <label class="form-label"><%=bookResults.getString(3)%></label><br>
+<!--                                                <label class="form-label"><%=bookResults.getString(3)%></label><br>-->
                                                 <label class="form-label"><%=bookResults.getString(4)%></label><br>
                                                 <label class="form-label"><%=bookResults.getInt(5)%></label><br>
                                                 <label class="form-label"><%=bookResults.getString(6)%></label><br>
@@ -397,8 +457,8 @@
                                                 <label class="form-label">$<%=bookResults.getDouble(12)%></label><br>
                                                 <label class="form-label"><%=bookResults.getInt(14)%>/5</label><br>
                                                 <label class="form-label"><%=bookResults.getString(2)%></label><br>
-                                                <select id="quantity" name="quantity" class="form-input" required>
-                                                    <option value="" selected disabled hidden>Select One</option>
+                                                <select id="quantity" name="quantity" class="custom-select custom-select-sm" required>
+                                                    <option value="" selected disabled hidden><%if(bookResults.getInt(1) == 0){%>OUT OF STOCK<%}else{%>Select One <%}%></option>
                                                     <%  String sumInCartQuery = "SELECT SUM(Quantity) FROM Cart WHERE Book = " + bookResults.getString(2) + " ";
                                                         PreparedStatement sumInCartQuery_pmst = connection.prepareStatement(sumInCartQuery);
                                                         ResultSet inCartResults = sumInCartQuery_pmst.executeQuery();
@@ -473,7 +533,7 @@
                                 --%>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="bookInfoButton">Add to Cart</button>
+                                    <button type="submit" class="btn btn-primary" name="bookInfoButton" <%if((userEmail.equals("") || userEmail == null) || !userVerified){%>disabled<%}%>>Add to Cart</button>
                                 </div>
                             </form>
 

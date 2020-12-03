@@ -29,9 +29,12 @@ html, body
 .listUser
 {
     text-align: center;
+    white-space: nowrap;
 }
 
-
+.currentTab{
+    background-color: deepskyblue;
+}
 /*nav styling*/
 #nav_menu
 {
@@ -51,6 +54,7 @@ html, body
     top: -19px;
     bottom: -10px;
     right: auto;
+    width: 107%;
 }
 #nav_menu ul li a{
     float: left;
@@ -86,11 +90,6 @@ html, body
     background-color: deepskyblue;
 }
 
-#nav_menu a:active
-{
-    background-color: deepskyblue;
-}
-
 /*tri-column styling*/
 .column
 {
@@ -108,9 +107,15 @@ html, body
 .middle main
 {
     background-color: whitesmoke;
-    min-height: 100%;
+    min-height: 160%;
     /*text-align: center;*/
     color: black;
+}
+
+.modal-title {
+    font-size: 40px;
+    color: #7f7f7f;
+    font-weight: bolder;
 }
 
 .left, .right

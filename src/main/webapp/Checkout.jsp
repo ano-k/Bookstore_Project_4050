@@ -30,6 +30,8 @@
     String userEmail = "";
     String userType = "";
     String userID = "";
+    boolean userVerified = false;
+
     if(request.getParameter("currentUserEmail") != null){
         userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
         userType = request.getParameter("currentUserType").replaceAll("/","");
@@ -38,7 +40,7 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "WebProg2020";
+    String dbPassword = "Hakar123";
     Boolean appliedPromo = false;
     int discountedAmount = 0;
     double subtotal = 0; //for the subtotal
@@ -210,7 +212,7 @@
                     content += "Order ID: " + orderID + "\n";
                     content += "Order Date: " + dateAndTime.substring(0,10) + "\n";
                     content += "Order Time: " + dateAndTime.substring(11,16) + "\n";
-                    content += "Price: $" + Double.parseDouble(request.getParameter("total").replaceAll("/","")) + "\n";
+                    content += "Price: $" + Math.floor(Double.parseDouble(request.getParameter("total").replaceAll("/","")) * 100)/100 + "\n";
                     content += "Contents: " + contents + "\n";
                     content += "Shipping to: " + street + "\n";
                     InternetAddress toIA = new InternetAddress(to);
@@ -257,8 +259,21 @@
         payment_pmst.setString(1, userEmail);
         ResultSet paymentResults = payment_pmst.executeQuery();
 
+        String statusInfo = "SELECT status FROM Users WHERE Email = ? "; //get a list of personal info of the logged in user
+        PreparedStatement statusInfo_pmst = connection.prepareStatement(statusInfo);
+        statusInfo_pmst.setString(1, userEmail);
+        ResultSet statusResults = statusInfo_pmst.executeQuery();
+        if(statusResults.next()) {
+            if (statusResults.getInt(1) == 1){
+                userVerified = true;
+            }
+        }
 
-%>
+        if(request.getParameter("promotion") != null && !request.getParameter("promotion").equals("") && !appliedPromo){ %>
+            <script>
+                alert("This promotion is invalid!.");
+            </script>
+        <%}%>
 <div class="column left"></div>
 
 <div class="column middle">
@@ -271,53 +286,69 @@
             <backward><span style="color: royalblue" class="logo"> R </span></backward>
             <span style="color: limegreen" class="logo"> U</span>
             <span style="color: red" class="logo">S</span>
+            <div style="display: inline-block; float: right; margin-left: 5%; height: auto; width: auto">
+                <%if(userType.equals("2") || userType.equals("1")){ %>
+                    <form id ="manage_store" method="post" action="AdminHomepage.jsp" style="height: 30px;">
+                        <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">
+                            <img src="Seyuss.jpg" height="50px">
+                        </a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                    </form>
+                <%}%>
+            </div>
         </h1>
     </header>
 
     <main>
         <nav id ="nav_menu">
             <ul>
-                <%if(userEmail != ""){ %>
-                    <%if(!userType.equals("0")){ %>
-                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            </form>
-                        </li>
-                    <%}%>
-                        <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            </form>
-                        </li>
-                        <li><form id ="find_books" method="post" action="Homepage.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            </form>
-                        </li>
-                        <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
-                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                            </form>
-                        </li>
-                        <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
-                            </form>
-                        </li>
-                <%} else{%>
-                        <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
-                            <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
-                            </form>
-                        </li>
-                    <%}%>
+                <%if(!userEmail.equals("")){%>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        </form>
+                    </li>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        </form>
+                    </li>
+                    <%if(userVerified){%>
+                    <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                        <a href="javascript:{}"  onclick="document.getElementById('view_cart').submit();">Cart</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        </form>
+                    </li>
+                    <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
+                        <a href="javascript:{}" class="current" onclick="document.getElementById('checkout').submit();">Checkout</a>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        </form>
+                    </li>
+                <%}%>
+                    <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                        </form>
+                    </li>
+                <%}else {%>
+                    <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                        <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                        </form>
+                    </li>
+                    <li><form id ="find_books" method="post" action="Homepage.jsp">
+                        <a class="current" href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                        </form>
+                    </li>
+                <%}%>
             </ul>
         </nav>
         <div class="main content">
@@ -427,12 +458,12 @@
                         <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                         <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                         <br>
-                        Subtotal: $<%=subtotal%>
+                        Subtotal: $<%=Math.floor(subtotal * 100) / 100%>
                         <%if(appliedPromo){ total = subtotal - (subtotal * discountedAmount)/100;%>
-                        <p style="color:red">Discount: $<%=subtotal * discountedAmount/100%></p>
-                        Total: $<%=total%><br>
+                        <p style="color:red">Discount: $<%=Math.floor((subtotal * discountedAmount/100)* 100)/100 %></p>
+                        Total: $<%=Math.floor(total * 100) / 100%><br>
                         <%} else {
-                            total = subtotal;
+                            total = Math.floor(subtotal * 100) / 100;
                         }%>
                     </div>
                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>

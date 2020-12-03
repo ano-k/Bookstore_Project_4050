@@ -34,14 +34,14 @@
         String userEmail = "";
         String userType = "";
         String userID = "";
-        if(request.getParameter("currentUserEmail") != null ){
+        if(request.getParameter("currentUserEmail") != null){
             userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
             userType = request.getParameter("currentUserType").replaceAll("/","");
             userID = request.getParameter("currentUserID").replaceAll("/","");
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "WebProg2020";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -172,48 +172,61 @@
       <backward><span style="color: royalblue" class="logo"> R </span></backward>
       <span style="color: limegreen" class="logo"> U</span>
       <span style="color: red" class="logo">S</span>
+      <div style="display: inline-block; float: right; margin-left: 5%; height: auto; width: auto">
+        <%if(userType.equals("2") || userType.equals("1")){ %>
+          <form id ="manage_store" method="post" action="AdminHomepage.jsp" style="height: 30px;">
+            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">
+              <img src="Seyuss.jpg" height="50px">
+            </a>
+            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+          </form>
+        <%}%>
+      </div>
     </h1>
   </header>
 
   <main>
     <nav id ="nav_menu">
       <ul>
-        <%if(userEmail != ""){ %>
-            <li><form id ="find_books" method="post" action="Homepage.jsp">
+        <%if(userEmail != ""){%>
+          <li><form id ="find_books" method="post" action="Homepage.jsp">
               <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
               <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
               </form>
-            </li>
-
-            <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+          </li>
+          <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
               <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
               <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
               </form>
-            </li>
+          </li>
 
-            <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+          <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
               <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
-              <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value =  <%=userEmail%>/>
+              <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
               </form>
-            </li>
-            <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
+          </li>
+
+          <li><form class= "checkout" id ="checkout" method="post" action="Checkout.jsp">
               <a href="javascript:{}" onclick="document.getElementById('checkout').submit();">Checkout</a>
               <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
               <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
               <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-            </form>
+              </form>
+          </li>
 
-            <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+          <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
               <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
               </form>
-            </li>
-        <%} else{%>
+          </li>
+          <%}else {%>
             <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
               <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
               </form>
@@ -230,22 +243,22 @@
         <table class="table">
           <thead class="thead-dark">
           <tr>
-            <th scope="col">Code</th>
-            <th scope="col">Message</th>
-            <th scope="col">Discount</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
+            <th scope="col" class="listUser">Code</th>
+            <th scope="col" class="listUser">Message</th>
+            <th scope="col" class="listUser">Discount</th>
+            <th scope="col" class="listUser">Start Date</th>
+            <th scope="col" class="listUser">End Date</th>
           </tr>
           </thead>
           <tbody>
 
           <% while(promotionResults.next()) { %>
           <tr>
-            <td><%=promotionResults.getString(1)%></td>
-            <td><%=promotionResults.getString(2)%></td>
-            <td><%=promotionResults.getString(3)%></td>
-            <td><%=promotionResults.getString(4)%></td>
-            <td><%=promotionResults.getString(5)%></td>
+            <td class="listUser"><%=promotionResults.getString(1)%></td>
+            <td class="listUser"><%=promotionResults.getString(2)%></td>
+            <td class="listUser"><%=promotionResults.getString(3)%></td>
+            <td class="listUser"><%=promotionResults.getString(4)%></td>
+            <td class="listUser"><%=promotionResults.getString(5)%></td>
           </tr>
           <% } %>
           </tbody>
@@ -300,9 +313,9 @@
             </div>
           </div>
         </div>
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPromotion">
+        <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addPromotion">
           Add
-        </button>
+        </button><br>
 
         <%-- TODO:  Create add button for promotions --%>
 
@@ -311,13 +324,13 @@
         <table class="table">
           <thead class="thead-dark">
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Email</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">Type</th>
-            <th scope="col">Status</th>
-            <th scope="col"></th>
+            <th scope="col" class="listUser">ID</th>
+            <th scope="col" class="listUser">Email</th>
+            <th scope="col" class="listUser">First Name</th>
+            <th scope="col" class="listUser">Last Name</th>
+            <th scope="col" class="listUser">Type</th>
+            <th scope="col" class="listUser">Status</th>
+            <th scope="col" class="listUser"></th>
           </tr>
           </thead>
           <tbody>
@@ -330,7 +343,7 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Edit <%=userResults.getString(6) + " " + userResults.getString(7)%></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -345,20 +358,18 @@
                           <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                           <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                           <label class="form-label" for="updateType">Type</label>
-                          <select id="updateType" name="updateType" class="form-input" required>
-                            <option value="" selected disabled hidden>Type</option>
-                            <option value=0>User</option>
-                            <option value=1>Employee</option>
-                            <option value=2>Admin</option>
+                          <select id="updateType" name="updateType" class="custom-select custom-select-sm" required>
+                            <option value=0 <%if(userResults.getInt(1) == 0){%>selected<%}%>>User</option>
+                            <option value=1 <%if(userResults.getInt(1) == 1){%>selected<%}%>>Employee</option>
+                            <option value=2 <%if(userResults.getInt(1) == 2){%>selected<%}%>>Admin</option>
                           </select>
                         </div>
                         <div class="form-group col-md-6">
                           <label class="form-label" for="updateStatus">Status</label>
-                          <select id="updateStatus" name="updateStatus" class="form-input" required>
-                            <option value="" selected disabled hidden>Status</option>
-                            <option value=0>Inactive</option>
-                            <option value=1>Active</option>
-                            <option value=2>Suspended</option>
+                          <select id="updateStatus" name="updateStatus" class="custom-select custom-select-sm" required>
+                            <option value=0 <%if(userResults.getInt(2) == 0){%>selected<%}%>>Inactive</option>
+                            <option value=1 <%if(userResults.getInt(2) == 1){%>selected<%}%>>Active</option>
+                            <option value=2 <%if(userResults.getInt(2) == 2){%>selected<%}%>>Suspended</option>
                           </select>
                         </div>
                       </div>
@@ -374,11 +385,11 @@
           </div>
 
           <tr>
-            <td><%=userResults.getString(5)%></td>
-            <td><%=userResults.getString(3)%></td>
-            <td><%=userResults.getString(6)%></td>
-            <td><%=userResults.getString(7)%></td>
-            <td>
+            <td class="listUser"><%=userResults.getString(5)%></td>
+            <td class="listUser"><%=userResults.getString(3)%></td>
+            <td class="listUser"><%=userResults.getString(6)%></td>
+            <td class="listUser"><%=userResults.getString(7)%></td>
+            <td class="listUser">
               <%if(userResults.getInt(1) == 0) {
               %>User<%
             } else if(userResults.getInt(1) == 1) {
@@ -391,7 +402,7 @@
             %>Invalid<%
               }%>
             </td>
-            <td>
+            <td class="listUser">
               <%if(userResults.getInt(2) == 0) {
               %>Inactive<%
             } else if(userResults.getInt(2) == 1) {
@@ -402,7 +413,7 @@
             %>Invalid<%
               }%>
             </td>
-            <td>
+            <td class="listUser">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editUser_" + i%>>
                 Edit
               </button>
@@ -480,19 +491,18 @@
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label class="form-label" for="updateGenre">Genre</label>
-                          <select id="updateGenre" name="updateGenre" class="form-input" required>
-                            <option value="" selected disabled hidden>Genre</option>
-                            <option value=1>Action & Adventure</option>
-                            <option value=2>Children<span>&#39;</span>s</option>
-                            <option value=3>Classic</option>
-                            <option value=4>Drama</option>
-                            <option value=5>Fantasy</option>
-                            <option value=6>Graphic Novel</option>
-                            <option value=7>Horror</option>
-                            <option value=8>Mystery & Crime</option>
-                            <option value=9>Non-Fiction</option>
-                            <option value=10>Romance</option>
-                            <option value=11>Science Fiction</option>
+                          <select id="updateGenre" name="updateGenre" class="custom-select custom-select-sm" required>
+                            <option value=1 <%if(bookResults.getInt(8) == 1){%>selected<%}%>>Action & Adventure</option>
+                            <option value=2 <%if(bookResults.getInt(8) == 2){%>selected<%}%>>Children<span>&#39;</span>s</option>
+                            <option value=3 <%if(bookResults.getInt(8) == 3){%>selected<%}%>>Classic</option>
+                            <option value=4 <%if(bookResults.getInt(8) == 4){%>selected<%}%>>Drama</option>
+                            <option value=5 <%if(bookResults.getInt(8) == 5){%>selected<%}%>>Fantasy</option>
+                            <option value=6 <%if(bookResults.getInt(8) == 6){%>selected<%}%>>Graphic Novel</option>
+                            <option value=7 <%if(bookResults.getInt(8) == 7){%>selected<%}%>>Horror</option>
+                            <option value=8 <%if(bookResults.getInt(8) == 8){%>selected<%}%>>Mystery & Crime</option>
+                            <option value=9 <%if(bookResults.getInt(8) == 9){%>selected<%}%>>Non-Fiction</option>
+                            <option value=10 <%if(bookResults.getInt(8) == 10){%>selected<%}%>>Romance</option>
+                            <option value=11 <%if(bookResults.getInt(8) == 11){%>selected<%}%>>Science Fiction</option>
                           </select>
                         </div>
                         <div class="form-group col-md-8">
@@ -564,13 +574,12 @@
             <td><%=bookResults.getString(3)%></td>
             <td><%=bookResults.getString(4)%></td>
             <td>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%="#editBook_" + bookResults.getString(2)%>>
+              <button type="button" style="display: block; margin: auto; margin-bottom: 0.35%" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target=<%="#editBook_" + bookResults.getString(2)%>>
                 Edit
               </button>
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target=<%="#archiveBook_" + bookResults.getString(2)%>>
+              <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target=<%="#archiveBook_" + bookResults.getString(2)%>>
                 Archive
               </button>
-
             </td>
           </tr>
 
@@ -632,8 +641,7 @@
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label class="form-label" for="updateGenre">Genre</label>
-                        <select id="updateGenre" name="updateGenre" class="form-input">
-                          <option value="" selected disabled hidden>Genre</option>
+                        <select id="updateGenre" name="updateGenre" class="custom-select custom-select-sm">
                           <option value=1>Action & Adventure</option>
                           <option value=2>Children<span>&#39;</span>s</option>
                           <option value=3>Classic</option>
@@ -676,7 +684,7 @@
             </div>
           </div>
         </div>
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addBook">
+        <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addBook">
           Add
         </button>
 
