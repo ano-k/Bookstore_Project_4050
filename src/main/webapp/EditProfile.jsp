@@ -361,7 +361,7 @@ if(isValidReorder) {%>
         <div class="main content">
             <div class="cart-information">
                 <h2 class="page-header">Profile</h2>
-                <h6 class="page-header">Personal Information</h6>
+                <h4 style="text-align: center">Personal Information</h4>
                 <%-- Table for personal information --%>
                 <table class="table">
                     <thead class="thead-dark">
@@ -559,8 +559,10 @@ if(isValidReorder) {%>
                     <%}%>
                     </tbody>
                 </table>
+                <br>
+                <br>
 
-                <h6 class="page-header">Address Information</h6>
+                <h4 style="text-align: center">Address Information</h4>
                 <%-- Table for address information --%>
                 <table class="table">
                     <thead class="thead-dark">
@@ -828,9 +830,11 @@ if(isValidReorder) {%>
                 <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
                     Add
                 </button>
+                <br>
+                <br>
                 <% } %>
 
-                <h6 class="page-header">Payment Information</h6>
+                <h4 style="text-align: center">Payment Information</h4>
                 <%-- Table for payment information --%>
                 <table class="table">
                     <thead class="thead-dark">
@@ -875,7 +879,7 @@ if(isValidReorder) {%>
                                                 </div>
                                                 <div class="form-group col-md-8">
                                                     <label class="form-label" for="updateCardNumber">Card Number</label>
-                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" value=<%="xxxxxxxxxxxx" + paymentResults.getString(4).substring(64)%>/>
+                                                    <input type="text" id="updateCardNumber" name="updateCardNumber" class="form-input" pattern="[0-9]{13,16}" title="Enter the digits of a valid credit card number" />
                                                 </div>
                                             </div>
                                             <div class="form-row">
@@ -1008,10 +1012,12 @@ if(isValidReorder) {%>
                 <button type="button"  style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
                     Add
                 </button>
+                <br>
+                <br>
                 <%}
                 if(orderResults.next()) {
                     orderResults.beforeFirst();%>
-                    <h6 class="page-header">Order History</h6>
+                    <h4 style="text-align: center">Order History</h4>
                     <%-- Table for payment information --%>
                     <table class="table">
                         <thead class="thead-dark">
