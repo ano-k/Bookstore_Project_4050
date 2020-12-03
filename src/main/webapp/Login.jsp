@@ -27,7 +27,7 @@
     <%
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "G97t678!";
+    String dbPassword = "Hakar123";
     Connection connection = null;
     try {
         connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);

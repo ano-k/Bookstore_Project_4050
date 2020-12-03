@@ -65,19 +65,45 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "G97t678!";
+    String dbPassword = "Hakar123";
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-
         if(request.getParameter("bookInfoButton") != null && userID != "") {
-            String cartQuery = "INSERT INTO Cart (User, Book, Quantity) VALUES (?, ?, ?) ";
-            PreparedStatement cartQuery_pmst = connection.prepareStatement(cartQuery);
-            cartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
-            cartQuery_pmst.setString(2, request.getParameter("ISBN").replaceAll("/",""));
-            cartQuery_pmst.setInt(3, (int)Integer.parseInt(request.getParameter("quantity")));
-            cartQuery_pmst.executeUpdate();
+            String cart = "SELECT Book, Quantity FROM Cart WHERE User = ? ";
+            PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            cart_pmst.setInt(1, (int)Integer.parseInt(userID));
+            ResultSet cartResults = cart_pmst.executeQuery();
+            String cartQuery = "";
+            Boolean isInCart = false;
+            int quantity = 0;
+
+            while(cartResults.next()){
+                if(cartResults.getString(1).equals(request.getParameter("ISBN"))){
+                    isInCart = true;
+                    quantity = cartResults.getInt(2);
+                }
+            }
+
+            if (!isInCart) {
+                cartQuery = "INSERT INTO Cart (User, Book, Quantity) VALUES (?, ?, ?) ";
+                PreparedStatement cartQuery_pmst = connection.prepareStatement(cartQuery);
+                cartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
+                cartQuery_pmst.setString(2, request.getParameter("ISBN").replaceAll("/",""));
+                cartQuery_pmst.setInt(3, (int)Integer.parseInt(request.getParameter("quantity")));
+                cartQuery_pmst.executeUpdate();
+
+            } else {
+                cartQuery = "UPDATE Cart SET Quantity = ? WHERE Book = ? AND User = ? ";
+                PreparedStatement cartQuery_pmst = connection.prepareStatement(cartQuery);
+                cartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
+                cartQuery_pmst.setString(2, request.getParameter("ISBN").replaceAll("/",""));
+                cartQuery_pmst.setInt(3, quantity +(int)Integer.parseInt(request.getParameter("quantity")));
+                cartQuery_pmst.executeUpdate();
+            }
         }
+
 
         String book = "SELECT * FROM Books ";
         String featured = "SELECT * FROM Books ";

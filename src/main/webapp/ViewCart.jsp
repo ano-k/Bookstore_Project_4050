@@ -37,7 +37,7 @@
 
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "G97t678!";
+        String dbPassword = "Hakar123";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -278,9 +278,9 @@
                     </tbody>
                 </table>
                 <p>Subtotal: $<%=subtotal%></p>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>
-                    Check Out
-                </button>
+<%--                <button type="button" class="btn btn-success" data-toggle="modal" data-target=<%="#checkout"%>>--%>
+<%--                    Check Out--%>
+<%--                </button>--%>
                 <%}%>
             </div>
         </div>

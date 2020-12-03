@@ -38,11 +38,15 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "G97t678!";
+    String dbPassword = "Hakar123";
+    Boolean appliedPromo = false;
+    int discountedAmount = 0;
+    double subtotal = 0; //for the subtotal
+    double total = 0; //for the total
+    int confirmationNum = 0;
 
     try {
         Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-        double subtotal = 0; //for the total
 
         if(request.getParameter("editQuantityButton") != null) {
             if(request.getParameter("quantity").equals("0")) {
@@ -93,8 +97,10 @@
             addPaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
             addPaymentQuery_pmst.executeUpdate();
 
-        } if(request.getParameter("checkoutButton") != null){
+        } else if(request.getParameter("checkoutButton") != null){
             // TODO implement confirmation number
+            Random random = new Random();
+            confirmationNum = random.nextInt((9000000 - 1000000) + 1) + 1000000;
             String addressID = request.getParameter("selectedAddress");
             String paymentID = request.getParameter("selectedPayment");
             LocalDateTime dTholder = java.time.LocalDateTime.now();
@@ -104,13 +110,83 @@
             checkoutQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
             checkoutQuery_pmst.setInt(2, (int)Integer.parseInt(addressID));
             checkoutQuery_pmst.setInt(3, (int)Integer.parseInt(paymentID));
-            checkoutQuery_pmst.setInt(4, 1254689);
-            checkoutQuery_pmst.setDouble(5, Double.parseDouble(request.getParameter("subtotal").replaceAll("/","")));
+            checkoutQuery_pmst.setInt(4, confirmationNum);
+            checkoutQuery_pmst.setDouble(5, Double.parseDouble(request.getParameter("total").replaceAll("/","")));
             checkoutQuery_pmst.setString(6, dateAndTime);
             checkoutQuery_pmst.executeUpdate();
+
+            String cart = "SELECT User, Book, SUM(Cart.Quantity) as Cart_Quantity, " +
+                    "B.Quantity as Store_Quantity " +
+                    "FROM Cart " +
+                    "LEFT JOIN Books B on Cart.Book = B.ISBN " +
+                    "WHERE User = ? " +
+                    "GROUP BY User, Book ";
+            PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            cart_pmst.setInt(1, (int)Integer.parseInt(userID));
+            ResultSet cartResults = cart_pmst.executeQuery();
+
+            while(cartResults.next()) {
+                String updateStoreQuery = "UPDATE Books SET Quantity = ? WHERE ISBN = ? ";
+                PreparedStatement updateStore_pmst = connection.prepareStatement(updateStoreQuery);
+                updateStore_pmst.setInt(1, cartResults.getInt(4) - cartResults.getInt(3));
+                updateStore_pmst.setString(2, cartResults.getString(2));
+                updateStore_pmst.executeUpdate();
+            }
+            String updateCartQuery = "DELETE FROM Cart WHERE User = ?";
+            PreparedStatement updateCartQuery_pmst = connection.prepareStatement(updateCartQuery);
+            updateCartQuery_pmst.setInt(1, (int)Integer.parseInt(userID));
+            updateCartQuery_pmst.executeUpdate();
+
+            String to = userEmail;
+            String from = "bookstore.helper@gmail.com";
+
+            Properties prop = System.getProperties();
+            prop.put("mail.smtp.host", "smtp.gmail.com");
+            prop.put("mail.smtp.port", "587");
+            prop.put("mail.smtp.starttls.enable", "true");
+            prop.put("mail.smtp.auth", "true");
+            prop.put("mail.smtp.ssl.trust", "*");
+            final String emailUsername = "bookstore.helper@gmail.com";
+            final String emailPassword = "oeprimytgjyhvsbc";
+
+            Session sess = Session.getInstance(prop, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailUsername, emailPassword);
+                }
+            });
+
+            try {
+                MimeMessage context = new MimeMessage(sess);
+                InternetAddress fromIA = new InternetAddress(from);
+                context.setFrom(from);
+                if(to != null){
+                    InternetAddress toIA = new InternetAddress(to);
+                    context.addRecipient(Message.RecipientType.TO, toIA);
+                    context.setSubject("Thanks for your order!");
+                    context.setText("Here is your confirmation number " + confirmationNum);
+                    System.out.println("sending email...");
+                    Transport.send(context);
+                    System.out.println("Message sent successfully.");
+                }
+            } catch (MessagingException mE) {
+                mE.printStackTrace();
+            }
+
+        } else if(request.getParameter("applyPromoButton") != null){
+            String userPromo = request.getParameter("promotion").replaceAll("/","");
+            String promoCheckQuery = "SELECT * FROM Promotions "; //get a list of usernames of the logged in user
+            PreparedStatement promoCheck_pmst = connection.prepareStatement(promoCheckQuery);
+            ResultSet promoResults = promoCheck_pmst.executeQuery();
+
+            while(promoResults.next()){
+                String promo = promoResults.getString(1);
+                if(userPromo.equals(promo)){
+                    appliedPromo = true;
+                    discountedAmount = promoResults.getInt(3);
+                }
+            }
         }
-
-
 
         String cart = "SELECT User, Book, SUM(Cart.Quantity) as Cart_Quantity, B.Quantity as Store_Quantity, Title, Author, Edition, Publisher, Year, Genre, Image, SellPrice, Rating FROM cart LEFT JOIN Books B on Cart.Book = B.ISBN WHERE user = ? GROUP BY User, Book ";
         PreparedStatement cart_pmst = connection.prepareStatement(cart, ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -150,173 +226,171 @@
         <nav id ="nav_menu">
             <ul>
                 <%if(userEmail != ""){ %>
-                <%if(!userType.equals("0")){ %>
-                <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                </form>
-                </li>
-                <%}%>
-                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                </form>
-                </li>
-
-                <li><form id ="find_books" method="post" action="Homepage.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                </form>
-                </li>
-                <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
-                    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
-                </form>
-                </li>
-                <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
-                </form>
-                </li>
+                    <%if(!userType.equals("0")){ %>
+                        <li><form id ="manage_store" method="post" action="AdminHomepage.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('manage_store').submit();">Manage store</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            </form>
+                        </li>
+                    <%}%>
+                        <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/EditProfile.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Profile</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                        <li><form id ="find_books" method="post" action="Homepage.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('find_books').submit();">Find Books</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                        <li><form class= "view_cart" id ="view_cart" method="post" action="ViewCart.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('view_cart').submit();">Cart</a>
+                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                            </form>
+                        </li>
+                        <li><form class= "log_out" id ="log_out" method="post" action="Login.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('log_out').submit();">Log Out</a>
+                            </form>
+                        </li>
                 <%} else{%>
-                <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
-                    <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
-                </form>
-                </li>
-                <%}%>
+                        <li><form id ="login_edit" method="post" action="/Bookstore_Project_4050_war_exploded/Login.jsp">
+                            <a href="javascript:{}" onclick="document.getElementById('login_edit').submit();">Login</a>
+                            </form>
+                        </li>
+                    <%}%>
             </ul>
         </nav>
         <div class="main content">
             <div class="cart-information">
                 <h1 class="page-header">Checkout</h1>
-                <h4 style="text-align: center">Cart</h4>
-
-                <%
-                    if(!cartResults.next()) {
+                <%if(cartResults.next()){
+                    cartResults.beforeFirst();
                 %>
-                <h6 class="page-header">Your cart is empty</h6>
-                <%
-                }
-                else {
-                    cartResults.beforeFirst();%>
                 <table class="table">
                     <tbody>
-                    <%
-                        while(cartResults.next()) {
-                           subtotal+= cartResults.getInt(3)*cartResults.getDouble(12);
-                    %>
-                    <tr>
-                        <td>Quantity: <%=cartResults.getInt(3)%></td>
-                        <td><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
-                        <td><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
-                        <td>$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
-                    </tr>
-                    <% } %>
+                    <h4 style="text-align: center">Cart</h4>
+                    <%while(cartResults.next()) {
+                               subtotal+= cartResults.getInt(3)*cartResults.getDouble(12);%>
+                            <tr>
+                                <td>Quantity: <%=cartResults.getInt(3)%></td>
+                                <td><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
+                                <td><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
+                                <td>$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
+                            </tr>
+                        <%}%>
                     </tbody>
                 </table>
                 <h6 class="page-header">Address Information</h6>
                 <%-- Table for address information --%>
                 <form method="post" action="Checkout.jsp">
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Street Address</th>
-                        <th scope="col">City</th>
-                        <th scope="col">State</th>
-                        <th scope="col">Zip Code</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                        int countAddressRows = 0;
-                        while(addressResults.next()) {
-                            countAddressRows++;
-                    %>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Street Address</th>
+                                <th scope="col">City</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Zip Code</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%int countAddressRows = 0;
+                            while(addressResults.next()) {
+                                countAddressRows++;%>
+                                <tr>
+                                    <td><%=addressResults.getString(3)%></td>
+                                    <td><%=addressResults.getString(4)%></td>
+                                    <td><%=addressResults.getString(5)%></td>
+                                    <td><%=addressResults.getString(6)%></td>
+                                    <td>
+                                          <input type="radio" id="selectedAddress" name="selectedAddress" value=<%=addressResults.getInt(1)%>>
+                                    </td>
+                                </tr>
+                            <%}%>
+                        </tbody>
+                    </table>
+                    <% if(countAddressRows < 3) { %>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
+                            Add
+                        </button>
+                    <%}%>
+                    <h6 class="page-header">Payment Information</h6>
+                    <%-- Table for payment information --%>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Card Type</th>
+                                <th scope="col">Card Number</th>
+                                <th scope="col">Expiration Date</th>
+                                <th scope="col">CVV</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%int countPaymentRows = 0;
+                            while(paymentResults.next()) {
+                                countPaymentRows++;%>
+                                <tr>
+                                    <td><%=paymentResults.getString(3)%></td>
+                                    <%String result = paymentResults.getString(4);
+                                        result = result.substring(64);
+                                        String cardNumber = "xxxxxxxxxxxx" + result;%>
+                                    <td><%=cardNumber%></td>
+                                    <td><%=paymentResults.getString(5)%></td>
+                                    <td><%=paymentResults.getString(6)%></td>
+                                    <td>
+                                        <input type="radio" id="selectedPayment" name="selectedPayment" value=<%=paymentResults.getInt(1)%>>
+                                    </td>
+                                </tr>
+                            <%}%>
+                        </tbody>
+                    </table>
 
-                    <tr>
-                        <td><%=addressResults.getString(3)%></td>
-                        <td><%=addressResults.getString(4)%></td>
-                        <td><%=addressResults.getString(5)%></td>
-                        <td><%=addressResults.getString(6)%></td>
-                        <td>
-                              <input type="radio" id="selectedAddress" name="selectedAddress" value=<%=addressResults.getInt(1)%> required>
-                        </td>
-                    </tr>
-                    <% } %>
-
-                    </tbody>
-                </table>
-
-                <% if(countAddressRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
-                    Add
-                </button>
-                <% } %>
-<%--end of address --%>
-
-                <h6 class="page-header">Payment Information</h6>
-                <%-- Table for payment information --%>
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Card Type</th>
-                        <th scope="col">Card Number</th>
-                        <th scope="col">Expiration Date</th>
-                        <th scope="col">CVV</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                        int countPaymentRows = 0;
-                        while(paymentResults.next()) {
-                            countPaymentRows++;
-                    %>
-                    <tr>
-                        <td><%=paymentResults.getString(3)%></td>
-                        <% String result = paymentResults.getString(4);
-                            result = result.substring(64);
-                            String cardNumber = "xxxxxxxxxxxx" + result;
-                        %>
-                        <td><%=cardNumber%></td>
-                        <td><%=paymentResults.getString(5)%></td>
-                        <td><%=paymentResults.getString(6)%></td>
-                        <td>
-                            <input type="radio" id="selectedPayment" name="selectedPayment" value=<%=paymentResults.getInt(1)%> required>
-                        </td>
-                    </tr>
-
-                    <% } %>
-
-                    </tbody>
-                </table>
-
-                <% if(countPaymentRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
-                    Add
-                </button>
-                <%}%>
-
+                    <% if(countPaymentRows < 3) { %>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
+                            Add
+                        </button>
+                    <%}%>
                 <%-- end of payment--%>
-                <br>
-                <br>
-                <p>Subtotal: $<%=subtotal%></p>
+
+                    <div style="margin-top: 5%;">
+                        Promotions:<input type="text" id="promotion" name="promotion" class="form-input" style="width:25%"<%if(appliedPromo){%> disabled <%}%>/>
+                        <button type="submit" class="btn btn-outline-secondary btn-sm" name="applyPromoButton" id="applyPromoButton" <%if(appliedPromo){%> disabled <%}%>
+                        formaction="">
+                            Apply
+                        </button>
+                        <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                        <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                        <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                        <br>
+                        Subtotal: $<%=subtotal%>
+                        <%if(appliedPromo){ total = subtotal - (subtotal * discountedAmount)/100;%>
+                        <p style="color:red">Discount: $<%=subtotal * discountedAmount/100%></p>
+                        Total: $<%=total%><br>
+                        <%}%>
+                    </div>
                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
                     <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
-                    <input type="hidden" id="subtotal" name="subtotal" class="form-input" value = <%=subtotal%>/>
+                    <input type="hidden" id="total" name="total" class="form-input" value = <%=total%>/>
 
-                    <button type="submit" id="checkoutButton" name="checkoutButton" class="btn btn-success">
+                    <button type="submit" id="checkoutButton" name="checkoutButton" class="btn btn-success" onclick="check()">
                     Check Out
-                </button>
+                    </button>
+                    <script>
+                        function check(){
+                            document.getElementById("selectedAddress").required = true;
+                            document.getElementById("selectedPayment").required = true;
+                        }
+                    </script>
                 </form>
 
 
@@ -335,7 +409,7 @@
                                         <div class="form-row">
                                             <div class="form-group col-md">
                                                 <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
-                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>
+                                                <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
                                                 <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
                                                 <label class="form-label" for="addStreetAddress">Address</label>
                                                 <input type="text" id="addStreetAddress" name="addStreetAddress" class="form-input" pattern="\d+\s[A-z]+\s[A-z]+" title="Add a valid street address"/>
@@ -467,7 +541,12 @@
                         </div>
                     </div>
                 </div>
-                <%}%>
+                <%} else if(request.getParameter("checkoutButton") != null){%>
+                    <h6 class="page-header">Thank you for your order!</h6><br>
+                    <h5 class="page-header">Confirmation #: <%=confirmationNum%></h5><br>
+                <%} else{%>
+                    <h6 class="page-header">Your cart is empty!</h6><br>
+               <%}%>
             </div>
         </div>
     </main>
