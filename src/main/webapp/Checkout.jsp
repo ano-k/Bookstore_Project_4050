@@ -38,7 +38,7 @@
 
     String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
     String dbUsername = "root";
-    String dbPassword = "Hakar123";
+    String dbPassword = "WebProg2020";
     Boolean appliedPromo = false;
     int discountedAmount = 0;
     double subtotal = 0; //for the subtotal
@@ -126,12 +126,27 @@
             cart_pmst.setInt(1, (int)Integer.parseInt(userID));
             ResultSet cartResults = cart_pmst.executeQuery();
 
+            int orderID = 0;
             while(cartResults.next()) {
                 String updateStoreQuery = "UPDATE Books SET Quantity = ? WHERE ISBN = ? ";
                 PreparedStatement updateStore_pmst = connection.prepareStatement(updateStoreQuery);
                 updateStore_pmst.setInt(1, cartResults.getInt(4) - cartResults.getInt(3));
                 updateStore_pmst.setString(2, cartResults.getString(2));
                 updateStore_pmst.executeUpdate();
+
+                String getOrderID = "SELECT ID FROM Orders WHERE Confirmation = ? ";
+                PreparedStatement orderID_pmst = connection.prepareStatement(getOrderID);
+                orderID_pmst.setInt(1, confirmationNum);
+                ResultSet orderIDResults = orderID_pmst.executeQuery();
+                orderIDResults.next();
+                orderID = orderIDResults.getInt(1);
+
+                String addSale = " INSERT INTO Sales (OrderID, Book, Quantity) Values (?, ?, ?)";
+                PreparedStatement addSale_pmst = connection.prepareStatement(addSale);
+                addSale_pmst.setInt(1, orderID);
+                addSale_pmst.setString(2, cartResults.getString(2));
+                addSale_pmst.setInt(3, cartResults.getInt(3));
+                addSale_pmst.executeUpdate();
             }
             String updateCartQuery = "DELETE FROM Cart WHERE User = ?";
             PreparedStatement updateCartQuery_pmst = connection.prepareStatement(updateCartQuery);
@@ -156,15 +171,52 @@
                 }
             });
 
+            String nameQuery = "SELECT FirstName FROM Users WHERE ID = ?";
+            PreparedStatement name_pmst = connection.prepareStatement(nameQuery);
+            name_pmst.setInt(1, (int)Integer.parseInt(userID));
+            ResultSet nameResults = name_pmst.executeQuery();
+            String firstname = "";
+            if(nameResults.next()) {
+                firstname = nameResults.getString(1);
+            }
+
+            String addressQuery = "SELECT Street FROM Address WHERE ID = ?";
+            PreparedStatement address_pmst = connection.prepareStatement(addressQuery);
+            address_pmst.setInt(1, (int)Integer.parseInt(addressID));
+            ResultSet addressResults2 = address_pmst.executeQuery();
+            String street = "";
+            if(addressResults2.next()) {
+                street = addressResults2.getString(1);
+            }
+
+            String books = "SELECT B.Title FROM Sales LEFT JOIN Books B on Sales.Book = B.ISBN LEFT JOIN Orders O on Sales.OrderID = O.ID WHERE OrderID = ? ";
+            PreparedStatement books_pmst = connection.prepareStatement(books);
+            books_pmst.setInt(1, orderID);
+            ResultSet titleResults = books_pmst.executeQuery();
+            String contents = "";
+            while(titleResults.next()) {
+                contents += titleResults.getString(1) + ", ";
+            }
+            contents = contents.substring(0, contents.length() - 2);
+
             try {
                 MimeMessage context = new MimeMessage(sess);
                 InternetAddress fromIA = new InternetAddress(from);
                 context.setFrom(from);
                 if(to != null){
+                    String content = "Hi " + firstname + ", \n\n";
+                    content += "Thanks for shopping at our online bookstore!  The following are your order details: \n\n";
+                    content += "Confirmation number: " + confirmationNum + "\n";
+                    content += "Order ID: " + orderID + "\n";
+                    content += "Order Date: " + dateAndTime.substring(0,10) + "\n";
+                    content += "Order Time: " + dateAndTime.substring(11,16) + "\n";
+                    content += "Price: $" + Double.parseDouble(request.getParameter("total").replaceAll("/","")) + "\n";
+                    content += "Contents: " + contents + "\n";
+                    content += "Shipping to: " + street + "\n";
                     InternetAddress toIA = new InternetAddress(to);
                     context.addRecipient(Message.RecipientType.TO, toIA);
                     context.setSubject("Thanks for your order!");
-                    context.setText("Here is your confirmation number " + confirmationNum);
+                    context.setText(content);
                     System.out.println("sending email...");
                     Transport.send(context);
                     System.out.println("Message sent successfully.");
@@ -195,12 +247,12 @@
         System.out.println(userID);
         ResultSet cartResults = cart_pmst.executeQuery();
 
-        String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
+        String address = "SELECT * FROM Address WHERE User = ? and IsArchived = 0 "; //get a list of usernames of the logged in user
         PreparedStatement address_pmst = connection.prepareStatement(address);
         address_pmst.setString(1, userEmail);
         ResultSet addressResults = address_pmst.executeQuery();
 
-        String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
+        String payment = "SELECT * FROM Payment WHERE User = ? and IsArchived = 0 "; //get a list of payments of the logged in user
         PreparedStatement payment_pmst = connection.prepareStatement(payment);
         payment_pmst.setString(1, userEmail);
         ResultSet paymentResults = payment_pmst.executeQuery();
@@ -280,25 +332,25 @@
                     <%while(cartResults.next()) {
                                subtotal+= cartResults.getInt(3)*cartResults.getDouble(12);%>
                             <tr>
-                                <td>Quantity: <%=cartResults.getInt(3)%></td>
-                                <td><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
-                                <td><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
-                                <td>$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
+                                <td class="listUser">Quantity: <%=cartResults.getInt(3)%></td>
+                                <td class="listUser"><img src=<%=cartResults.getString(11)%> width="90" height="140"></td>
+                                <td class="listUser"><%=cartResults.getString(5)%> <br><br>by <%=cartResults.getString(6)%></td>
+                                <td class="listUser">$<%=cartResults.getDouble(12)%> <br><br> <%=cartResults.getInt(13)%>/5</td>
                             </tr>
                         <%}%>
                     </tbody>
                 </table>
-                <h6 class="page-header">Address Information</h6>
+                <h4 style="text-align: center">Address Information</h4>
                 <%-- Table for address information --%>
                 <form method="post" action="Checkout.jsp">
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Street Address</th>
-                                <th scope="col">City</th>
-                                <th scope="col">State</th>
-                                <th scope="col">Zip Code</th>
-                                <th scope="col"></th>
+                                <th scope="col" class="listUser">Street Address</th>
+                                <th scope="col" class="listUser">City</th>
+                                <th scope="col" class="listUser">State</th>
+                                <th scope="col" class="listUser">Zip Code</th>
+                                <th scope="col" class="listUser"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -306,11 +358,11 @@
                             while(addressResults.next()) {
                                 countAddressRows++;%>
                                 <tr>
-                                    <td><%=addressResults.getString(3)%></td>
-                                    <td><%=addressResults.getString(4)%></td>
-                                    <td><%=addressResults.getString(5)%></td>
-                                    <td><%=addressResults.getString(6)%></td>
-                                    <td>
+                                    <td class="listUser"><%=addressResults.getString(3)%></td>
+                                    <td class="listUser"><%=addressResults.getString(4)%></td>
+                                    <td class="listUser"><%=addressResults.getString(5)%></td>
+                                    <td class="listUser"><%=addressResults.getString(6)%></td>
+                                    <td class="listUser">
                                           <input type="radio" id="selectedAddress" name="selectedAddress" value=<%=addressResults.getInt(1)%>>
                                     </td>
                                 </tr>
@@ -318,20 +370,22 @@
                         </tbody>
                     </table>
                     <% if(countAddressRows < 3) { %>
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
+                        <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
                             Add
                         </button>
                     <%}%>
-                    <h6 class="page-header">Payment Information</h6>
+                    <br>
+                    <br>
+                    <h4 style="text-align: center">Payment Information</h4>
                     <%-- Table for payment information --%>
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Card Type</th>
-                                <th scope="col">Card Number</th>
-                                <th scope="col">Expiration Date</th>
-                                <th scope="col">CVV</th>
-                                <th scope="col"></th>
+                                <th scope="col" class="listUser">Card Type</th>
+                                <th scope="col" class="listUser">Card Number</th>
+                                <th scope="col" class="listUser">Expiration Date</th>
+                                <th scope="col" class="listUser">CVV</th>
+                                <th scope="col" class="listUser"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -339,14 +393,14 @@
                             while(paymentResults.next()) {
                                 countPaymentRows++;%>
                                 <tr>
-                                    <td><%=paymentResults.getString(3)%></td>
+                                    <td class="listUser"><%=paymentResults.getString(3)%></td>
                                     <%String result = paymentResults.getString(4);
                                         result = result.substring(64);
                                         String cardNumber = "xxxxxxxxxxxx" + result;%>
-                                    <td><%=cardNumber%></td>
-                                    <td><%=paymentResults.getString(5)%></td>
-                                    <td><%=paymentResults.getString(6)%></td>
-                                    <td>
+                                    <td class="listUser"><%=cardNumber%></td>
+                                    <td class="listUser"><%=paymentResults.getString(5)%></td>
+                                    <td class="listUser"><%=paymentResults.getString(6)%></td>
+                                    <td class="listUser">
                                         <input type="radio" id="selectedPayment" name="selectedPayment" value=<%=paymentResults.getInt(1)%>>
                                     </td>
                                 </tr>
@@ -355,10 +409,12 @@
                     </table>
 
                     <% if(countPaymentRows < 3) { %>
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
+                        <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addPayment" >
                             Add
                         </button>
                     <%}%>
+                    <br>
+                    <br>
                 <%-- end of payment--%>
 
                     <div style="margin-top: 5%;">
@@ -375,7 +431,9 @@
                         <%if(appliedPromo){ total = subtotal - (subtotal * discountedAmount)/100;%>
                         <p style="color:red">Discount: $<%=subtotal * discountedAmount/100%></p>
                         Total: $<%=total%><br>
-                        <%}%>
+                        <%} else {
+                            total = subtotal;
+                        }%>
                     </div>
                     <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
                     <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=request.getParameter("currentUserType")%>/>

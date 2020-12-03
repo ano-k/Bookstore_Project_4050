@@ -29,6 +29,8 @@
         String userEmail = "";
         String userType = "";
         String userID = "";
+        boolean isValidReorder = false;
+
         if(request.getParameter("currentUserEmail") != null){
             userEmail = request.getParameter("currentUserEmail").replaceAll("/","");
             userType = request.getParameter("currentUserType").replaceAll("/","");
@@ -40,7 +42,7 @@
         }
         String dbURL = "jdbc:mysql://localhost:3306/bookstore?serverTimezone=EST";
         String dbUsername = "root";
-        String dbPassword = "Hakar123";
+        String dbPassword = "WebProg2020";
 
         try {
             Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -94,16 +96,24 @@
                 updateNotificationsQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("deleteAddressButton") != null) {
-                String deleteAddressQuery = "DELETE FROM Address WHERE ID = ?";
-                PreparedStatement deleteAddressQuery_pmst = connection.prepareStatement(deleteAddressQuery);
-                deleteAddressQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
-                deleteAddressQuery_pmst.executeUpdate();
+                //String deleteAddressQuery = "DELETE FROM Address WHERE ID = ?";
+                //PreparedStatement deleteAddressQuery_pmst = connection.prepareStatement(deleteAddressQuery);
+                //deleteAddressQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
+                //deleteAddressQuery_pmst.executeUpdate();
+                String updateAddressQuery = "UPDATE Address SET IsArchived = 1 WHERE ID = ? ";
+                PreparedStatement updateAddressQuery_pmst = connection.prepareStatement(updateAddressQuery);
+                updateAddressQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("addressID")));
+                updateAddressQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("deletePaymentButton") != null) {
-                String deletePaymentQuery = "DELETE FROM Payment WHERE ID = ?";
-                PreparedStatement deletePaymentQuery_pmst = connection.prepareStatement(deletePaymentQuery);
-                deletePaymentQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
-                deletePaymentQuery_pmst.executeUpdate();
+                //String deletePaymentQuery = "DELETE FROM Payment WHERE ID = ?";
+                //PreparedStatement deletePaymentQuery_pmst = connection.prepareStatement(deletePaymentQuery);
+                //deletePaymentQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
+                //deletePaymentQuery_pmst.executeUpdate();
+                String updateAddressQuery = "UPDATE Payment SET IsArchived = 1 WHERE ID = ? ";
+                PreparedStatement updateAddressQuery_pmst = connection.prepareStatement(updateAddressQuery);
+                updateAddressQuery_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("paymentID")));
+                updateAddressQuery_pmst.executeUpdate();
 
             } else if(request.getParameter("addAddressButton") != null) {
                 String addAddressQuery = "INSERT INTO Address (User, Street, City, State, Zipcode) VALUES (?, ?, ?, ?, ?) ";
@@ -129,6 +139,50 @@
                 addPaymentQuery_pmst.setString(4, request.getParameter("addExpirationDate"));
                 addPaymentQuery_pmst.setInt(5, (int)Integer.parseInt(request.getParameter("addCVV")));
                 addPaymentQuery_pmst.executeUpdate();
+
+            } else if(request.getParameter("reorderButton") != null) {
+                isValidReorder = true;
+                String sales = "SELECT * FROM Sales WHERE OrderID = ? ";
+                PreparedStatement sales_pmst = connection.prepareStatement(sales);
+                sales_pmst.setInt(1, (int)Integer.parseInt(request.getParameter("orderID").replaceAll("/","")));
+                ResultSet salesResults = sales_pmst.executeQuery();
+                while(salesResults.next()) {
+                    int requestQuantity = salesResults.getInt(3);
+                    String books = "SELECT * FROM Books WHERE ISBN = ? ";
+                    PreparedStatement books_pmst = connection.prepareStatement(books);
+                    books_pmst.setString(1, salesResults.getString(2));
+                    ResultSet booksResults = books_pmst.executeQuery();
+                    booksResults.next();
+                    int quantityInStock = booksResults.getInt(1);
+
+                    if(requestQuantity > quantityInStock) {
+                        isValidReorder = false;
+                    }
+                }
+                if(isValidReorder) {
+                    String clearCart = "DELETE FROM Cart WHERE User = ? ";
+                    PreparedStatement clearCart_pmst = connection.prepareStatement(clearCart);
+                    clearCart_pmst.setInt(1, (int)Integer.parseInt(userID));
+                    clearCart_pmst.executeUpdate();
+                    salesResults.beforeFirst();
+                    while(salesResults.next()) {
+                        String addCartQuery = "INSERT INTO Cart (User, Book, Quantity) VALUES (?, ?, ?) ";
+                        PreparedStatement addCart_pmst = connection.prepareStatement(addCartQuery);
+                        addCart_pmst.setInt(1, (int)Integer.parseInt(userID));
+                        addCart_pmst.setString(2, salesResults.getString(2));
+                        addCart_pmst.setInt(3, salesResults.getInt(3));
+                        addCart_pmst.executeUpdate();
+                    }
+
+                }
+                else {
+                    %>
+                        <script>
+                            alert("This reorder is not valid due to lack of inventory.");
+                        </script>
+                    <%
+                }
+
 
             } else if(request.getParameter("editPasswordButton") != null) {
                 //get new pass, current pass and hash it to compare
@@ -200,12 +254,12 @@
                 <%}
             }
 
-            String address = "SELECT * FROM Address WHERE User = ? "; //get a list of usernames of the logged in user
+            String address = "SELECT * FROM Address WHERE User = ? and IsArchived = 0"; //get a list of usernames of the logged in user
             PreparedStatement address_pmst = connection.prepareStatement(address);
             address_pmst.setString(1, userEmail);
             ResultSet addressResults = address_pmst.executeQuery();
 
-            String payment = "SELECT * FROM Payment WHERE User = ? "; //get a list of payments of the logged in user
+            String payment = "SELECT * FROM Payment WHERE User = ? and isArchived = 0"; //get a list of payments of the logged in user
             PreparedStatement payment_pmst = connection.prepareStatement(payment);
             payment_pmst.setString(1, userEmail);
             ResultSet paymentResults = payment_pmst.executeQuery();
@@ -214,6 +268,11 @@
             PreparedStatement personalInfo_pmst = connection.prepareStatement(personalInfo);
             personalInfo_pmst.setString(1, userEmail);
             ResultSet personalResults = personalInfo_pmst.executeQuery();
+
+            String orderHistory = "SELECT * FROM Orders WHERE User = ? ";
+            PreparedStatement orderHistory_pmst = connection.prepareStatement(orderHistory);
+            orderHistory_pmst.setInt(1, (int)Integer.parseInt(userID));
+            ResultSet orderResults = orderHistory_pmst.executeQuery();
 
             //states table query
 //            String statesQuery = "SELECT * FROM States"; //get a list of states
@@ -225,7 +284,17 @@
 //            PreparedStatement pstmt5 = connection.prepareStatement(cardTypesQuery);
 //            ResultSet cardTypesResults = pstmt5.executeQuery();
 
-%>
+if(isValidReorder) {%>
+<form id="validReorder" method="post" action="Checkout.jsp">
+    <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+    <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+    <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+</form>
+<script>
+    document.getElementById("validReorder").submit();
+    document.getElementById("reorderButton").action = "Checkout.jsp";
+</script>
+<%}%>
 <div class="column left"></div>
 
 <div class="column middle">
@@ -297,13 +366,13 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col"></th>
-                            <th scope="col" style="">Status</th>
-                            <th scope="col">Notifications</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Phone Number</th>
-                            <th scope="col"></th>
+                            <th scope="col" class="listUser"></th>
+                            <th scope="col" class="listUser">Status</th>
+                            <th scope="col" class="listUser">Notifications</th>
+                            <th scope="col" class="listUser">Email</th>
+                            <th scope="col" class="listUser">Name</th>
+                            <th scope="col" class="listUser">Phone Number</th>
+                            <th scope="col" class="listUser"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -496,11 +565,11 @@
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
-                        <th scope="col">Street Address</th>
-                        <th scope="col">City</th>
-                        <th scope="col">State</th>
-                        <th scope="col">Zip Code</th>
-                        <th scope="col"></th>
+                        <th scope="col" class="listUser">Street Address</th>
+                        <th scope="col" class="listUser">City</th>
+                        <th scope="col" class="listUser">State</th>
+                        <th scope="col" class="listUser">Zip Code</th>
+                        <th scope="col" class="listUser"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -756,7 +825,7 @@
                     </div>
                 </div>
                 <% if(countAddressRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
+                <button type="button" style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addAddress">
                     Add
                 </button>
                 <% } %>
@@ -766,11 +835,11 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col">Card Type</th>
-                            <th scope="col">Card Number</th>
-                            <th scope="col">Expiration Date</th>
-                            <th scope="col">CVV</th>
-                            <th scope="col"></th>
+                            <th scope="col" class="listUser">Card Type</th>
+                            <th scope="col" class="listUser">Card Number</th>
+                            <th scope="col" class="listUser">Expiration Date</th>
+                            <th scope="col" class="listUser">CVV</th>
+                            <th scope="col" class="listUser"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -936,9 +1005,49 @@
                 </div>
 
                 <% if(countPaymentRows < 3) { %>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
+                <button type="button"  style="display: block; margin: auto;" class="btn btn-success" data-toggle="modal" data-target="#addPayment">
                     Add
                 </button>
+                <%}
+                if(orderResults.next()) {
+                    orderResults.beforeFirst();%>
+                    <h6 class="page-header">Order History</h6>
+                    <%-- Table for payment information --%>
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" class="listUser">Confirmation Number</th>
+                            <th scope="col" class="listUser">Order Date</th>
+                            <th scope="col" class="listUser">Order Time</th>
+                            <th scope="col" class="listUser">Price</th>
+                            <th scope="col" class="listUser"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <%while(orderResults.next()) {
+                                String date = orderResults.getString(7).substring(0,10);
+                                String time = orderResults.getString(7).substring(11,16);%>
+
+                                <tr>
+                                    <td class="listUser"><%=orderResults.getInt(5)%></td>
+                                    <td class="listUser"><%=date%></td>
+                                    <td class="listUser"><%=time%></td>
+                                    <td class="listUser">$<%=orderResults.getDouble(6)%></td>
+                                    <td class="listUser">
+                                        <form>
+                                            <input type="hidden" id="currentUserEmail" name="currentUserEmail" class="form-input" value = <%=userEmail%>/>
+                                            <input type="hidden" id="currentUserID" name="currentUserID" class="form-input" value = <%=userID%>/>
+                                            <input type="hidden" id="currentUserType" name="currentUserType" class="form-input" value = <%=userType%>/>
+                                            <input type="hidden" id="orderID" name="orderID" class="form-input" value = <%=orderResults.getInt(1)%>/>
+                                            <button type="submit" class="btn btn-primary btn-sm" id="reorderButton" name="reorderButton">
+                                            Reorder
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <%}%>
+                        </tbody>
+                    </table>
                 <%}%>
             </div>
         </div>
